@@ -10,12 +10,11 @@
   },
   "devDependencies": {
     "@types/gremlin": "^3.6.5",
-    "bun-types": "latest"
+    "bun-types": "latest",
+    "gremlin": "^3.6.2"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0"
-  },
-  "dependencies": {
+    "typescript": "^5.0.0",
     "gremlin": "^3.6.2"
   }
 }
