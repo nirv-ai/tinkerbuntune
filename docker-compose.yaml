@@ -1,0 +1,36 @@
+services:
+  gserver:
+    build:
+      dockerfile: server/Dockerfile
+    container_name: gserver
+    ports:
+      - "8182:8182"
+    volumes:
+      - ${PWD}/server/air-routes.groovy:/opt/gremlin-server/scripts/air-routes.groovy
+      - ${PWD}/data/air-routes.graphml:/opt/gremlin-server/data/air-routes.graphml
+  gbun:
+    profiles: ["bun"]
+    container_name: gbun
+    image: oven/bun:1.0.4
+    network_mode: host
+    volumes:
+      - ${PWD}/bun:/home/bun/app
+    depends_on:
+      gserver:
+        condition: service_started
+        restart: true
+  gconsole:
+    profiles: ["console"]
+    image: tinkerpop/gremlin-console:3.6.2
+    stdin_open: true # docker run -i
+    tty: true # docker run -t
+    container_name: gconsole
+    network_mode: host
+    depends_on:
+      gserver:
+        condition: service_started
+        restart: true
+    volumes:
+      - ${PWD}/console/air-routes.groovy:/opt/gremlin-console/scripts/air-routes.groovy
+      - ${PWD}/console/remote.yaml:/opt/gremlin-console/conf/remote.yaml
+      - ${PWD}/data/air-routes.graphml:/opt/gremlin-console/data/air-routes.graphml

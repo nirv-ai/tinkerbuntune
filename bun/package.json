@@ -1,0 +1,19 @@
+{
+  "name": "tinkerbuntune",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "examples": "bun --watch src/examples/airRoutes.ts",
+    "test:types": "bunx tsc"
+  },
+  "devDependencies": {
+    "@types/gremlin": "^3.6.5",
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "gremlin": "^3.6.2"
+  }
+}
