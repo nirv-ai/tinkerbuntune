@@ -1,0 +1,7 @@
+{
+  "name": "tinkerbuntune",
+  "private": true,
+  "workspaces": [
+    "bun"
+  ]
+}

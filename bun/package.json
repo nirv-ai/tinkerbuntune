@@ -1,20 +1,22 @@
 {
-  "name": "tinkerbuntune",
+  "name": "etl",
+  "private": true,
   "type": "module",
-  "version": "0.0.2",
-  "module": "./src/index.ts",
+  "version": "0.0.3",
+  "module": "index.ts",
   "scripts": {
     "examples": "bun --watch src/examples/airRoutes.ts",
     "test:types": "bunx tsc"
   },
   "devDependencies": {
     "@types/gremlin": "^3.6.5",
-    "bun-types": "latest"
+    "bun-types": "latest",
+    "gremlin": "^3.6.2",
+    "csv": "^6.3.5"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0"
-  },
-  "dependencies": {
-    "gremlin": "^3.6.2"
+    "typescript": "^5.0.0",
+    "gremlin": "^3.6.2",
+    "csv": "^6.3.5"
   }
 }

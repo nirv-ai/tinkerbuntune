@@ -1,13 +1,39 @@
 # TinkerBunTune
 
 - ETL for tinkerpop & neptune with bun & docker
+  - CSV to tinkergraph: complete
+  - tinkergraph to neptune: TBD
 
 ## TLDR!
 
-- CSV to tinkergraph: complete
-- tinkergraph to neptune: TBD
+## links
 
-## scripts
+- [practical gremlin](https://kelvinlawrence.net/book/Gremlin-Graph-Guide.html)
+
+## ETL
+
+- TODO (noah): this will eventually become a proper readme file ;)~
+
+```sh
+# add latest
+bun add github:nirv-ai/tinkerbuntune
+# or specific branch
+bun add github:nirv-ai/tinkerbuntune#bleeding-edge-branch
+# or specific version
+bun add github:nirv-ai/tinkerbuntune@0.0.3
+
+# abcd
+```
+
+### ETL Pipeline
+
+1. config.transform{Header,Records}: this CAN potentially modify the record.col indexes supplied to later fns
+2. config.colMap.inject: this does NOT modify record.col indexes but injects data directly into TinkerData
+3. config.colMap.transform: receives each CSV record after steps and processes each column
+
+## docker scripts
+
+- example based on the practical gremlin air routes dataset
 
 ### gconsole.sh: gremlin console + gremlin server
 
@@ -59,13 +85,3 @@ bun install
 bun examples
 
 ```
-
-## ETL
-
-- TODO (noah): this will eventually become a proper readme file ;)~
-
-### ETL Pipeline
-
-1. config.transformHeader/Records: this CAN potentially modify the record.col indexes supplied to later fns
-2. config.colMap.inject: this does NOT modify record.col indexes but injects data direclty into TinkerData
-3. config.colMap.transform: receives each CSV record and processes each column
