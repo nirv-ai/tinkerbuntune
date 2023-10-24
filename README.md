@@ -46,7 +46,7 @@ ctrlp ctrlq
 ### gbun.sh: bun (typescript) + gremlin server
 
 ```sh
-###  starts a gremlin and bun server
+###  starts a bun server with gremlin javascript
 ./gbun.sh
 
 ### install deps and execute examples file
