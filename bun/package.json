@@ -1,7 +1,8 @@
 {
   "name": "tinkerbuntune",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "module": "./src/index.ts",
   "scripts": {
     "examples": "bun --watch src/examples/airRoutes.ts",
     "test:types": "bunx tsc"
