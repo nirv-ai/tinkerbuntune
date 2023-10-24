@@ -5,7 +5,7 @@
 import { parse } from "csv/sync"; // TODO (noah): convert to async api
 import fs from "node:fs/promises";
 
-import { log } from "../logger";
+import { log } from "logger";
 import * as loaders from "./loaders";
 import * as transform from "./transformers";
 import * as utils from "./utils";

@@ -5,7 +5,7 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "alwaysStrict": true,
-    "baseUrl": "./src",
+    "baseUrl": "src",
     "composite": true,
     "downlevelIteration": true,
     "forceConsistentCasingInFileNames": true,

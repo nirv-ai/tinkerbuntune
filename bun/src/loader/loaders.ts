@@ -1,5 +1,5 @@
-import { common } from "../groovy/common";
-import { g } from "../remote";
+import { common } from "groovy/common";
+import { g } from "remote";
 import * as utils from "./utils";
 import type { ConfigSpec, TinkerDataEdge, TinkerDataVertex } from "types";
 

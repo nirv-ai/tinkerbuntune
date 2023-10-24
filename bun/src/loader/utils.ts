@@ -1,6 +1,6 @@
 import path from "node:path";
 
-import { common } from "lib/groovy/common";
+import { common } from "groovy/common";
 import type { NumStr, ConfigSpec } from "types";
 
 const { __ } = common;

@@ -4,9 +4,9 @@
  * groovy api translator: https://www.gremlator.com/
  */
 
-import { g, client } from "lib/remote";
-import { common } from "lib/groovy/common";
-import { log } from "lib/logger";
+import { g, client } from "remote";
+import { common } from "groovy/common";
+import { log } from "logger";
 
 const { scope, column, order, __, t, p } = common;
 
