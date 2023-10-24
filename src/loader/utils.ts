@@ -35,6 +35,7 @@ export const pgDateToJs = (date: string) =>
 
 const hashIdCache = Object.create(null);
 
+// TODO (noah): consumers should be able to override this fn
 /**
  * creates a hash of some string
  * @see https://bun.sh/docs/api/hashing#bun-hash
