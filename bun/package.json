@@ -1,7 +1,8 @@
 {
-  "name": "tinkerbuntune",
+  "name": "etl",
+  "private": true,
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "module": "./src/index.ts",
   "scripts": {
     "examples": "bun --watch src/examples/airRoutes.ts",
