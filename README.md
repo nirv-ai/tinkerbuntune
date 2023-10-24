@@ -15,6 +15,7 @@
 - TODO (noah): this will eventually become a proper readme file ;)~
 
 ```sh
+### add tinkerbuntune
 # add latest
 bun add github:nirv-ai/tinkerbuntune
 # or specific branch
@@ -22,7 +23,19 @@ bun add github:nirv-ai/tinkerbuntune#bleeding-edge-branch
 # or specific version
 bun add github:nirv-ai/tinkerbuntune@0.0.3
 
-# abcd
+```
+
+```ts
+// everything is available @ tinkerbuntune/bun
+// ETL a directory of CSVs into tinkergraph
+
+// somefile.ts
+import { csvToTinkergraph } from "tinkerbuntune/bun";
+import { config } from "./config";
+await csvToTinkergraph(config);
+
+// config.ts
+// TODO (noah): create example
 ```
 
 ### ETL Pipeline
