@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "version": "0.0.3",
-  "module": "./src/index.ts",
+  "module": "index.ts",
   "scripts": {
     "examples": "bun --watch src/examples/airRoutes.ts",
     "test:types": "bunx tsc"

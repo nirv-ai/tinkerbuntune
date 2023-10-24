@@ -15,7 +15,12 @@
 - TODO (noah): this will eventually become a proper readme file ;)~
 
 ```sh
-bun add nirv-ai/tinkerbuntune
+# add latest
+bun add github:nirv-ai/tinkerbuntune
+# or specific branch
+bun add github:nirv-ai/tinkerbuntune#bleeding-edge-branch
+# or specific version
+bun add github:nirv-ai/tinkerbuntune@0.0.3
 
 # abcd
 ```
