@@ -44,7 +44,7 @@ export interface EdgeData {
  */
 export type ConfigSpecColMap = {
   default?: "p" | "l";
-  id?: NumStr | ((heads: string[], cols: NeptuneValue[], i: number) => NumStr);
+  id: NumStr | ((heads: string[], cols: NeptuneValue[], i: number) => NumStr);
   ignoreCols?: number[];
   ignoreEmptyCol?: boolean;
   l?: number[];
@@ -91,10 +91,7 @@ interface ConfigSpecBase {
  * Vertex {@link ConfigSpec}
  */
 export type ConfigSpecVertex = ConfigSpecBase & {
-  colMap: SetRequired<
-    RequireAtLeastOne<ConfigSpecColMap, "default" | "l" | "p">,
-    "id"
-  >;
+  colMap: ConfigSpecColMap;
   type: "v";
 };
 

@@ -29,7 +29,7 @@ export const tinkerDataEdge = (tdata: TinkerDataEdge) => {
 
 export const tinkerDataVertex = (tdata: TinkerDataVertex) => {
   if (!tdata.recordId)
-    throw new Error(`all vertices require a user supplied requiredId`);
+    throw new Error(`all vertices require a user supplied recordId`);
   const recordProps = new Map<string | EnumValue, any>(
     Object.entries(tdata.p!)
   );
