@@ -15,8 +15,6 @@ export const tinkerDataEdge = (tdata: TinkerDataEdge) => {
           edgeData
         )}`
       );
-    if (!edgeData.l)
-      throw new Error(`all edges require a label\n${JSON.stringify(edgeData)}`);
     const recordProps = new Map<string | EnumValue, any>(
       Object.entries(edgeData.p || {})
     );
@@ -32,8 +30,6 @@ export const tinkerDataEdge = (tdata: TinkerDataEdge) => {
 export const tinkerDataVertex = (tdata: TinkerDataVertex) => {
   if (!tdata.recordId)
     throw new Error(`all vertices require a user supplied requiredId`);
-  if (!tdata.l)
-    throw new Error(`all verticies require a label\n${JSON.stringify(tdata)}`);
   const recordProps = new Map<string | EnumValue, any>(
     Object.entries(tdata.p!)
   );

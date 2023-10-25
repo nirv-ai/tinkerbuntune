@@ -97,7 +97,7 @@ export const csvToTinkerDataVertex = (
 
     const recordId =
       typeof spec.colMap.id === "function"
-        ? spec.colMap.id(record, i)
+        ? spec.colMap.id(headers, record, i)
         : validateNumStr(record[<number>spec.colMap.id]);
 
     return { recordId, ...transformPropsAndLabels(spec, headers, record) };

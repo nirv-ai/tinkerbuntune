@@ -44,7 +44,7 @@ export interface EdgeData {
  */
 export type ConfigSpecColMap = {
   default?: "p" | "l";
-  id?: NumStr | ((cols: NeptuneValue[], i: number) => NumStr);
+  id?: NumStr | ((heads: string[], cols: NeptuneValue[], i: number) => NumStr);
   ignoreCols?: number[];
   ignoreEmptyCol?: boolean;
   l?: number[];
