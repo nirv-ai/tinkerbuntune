@@ -9,6 +9,12 @@ type EnumValue = InstanceType<typeof common.EnumValue>;
 
 export const tinkerDataEdge = (tdata: TinkerDataEdge) => {
   return tdata.edges.map((edgeData) => {
+    if (!edgeData.recordId)
+      throw new Error(
+        `all edges require a user supplied recordId\n${JSON.stringify(
+          edgeData
+        )}`
+      );
     const recordProps = new Map<string | EnumValue, any>(
       Object.entries(edgeData.p || {})
     );
@@ -22,12 +28,14 @@ export const tinkerDataEdge = (tdata: TinkerDataEdge) => {
 };
 
 export const tinkerDataVertex = (tdata: TinkerDataVertex) => {
+  if (!tdata.recordId)
+    throw new Error(`all vertices require a user supplied requiredId`);
   const recordProps = new Map<string | EnumValue, any>(
     Object.entries(tdata.p!)
   );
 
   recordProps.set(t.id, tdata.recordId);
-  if (tdata.l) recordProps.set(t.label, utils.getVertexLabel(tdata.l));
+  recordProps.set(t.label, utils.getVertexLabel(tdata.l!));
 
   return recordProps;
 };
