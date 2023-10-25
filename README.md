@@ -21,7 +21,7 @@ bun add github:nirv-ai/tinkerbuntune
 # or specific branch
 bun add github:nirv-ai/tinkerbuntune#bleeding-edge-branch
 # or specific version
-bun add github:nirv-ai/tinkerbuntune@0.0.3
+bun add github:nirv-ai/tinkerbuntune#0.0.5
 
 ```
 
