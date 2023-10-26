@@ -91,7 +91,7 @@ interface ConfigSpecBase {
 export type ConfigSpecVertex = ConfigSpecBase & {
   colMap: ConfigSpecColMap;
   recordId: PropLabelNumStr;
-  type: "v";
+  type: "v"; // TODO (noah): this type flag shouldnt be necessary anymore
 };
 
 /**
