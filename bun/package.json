@@ -2,7 +2,7 @@
   "name": "etl",
   "private": true,
   "type": "module",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "module": "index.ts",
   "scripts": {
     "examples": "bun --watch src/examples/airRoutes.ts",
