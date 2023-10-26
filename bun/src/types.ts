@@ -11,12 +11,12 @@ export interface PropsAndLabels {
   p?: Record<string, NeptuneValue>;
   l?: NumStr[];
 }
-export type EdgeConfigProp = (pl: PropsAndLabels) => NumStr;
+export type PropLabelNumStr = (pl: PropsAndLabels) => NumStr;
 export interface EdgeConfig {
-  f: EdgeConfigProp;
-  t: EdgeConfigProp;
-  l: EdgeConfigProp;
-  recordId: EdgeConfigProp;
+  f: PropLabelNumStr;
+  t: PropLabelNumStr;
+  l: PropLabelNumStr;
+  recordId: PropLabelNumStr;
   p?: (pl: PropsAndLabels) => PropsAndLabels["p"];
 }
 
@@ -90,7 +90,7 @@ interface ConfigSpecBase {
  */
 export type ConfigSpecVertex = ConfigSpecBase & {
   colMap: ConfigSpecColMap;
-  recordId: EdgeConfigProp;
+  recordId: PropLabelNumStr;
   type: "v";
 };
 
