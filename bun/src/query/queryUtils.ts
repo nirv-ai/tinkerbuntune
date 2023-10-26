@@ -11,7 +11,7 @@ export interface NextT {
   TM: TraverserMap;
 }
 /**
- * union type of {@link NextT} value
+ * union type of {@link NextT} object values
  */
 export type NextTUnion = ValueOf<NextT>;
 
@@ -41,6 +41,7 @@ export const getBaseOpts = <T>(overrides: BaseOpts<T>) => ({
 export type Next = { gt: NextT["GT"]; end?: BaseOpts["end"] };
 /**
  * takes a {@link GroovyTraversal} and returns either a {@link GroovyTraversal} or {@link TraverserMap}
+ * @see {@link NextT} for potential return types
  */
 export const next = <T = NextTUnion>({
   gt,
