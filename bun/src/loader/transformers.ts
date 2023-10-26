@@ -5,6 +5,7 @@ import type {
   CsvParsed,
   NeptuneValue,
   NumStr,
+  PropsAndLabels,
   TinkerDataEdge,
   TinkerDataVertex,
 } from "types";
@@ -25,7 +26,7 @@ export const transformPropsAndLabels = (
   spec: ConfigSpec,
   headers: string[],
   record: NeptuneValue[]
-) => {
+): PropsAndLabels => {
   const p = { ...(spec.inject?.p || {}) },
     l = spec.inject?.l?.slice() ?? [];
 
@@ -94,13 +95,10 @@ export const csvToTinkerDataVertex = (
 ): TinkerDataVertex[] => {
   return data.map((recordRaw, i) => {
     const record = spec.transformRecord?.(recordRaw) ?? recordRaw;
+    const pl = transformPropsAndLabels(spec, headers, record);
+    const recordId = spec.recordId(pl);
 
-    const recordId =
-      typeof spec.colMap.id === "function"
-        ? spec.colMap.id(headers, record, i)
-        : validateNumStr(record[<number>spec.colMap.id]);
-
-    return { recordId, ...transformPropsAndLabels(spec, headers, record) };
+    return { recordId, ...pl };
   });
 };
 

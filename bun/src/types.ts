@@ -11,12 +11,12 @@ export interface PropsAndLabels {
   p?: Record<string, NeptuneValue>;
   l?: NumStr[];
 }
-export type EdgeConfigProp = (pl: PropsAndLabels) => NumStr;
+export type PropLabelNumStr = (pl: PropsAndLabels) => NumStr;
 export interface EdgeConfig {
-  f: EdgeConfigProp;
-  t: EdgeConfigProp;
-  l: EdgeConfigProp;
-  recordId: EdgeConfigProp;
+  f: PropLabelNumStr;
+  t: PropLabelNumStr;
+  l: PropLabelNumStr;
+  recordId: PropLabelNumStr;
   p?: (pl: PropsAndLabels) => PropsAndLabels["p"];
 }
 
@@ -35,7 +35,6 @@ export interface EdgeData {
  * @prop default p: property | l: label
  *    default col assignment for unassigned columns
  *    will ignore unknown columns if not set
- * @prop id column index or fn to use as element ID
  * @prop ignoreCols always ignore these columns
  * @prop ignoreEmptyCol whether to ignore empty columns
  * @prop l map specific col indexes to labels
@@ -44,7 +43,6 @@ export interface EdgeData {
  */
 export type ConfigSpecColMap = {
   default?: "p" | "l";
-  id: NumStr | ((heads: string[], cols: NeptuneValue[], i: number) => NumStr);
   ignoreCols?: number[];
   ignoreEmptyCol?: boolean;
   l?: number[];
@@ -92,7 +90,8 @@ interface ConfigSpecBase {
  */
 export type ConfigSpecVertex = ConfigSpecBase & {
   colMap: ConfigSpecColMap;
-  type: "v";
+  recordId: PropLabelNumStr;
+  type: "v"; // TODO (noah): this type flag shouldnt be necessary anymore
 };
 
 /**
