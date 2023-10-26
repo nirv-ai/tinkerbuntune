@@ -15,14 +15,16 @@
 - TODO (noah): this will eventually become a proper readme file ;)~
 
 ```sh
+### add peer deps
+bun add type-fest csv gremlin
 ### add tinkerbuntune
+### @see https://bun.sh/docs/cli/install#non-npm-dependencies
 # add latest
-bun add github:nirv-ai/tinkerbuntune
-# or specific branch
-bun add github:nirv-ai/tinkerbuntune#bleeding-edge-branch
+bun add github:nirv-ai/tinkerbuntune=
 # or specific version
 bun add github:nirv-ai/tinkerbuntune#0.0.5
-
+# or specific commit
+bun add github:nirv-ai/tinkerbunetune#57a7b1a
 ```
 
 ```ts

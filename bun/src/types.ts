@@ -35,7 +35,6 @@ export interface EdgeData {
  * @prop default p: property | l: label
  *    default col assignment for unassigned columns
  *    will ignore unknown columns if not set
- * @prop id column index or fn to use as element ID
  * @prop ignoreCols always ignore these columns
  * @prop ignoreEmptyCol whether to ignore empty columns
  * @prop l map specific col indexes to labels
@@ -44,7 +43,6 @@ export interface EdgeData {
  */
 export type ConfigSpecColMap = {
   default?: "p" | "l";
-  id: NumStr | ((heads: string[], cols: NeptuneValue[], i: number) => NumStr);
   ignoreCols?: number[];
   ignoreEmptyCol?: boolean;
   l?: number[];
@@ -92,6 +90,7 @@ interface ConfigSpecBase {
  */
 export type ConfigSpecVertex = ConfigSpecBase & {
   colMap: ConfigSpecColMap;
+  recordId: EdgeConfigProp;
   type: "v";
 };
 
