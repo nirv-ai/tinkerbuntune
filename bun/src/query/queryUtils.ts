@@ -3,23 +3,24 @@ import { ValueOf } from "type-fest";
 import type { TraverserMap, GroovyTraversal } from "groovy/dsl";
 
 /**
- * Generic return type for a gremlin traversal
- * currently supports {@link GroovyTraversal} for chaining and {@link TraverserMap} for results
+ * Generic return type for a {@link GroovyTraversal} invocation
+ * currently supports {@link GroovyTraversal} for chaining and {@link TraverserMap} for traversal results
  */
 export interface NextT {
   GT: GroovyTraversal;
   TM: TraverserMap;
 }
+
 /**
  * union type of {@link NextT} object values
  */
 export type NextTUnion = ValueOf<NextT>;
 
 /**
- * base opts for a gremlin traversal
+ * base opts for a {@link GroovyTraversal} step
  * @prop limitX e.g. traversal.range(limitX, limitY)
  * @prop limitY e.g. traversal.range(limitX, limitY)
- * @prop end if truthy returns a traversal value, else returns a traversal for chaining
+ * @prop end if truthy returns a traversal result, else returns a {@link GroovyTraversal} for chaining
  */
 export type BaseOpts<T = Record<string, any>> = T & {
   limitX?: number;
@@ -28,7 +29,7 @@ export type BaseOpts<T = Record<string, any>> = T & {
 };
 
 /**
- * helper fn for supplying options to a gremlin traversal
+ * helper fn for supplying options to a {@link GroovyTraversal}
  * @param overrides
  * @returns
  */
@@ -63,6 +64,6 @@ export const throwEdgeEmpty = (
   return false;
 };
 
-export const throwInvalidQuery = (reason: string) => {
-  throw new Error(`Invalid Query\n${reason}`);
+export const throwInvalidQuery = (reason: string, ...extra: any[]) => {
+  throw new Error(`Invalid Query\n${reason}\n${JSON.stringify(extra)}`);
 };
