@@ -17,15 +17,17 @@ export interface NextT {
 export type NextTUnion = ValueOf<NextT>;
 
 /**
- * base opts for a {@link GroovyTraversal} step
+ * base opts for a gremlin traversal
+ * @prop end if truthy returns a traversal value, else returns a traversal for chaining
+ * @prop full if truthy includes all adjacent vertices of the current vertex
  * @prop limitX e.g. traversal.range(limitX, limitY)
  * @prop limitY e.g. traversal.range(limitX, limitY)
- * @prop end if truthy returns a traversal result, else returns a {@link GroovyTraversal} for chaining
  */
 export type BaseOpts<T = Record<string, any>> = T & {
+  end?: boolean;
+  full?: boolean;
   limitX?: number;
   limitY?: number;
-  end?: boolean;
 };
 
 /**
