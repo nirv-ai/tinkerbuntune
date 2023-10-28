@@ -42,6 +42,7 @@ export const getBaseOpts = <T>(overrides: BaseOpts<T>) => ({
 });
 
 export type Next = { gt: NextT["GT"]; end?: BaseOpts["end"] };
+export type NextResult<T> = { value: Map<string, T>; done: boolean };
 /**
  * takes a {@link GroovyTraversal} and returns either a {@link GroovyTraversal} or {@link TraverserMap}
  * @see {@link NextT} for potential return types
@@ -49,9 +50,10 @@ export type Next = { gt: NextT["GT"]; end?: BaseOpts["end"] };
 export const next = <T = NextTUnion>({
   gt,
   end = true,
-}: Next): T extends NextT["GT"] ? T : Promise<T[]> => {
+}: Next): T extends NextT["GT"] ? T : Promise<NextResult<T>> => {
+  // FYI using next() > .elementMap().toList() to enable more complex chaining
   // @ts-ignore dunno how to fix this
-  return end ? <Promise<T[]>>gt.elementMap().toList() : <T>gt;
+  return end ? <Promise<NextResult<T>>>gt.next() : <T>gt;
 };
 
 export const throwEdgeEmpty = (
