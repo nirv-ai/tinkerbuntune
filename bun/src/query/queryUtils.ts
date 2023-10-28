@@ -55,13 +55,13 @@ export const next = <T = NextTUnion>({
   return end ? <Promise<NextResult<T>>>gt.next() : <T>gt;
 };
 
-export const throwEdgeEmpty = (
-  edgeName: string,
+export const throwIfEmpty = (
+  thing: string,
   received?: unknown
 ): false | undefined => {
   if (!Array.isArray(received) || !received.length)
     throw new Error(
-      `${edgeName} must be a non empty array\nreceived: ${received}`
+      `${thing} must be a non empty array\nreceived: ${received}`
     );
 
   return false;
