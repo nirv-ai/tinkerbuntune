@@ -19,13 +19,11 @@ export type NextTUnion = ValueOf<NextT>;
 /**
  * base opts for a gremlin traversal
  * @prop end if truthy returns a traversal value, else returns a traversal for chaining
- * @prop full if truthy includes all adjacent vertices of the current vertex
  * @prop limitX e.g. traversal.range(limitX, limitY)
  * @prop limitY e.g. traversal.range(limitX, limitY)
  */
 export type BaseOpts<T = Record<string, any>> = T & {
   end?: boolean;
-  full?: boolean;
   limitX?: number;
   limitY?: number;
 };
@@ -38,6 +36,7 @@ export type BaseOpts<T = Record<string, any>> = T & {
 export const getBaseOpts = <T>(overrides: BaseOpts<T>) => ({
   limitX: 0,
   limitY: (overrides.limitX ?? 0) + 10,
+  end: true,
   ...overrides,
 });
 
