@@ -16,6 +16,7 @@ export const common = {
   ...gremlin.process.P,
   ...gremlin.process.order,
   gremlin: gremlin,
+  operator: gremlin.process.operator,
   p: gremlin.process.P,
   traversal: gremlin.process.AnonymousTraversalSource.traversal,
   DriverRemoteConnection: gremlin.driver.DriverRemoteConnection,
