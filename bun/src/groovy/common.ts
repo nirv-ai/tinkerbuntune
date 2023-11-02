@@ -40,3 +40,5 @@ export const common = {
   "direction",
   // @ts-ignore
 ].forEach((prop) => delete common[prop]);
+
+export type WithOptions = typeof common.withOptions;
