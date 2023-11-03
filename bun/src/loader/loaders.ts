@@ -3,7 +3,7 @@ import { g } from "remote";
 import * as utils from "./utils";
 import type { ConfigSpec, TinkerDataEdge, TinkerDataVertex } from "types";
 
-const { t, Direction } = common;
+const { t, Direction, merge } = common;
 
 type EnumValue = InstanceType<typeof common.EnumValue>;
 
@@ -15,29 +15,30 @@ export const tinkerDataEdge = (tdata: TinkerDataEdge) => {
           edgeData
         )}`
       );
+
     const recordProps = new Map<string | EnumValue, any>(
       Object.entries(edgeData.p || {})
     );
+
     recordProps.set(t.label, edgeData.l);
     recordProps.set(Direction.OUT, edgeData.f);
     recordProps.set(Direction.IN, edgeData.t);
-    recordProps.set(t.id, edgeData.recordId);
 
-    return recordProps;
+    return [new Map([[t.id, edgeData.recordId]]), recordProps];
   });
 };
 
 export const tinkerDataVertex = (tdata: TinkerDataVertex) => {
   if (!tdata.recordId)
     throw new Error(`all vertices require a user supplied recordId`);
+
   const recordProps = new Map<string | EnumValue, any>(
     Object.entries(tdata.p!)
   );
 
-  recordProps.set(t.id, tdata.recordId);
   recordProps.set(t.label, utils.getVertexLabel(tdata.l!));
 
-  return recordProps;
+  return [new Map([[t.id, tdata.recordId]]), recordProps];
 };
 
 /**
@@ -50,11 +51,24 @@ export const tinkerData = async (
   return Promise.allSettled(
     data
       .flatMap((tdata) => {
-        return spec.type === "v"
-          ? g.mergeV(tinkerDataVertex(<TinkerDataVertex>tdata)).toList()
-          : tinkerDataEdge(<TinkerDataEdge>tdata).map((edgeData) =>
-              g.mergeE(edgeData).toList()
-            );
+        if (spec.type === "v") {
+          const [idMap, recordProps] = tinkerDataVertex(
+            <TinkerDataVertex>tdata
+          );
+          return g
+            .mergeV(idMap)
+            .option(merge.onCreate, recordProps)
+            .option(merge.onMatch, recordProps)
+            .toList();
+        }
+        return tinkerDataEdge(<TinkerDataEdge>tdata).map(
+          ([idMap, recordProps]) =>
+            g
+              .mergeE(idMap)
+              .option(merge.onCreate, recordProps)
+              .option(merge.onMatch, recordProps)
+              .toList()
+        );
       })
       .filter(Boolean)
   ).then(utils.recordsCreatedHandler);

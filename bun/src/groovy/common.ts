@@ -13,8 +13,6 @@ import gremlin from "gremlin";
 
 export const common = {
   ...gremlin.process,
-  ...gremlin.process.P,
-  ...gremlin.process.order,
   gremlin: gremlin,
   p: gremlin.process.P,
   traversal: gremlin.process.AnonymousTraversalSource.traversal,
@@ -39,3 +37,5 @@ export const common = {
   "direction",
   // @ts-ignore
 ].forEach((prop) => delete common[prop]);
+
+export type WithOptions = typeof common.withOptions;
