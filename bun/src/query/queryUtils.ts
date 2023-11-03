@@ -1,13 +1,13 @@
 import { ValueOf } from "type-fest";
 
 import type { TraverserMap, GroovyTraversal } from "groovy/dsl";
-import { common } from "groovy/common";
+import { common, type EnumValue } from "groovy/common";
 
 const { t } = common;
 const { keys, values } = common.column;
 const { addAll } = common.operator;
-
-const { project, select, unfold, union, valueMap } = common.__;
+const { flatMap, group, identity, project, select, unfold, union, valueMap } =
+  common.__;
 
 /**
  * Generic return type for a {@link GroovyTraversal} invocation
@@ -84,7 +84,7 @@ export const throwInvalidQuery = (reason: string, ...extra: any[]) => {
 */
 export interface ElementProps {
   elements: NextT["GT"];
-  elKeys?: string[];
+  elKeys?: (string | EnumValue)[];
   as?: string[];
 }
 export const elementProps = ({
@@ -122,3 +122,12 @@ export const combineProps = ({
       .by(select(values))
   );
 };
+
+/*
+  groups an element by some key
+*/
+export const groupByIdentity = ({
+  elements,
+  elKeys = [t.id],
+}: Exclude<ElementProps, "as">) =>
+  elements.group().by(elKeys[0]).by(flatMap(identity()));
