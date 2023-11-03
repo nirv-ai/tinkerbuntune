@@ -24,7 +24,7 @@ export type NextTUnion = ValueOf<NextT>;
  */
 export type BaseOpts<T = Record<string, any>> = T & {
   end?: boolean;
-  limitX?: number;
+  limitX?: number; // TODO (noah): this should be an array of limits
   limitY?: number;
 };
 
