@@ -1,6 +1,13 @@
 import { ValueOf } from "type-fest";
 
 import type { TraverserMap, GroovyTraversal } from "groovy/dsl";
+import { common } from "groovy/common";
+
+const { t } = common;
+const { keys, values } = common.column;
+const { addAll } = common.operator;
+
+const { project, select, unfold, union, valueMap } = common.__;
 
 /**
  * Generic return type for a {@link GroovyTraversal} invocation
@@ -70,4 +77,48 @@ export const throwIfEmpty = (
 
 export const throwInvalidQuery = (reason: string, ...extra: any[]) => {
   throw new Error(`Invalid Query\n${reason}\n${JSON.stringify(extra)}`);
+};
+
+/*
+  uses sack to create an updatable object over the lifetime of a traversal
+*/
+export interface ElementProps {
+  elements: NextT["GT"];
+  elKeys?: string[];
+  as?: string[];
+}
+export const elementProps = ({
+  elements,
+  elKeys = [],
+  as = [],
+}: ElementProps): NextT["GT"] => {
+  return elements
+    .as(...as.concat("base"))
+    .valueMap(...elKeys)
+    .by(unfold())
+    .sack(addAll)
+    .select("base")
+    .project("id", "label")
+    .by(t.id)
+    .by(t.label)
+    .sack(addAll);
+};
+
+/*
+  a simpler version of elementProps that adds id & label
+*/
+export const combineProps = ({
+  elements,
+  elKeys = [],
+}: Exclude<ElementProps, "as">) => {
+  return elements.local(
+    union(
+      project("id", "label").by(t.id).by(t.label),
+      valueMap(...elKeys).by(unfold())
+    )
+      .unfold()
+      .group()
+      .by(keys)
+      .by(select(values))
+  );
 };
