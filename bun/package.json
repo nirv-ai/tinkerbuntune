@@ -6,7 +6,7 @@
   "module": "index.ts",
   "scripts": {
     "examples": "bun --watch src/examples/airRoutes.ts",
-    "test:types": "bunx tsc"
+    "test:types": "bunx tsc --declaration --emitDeclarationOnly"
   },
   "devDependencies": {
     "@types/gremlin": "^3.6.5",

@@ -1,5 +1,6 @@
 {
   "include": ["src/**/*"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
     "allowImportingTsExtensions": true,
     "allowJs": true,
@@ -14,7 +15,9 @@
     "module": "esnext",
     "moduleDetection": "force",
     "moduleResolution": "bundler",
-    "noEmit": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationDir": "types",
     "skipLibCheck": true,
     "strict": true,
     "target": "esnext",
