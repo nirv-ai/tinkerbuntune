@@ -50,8 +50,9 @@ export const next = <T = NextTUnion>({
   gt,
   end = true,
 }: Next): T extends NextT["GT"] ? T : Promise<NextResult<T>> => {
-  // FYI using next() > .elementMap().toList() to enable more complex chaining
   // @ts-ignore dunno how to fix this
+  // TODO (noah): find a more scalable pattern
+  // ^ the generic type should be the underlying domain object and not just a traversal/promise
   return end ? <Promise<NextResult<T>>>gt.next() : <T>gt;
 };
 
