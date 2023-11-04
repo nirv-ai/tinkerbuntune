@@ -9,7 +9,11 @@
 import gremlin from "gremlin";
 
 // TODO: create bug in apache repo: this doesnt exist on gremlin.process
-// const CardinalityValue = gremlin.process.CardinalityValue;
+// ^ const CardinalityValue = gremlin.process.CardinalityValue;
+
+// re-export types
+export type WithOptions = typeof gremlin.process.withOptions;
+export type EnumValue = gremlin.process.EnumValue;
 
 export const common = {
   ...gremlin.process,
@@ -28,6 +32,7 @@ export const common = {
   },
 };
 
+// remove these duplicates since we destuctured them under different names
 [
   "P",
   "AnonymousTraversalSource",
@@ -37,5 +42,3 @@ export const common = {
   "direction",
   // @ts-ignore
 ].forEach((prop) => delete common[prop]);
-
-export type WithOptions = typeof common.withOptions;

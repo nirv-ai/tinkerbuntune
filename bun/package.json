@@ -2,11 +2,11 @@
   "name": "etl",
   "private": true,
   "type": "module",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "module": "index.ts",
   "scripts": {
     "examples": "bun --watch src/examples/airRoutes.ts",
-    "test:types": "bunx tsc"
+    "test:types": "bunx tsc --declaration --emitDeclarationOnly"
   },
   "devDependencies": {
     "@types/gremlin": "^3.6.5",

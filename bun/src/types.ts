@@ -11,7 +11,10 @@ export interface PropsAndLabels {
   p?: Record<string, NeptuneValue>;
   l?: NumStr[];
 }
-export type PropLabelNumStr = (pl: PropsAndLabels) => NumStr;
+export type PropLabelNumStr = (
+  pl: PropsAndLabels,
+  record: NeptuneValue[]
+) => NumStr;
 export interface EdgeConfig {
   f: PropLabelNumStr;
   t: PropLabelNumStr;

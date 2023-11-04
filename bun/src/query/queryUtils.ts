@@ -1,6 +1,13 @@
 import { ValueOf } from "type-fest";
 
 import type { TraverserMap, GroovyTraversal } from "groovy/dsl";
+import { common, type EnumValue } from "groovy/common";
+
+const { t } = common;
+const { keys, values } = common.column;
+const { addAll } = common.operator;
+const { flatMap, group, identity, project, select, unfold, union, valueMap } =
+  common.__;
 
 /**
  * Generic return type for a {@link GroovyTraversal} invocation
@@ -71,3 +78,61 @@ export const throwIfEmpty = (
 export const throwInvalidQuery = (reason: string, ...extra: any[]) => {
   throw new Error(`Invalid Query\n${reason}\n${JSON.stringify(extra)}`);
 };
+
+/*
+  uses sack to create an updatable object over the lifetime of a traversal
+*/
+export interface ElementProps {
+  elements: NextT["GT"];
+  elKeys?: (string | EnumValue)[];
+  as?: string[];
+}
+export const elementProps = ({
+  as = [],
+  elements,
+  elKeys = [],
+}: ElementProps): NextT["GT"] => {
+  return elements
+    .as(...as.concat("base"))
+    .valueMap(...elKeys)
+    .by(unfold())
+    .sack(addAll)
+    .select("base")
+    .project("id", "label")
+    .by(t.id)
+    .by(t.label)
+    .sack(addAll);
+};
+
+/*
+  a simpler version of elementProps that adds id & label
+*/
+export interface CombineProps extends Exclude<ElementProps, "as"> {
+  traversals?: NextT["GT"][];
+}
+export const combineProps = ({
+  elements,
+  elKeys = [],
+  traversals = [],
+}: CombineProps) => {
+  return elements.local(
+    union(
+      project("id", "label").by(t.id).by(t.label),
+      valueMap(...elKeys).by(unfold()),
+      ...traversals
+    )
+      .unfold()
+      .group()
+      .by(keys)
+      .by(select(values))
+  );
+};
+
+/*
+  groups an element by some key
+*/
+export const groupByIdentity = ({
+  elements,
+  elKeys = [t.id],
+}: Exclude<ElementProps, "as">) =>
+  elements.group().by(elKeys[0]).by(flatMap(identity()));
