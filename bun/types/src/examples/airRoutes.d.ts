@@ -4,3 +4,4 @@
  * groovy api translator: https://www.gremlator.com/
  */
 export {};
+//# sourceMappingURL=airRoutes.d.ts.map

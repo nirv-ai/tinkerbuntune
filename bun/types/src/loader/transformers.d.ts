@@ -16,3 +16,4 @@ export declare const csvToTinkerDataVertex: (spec: ConfigSpecVertex, data: strin
  * transforms a csv file to {@link TinkerDataEdge} or {@link TinkerDataVertex} based on a {@link ConfigSpec}
  */
 export declare const csvToTinkerData: (spec: ConfigSpec, dataParsed: CsvParsed) => Promise<TinkerDataEdge[] | TinkerDataVertex[]>;
+//# sourceMappingURL=transformers.d.ts.map

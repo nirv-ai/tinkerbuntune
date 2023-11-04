@@ -64,3 +64,4 @@ export interface CombineProps extends Exclude<ElementProps, "as"> {
 }
 export declare const combineProps: ({ elements, elKeys, traversals, }: CombineProps) => GroovyTraversal;
 export declare const groupByIdentity: ({ elements, elKeys, }: Exclude<ElementProps, "as">) => GroovyTraversal;
+//# sourceMappingURL=queryUtils.d.ts.map

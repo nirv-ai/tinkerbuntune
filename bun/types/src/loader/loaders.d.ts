@@ -8,3 +8,4 @@ export declare const tinkerData: (data: TinkerDataEdge[] | TinkerDataVertex[], s
     success: string[];
     failure: string[];
 }>;
+//# sourceMappingURL=loaders.d.ts.map

@@ -34,3 +34,4 @@ export declare class GroovyTraversalSource extends GraphTraversalSource<GroovyTr
     constructor(graph: Graph, traversalStrategies: TraversalStrategies, bytecode: Bytecode);
 }
 export {};
+//# sourceMappingURL=dsl.d.ts.map

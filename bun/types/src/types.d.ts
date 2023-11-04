@@ -133,3 +133,4 @@ export interface TinkerDataEdge extends SetRequired<TinkerDataBase, "edges"> {
 }
 export type TinkerData = TinkerDataVertex | TinkerDataEdge;
 export {};
+//# sourceMappingURL=types.d.ts.map

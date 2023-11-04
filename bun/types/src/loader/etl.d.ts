@@ -34,3 +34,4 @@ export declare const loadTinkerData: (config: Config) => Promise<void>;
  * @param config {@link Config}
  */
 export declare const csvToTinkergraph: (config: Config) => Promise<void>;
+//# sourceMappingURL=etl.d.ts.map

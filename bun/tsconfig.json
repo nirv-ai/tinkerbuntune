@@ -1,7 +1,9 @@
 {
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "src/types"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
+    "outFile": "types/index",
+    "rootDirs": ["src", "types"],
     "allowImportingTsExtensions": true,
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
@@ -15,9 +17,9 @@
     "module": "esnext",
     "moduleDetection": "force",
     "moduleResolution": "bundler",
+    "declarationMap": true,
     "declaration": true,
     "emitDeclarationOnly": true,
-    "declarationDir": "src/types",
     "skipLibCheck": true,
     "strict": true,
     "target": "esnext",

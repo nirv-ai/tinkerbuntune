@@ -88,3 +88,4 @@ export declare const common: {
     withOptions: gremlin.process.WithOptions;
     Transaction: typeof gremlin.process.Transaction;
 };
+//# sourceMappingURL=common.d.ts.map
