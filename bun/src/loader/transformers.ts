@@ -74,11 +74,11 @@ export const csvToTinkerDataEdge = (
     return {
       edges: spec.edges.map((edgeConfig) => {
         return {
-          f: edgeConfig.f(pl),
-          t: edgeConfig.t(pl),
-          l: edgeConfig.l(pl),
+          f: edgeConfig.f(pl, record),
+          t: edgeConfig.t(pl, record),
+          l: edgeConfig.l(pl, record),
           p: edgeConfig.p?.(pl),
-          recordId: edgeConfig.recordId(pl),
+          recordId: edgeConfig.recordId(pl, record),
         };
       }),
     };
@@ -96,7 +96,7 @@ export const csvToTinkerDataVertex = (
   return data.map((recordRaw, i) => {
     const record = spec.transformRecord?.(recordRaw) ?? recordRaw;
     const pl = transformPropsAndLabels(spec, headers, record);
-    const recordId = spec.recordId(pl);
+    const recordId = spec.recordId(pl, record);
 
     return { recordId, ...pl };
   });
