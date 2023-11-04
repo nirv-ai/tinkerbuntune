@@ -17,7 +17,7 @@
     "moduleResolution": "bundler",
     "declaration": true,
     "emitDeclarationOnly": true,
-    "declarationDir": "types",
+    "declarationDir": "src/types",
     "skipLibCheck": true,
     "strict": true,
     "target": "esnext",
