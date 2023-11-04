@@ -1,12 +1,12 @@
 {
-  "name": "etl",
+  "name": "bun",
   "private": true,
   "type": "module",
   "version": "0.1.3",
   "module": "index.ts",
   "scripts": {
     "examples": "bun --watch src/examples/airRoutes.ts",
-    "test:types": "rm -rf types/tsconfig.tsbuildinfo && bunx tsc"
+    "test:types": "rm -rf types/*buildinfo && bunx tsc"
   },
   "devDependencies": {
     "@types/gremlin": "^3.6.5",
