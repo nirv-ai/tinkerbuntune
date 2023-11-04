@@ -88,9 +88,9 @@ export interface ElementProps {
   as?: string[];
 }
 export const elementProps = ({
+  as = [],
   elements,
   elKeys = [],
-  as = [],
 }: ElementProps): NextT["GT"] => {
   return elements
     .as(...as.concat("base"))
@@ -107,14 +107,19 @@ export const elementProps = ({
 /*
   a simpler version of elementProps that adds id & label
 */
+export interface CombineProps extends Exclude<ElementProps, "as"> {
+  traversals?: NextT["GT"][];
+}
 export const combineProps = ({
   elements,
   elKeys = [],
-}: Exclude<ElementProps, "as">) => {
+  traversals = [],
+}: CombineProps) => {
   return elements.local(
     union(
       project("id", "label").by(t.id).by(t.label),
-      valueMap(...elKeys).by(unfold())
+      valueMap(...elKeys).by(unfold()),
+      ...traversals
     )
       .unfold()
       .group()
