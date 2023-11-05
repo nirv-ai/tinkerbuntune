@@ -15,13 +15,14 @@ import gremlin from "gremlin";
 export type WithOptions = typeof gremlin.process.withOptions;
 export type EnumValue = gremlin.process.EnumValue;
 
+const __ = gremlin.process.statics;
 export const common = {
   ...gremlin.process,
   gremlin: gremlin,
   p: gremlin.process.P,
   traversal: gremlin.process.AnonymousTraversalSource.traversal,
   DriverRemoteConnection: gremlin.driver.DriverRemoteConnection,
-  __: gremlin.process.statics,
+  __,
   textp: gremlin.process.TextP,
   Direction: {
     BOTH: gremlin.process.direction.both,
@@ -29,6 +30,18 @@ export const common = {
     IN: gremlin.process.direction.in,
     OUT: gremlin.process.direction.out,
     to: gremlin.process.direction.out,
+  },
+  go: {
+    in: {
+      in_: __.in_,
+      inE: __.inE,
+      inV: __.inV,
+    },
+    out: {
+      out: __.out,
+      outE: __.outE,
+      outV: __.outV,
+    },
   },
 };
 
