@@ -8,6 +8,12 @@
 
 import gremlin from "gremlin";
 
+// NIRVAI
+export enum EDir {
+  out = "out",
+  in = "in",
+}
+
 // TODO: create bug in apache repo: this doesnt exist on gremlin.process
 // ^ const CardinalityValue = gremlin.process.CardinalityValue;
 
@@ -32,12 +38,12 @@ export const common = {
     to: gremlin.process.direction.out,
   },
   go: {
-    in: {
+    [EDir.in]: {
       in_: __.in_,
       inE: __.inE,
       inV: __.inV,
     },
-    out: {
+    [EDir.out]: {
       out: __.out,
       outE: __.outE,
       outV: __.outV,
