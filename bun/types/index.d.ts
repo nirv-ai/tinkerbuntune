@@ -7,6 +7,26 @@ declare module "src/groovy/common" {
      * and want a similar environment in bun without violating typescript best practices
      */
     import gremlin from "gremlin";
+    export enum EDir {
+        out = "out",
+        in = "in"
+    }
+    export const go: (dir: EDir) => {
+        to: {
+            e: (...args: any[]) => gremlin.process.GraphTraversal;
+            v: (...args: any[]) => gremlin.process.GraphTraversal;
+        };
+        both: (...args: any[]) => gremlin.process.GraphTraversal;
+        bothE: (...args: any[]) => gremlin.process.GraphTraversal;
+        bothV: (...args: any[]) => gremlin.process.GraphTraversal;
+        otherV: (...args: any[]) => gremlin.process.GraphTraversal;
+        inV: (...args: any[]) => gremlin.process.GraphTraversal;
+        outV: (...args: any[]) => gremlin.process.GraphTraversal;
+        inE: (...args: any[]) => gremlin.process.GraphTraversal;
+        in: (...args: any[]) => gremlin.process.GraphTraversal;
+        outE: (...args: any[]) => gremlin.process.GraphTraversal;
+        out: (...args: any[]) => gremlin.process.GraphTraversal;
+    };
     export type WithOptions = typeof gremlin.process.withOptions;
     export type EnumValue = gremlin.process.EnumValue;
     export const common: {
@@ -22,6 +42,22 @@ declare module "src/groovy/common" {
             IN: gremlin.process.EnumValue;
             OUT: gremlin.process.EnumValue;
             to: gremlin.process.EnumValue;
+        };
+        go: (dir: EDir) => {
+            to: {
+                e: (...args: any[]) => gremlin.process.GraphTraversal;
+                v: (...args: any[]) => gremlin.process.GraphTraversal;
+            };
+            both: (...args: any[]) => gremlin.process.GraphTraversal;
+            bothE: (...args: any[]) => gremlin.process.GraphTraversal;
+            bothV: (...args: any[]) => gremlin.process.GraphTraversal;
+            otherV: (...args: any[]) => gremlin.process.GraphTraversal;
+            inV: (...args: any[]) => gremlin.process.GraphTraversal;
+            outV: (...args: any[]) => gremlin.process.GraphTraversal;
+            inE: (...args: any[]) => gremlin.process.GraphTraversal;
+            in: (...args: any[]) => gremlin.process.GraphTraversal;
+            outE: (...args: any[]) => gremlin.process.GraphTraversal;
+            out: (...args: any[]) => gremlin.process.GraphTraversal;
         };
         Bytecode: typeof gremlin.process.Bytecode;
         EnumValue: typeof gremlin.process.EnumValue;
@@ -491,4 +527,12 @@ declare module "src/index" {
     export * from "src/types";
 }
 declare module "src/examples/airRoutes" { }
+declare module "src/test/setup" {
+    import * as buntest from "bun:test";
+    global {
+        var describe: typeof buntest.describe;
+        var expect: typeof buntest.expect;
+        var test: typeof buntest.test;
+    }
+}
 //# sourceMappingURL=index.d.ts.map
