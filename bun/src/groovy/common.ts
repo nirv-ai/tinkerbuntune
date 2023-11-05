@@ -8,11 +8,46 @@
 
 import gremlin from "gremlin";
 
+const __ = gremlin.process.statics;
 // NIRVAI
+// programmaticaly traverse the graph
+// allowing the consumer to inspect the ege/vert along the way
 export enum EDir {
   out = "out",
   in = "in",
 }
+// @see https://tinkerpop.apache.org/docs/3.7.0/reference/#vertex-stepsm0ren1rv!
+export const go = (dir: EDir) => {
+  const base = {
+    both: __.both,
+    bothE: __.bothE,
+    bothV: __.bothV,
+    otherV: __.otherV,
+    inV: __.inV,
+    outV: __.outV,
+    inE: __.inE,
+    in: __.in_,
+    outE: __.outE,
+    out: __.out,
+  };
+  if (dir === EDir.in) {
+    return {
+      ...base,
+      to: {
+        e: __.inE,
+        v: __.in_,
+      },
+    };
+  } else if (dir === EDir.out) {
+    return {
+      ...base,
+      to: {
+        e: __.outE,
+        v: __.out,
+      },
+    };
+  } else throw new Error(`invalid direction, expect in|out`);
+};
 
 // TODO: create bug in apache repo: this doesnt exist on gremlin.process
 // ^ const CardinalityValue = gremlin.process.CardinalityValue;
@@ -21,7 +56,6 @@ export enum EDir {
 export type WithOptions = typeof gremlin.process.withOptions;
 export type EnumValue = gremlin.process.EnumValue;
 
-const __ = gremlin.process.statics;
 export const common = {
   ...gremlin.process,
   gremlin: gremlin,
@@ -37,18 +71,7 @@ export const common = {
     OUT: gremlin.process.direction.out,
     to: gremlin.process.direction.out,
   },
-  go: {
-    [EDir.in]: {
-      in_: __.in_,
-      inE: __.inE,
-      inV: __.inV,
-    },
-    [EDir.out]: {
-      out: __.out,
-      outE: __.outE,
-      outV: __.outV,
-    },
-  },
+  go,
 };
 
 // remove these duplicates since we destuctured them under different names
