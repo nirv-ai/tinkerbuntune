@@ -9,9 +9,8 @@
 import gremlin from "gremlin";
 
 const __ = gremlin.process.statics;
-// NIRVAI
 // programmaticaly traverse the graph
-// allowing the consumer to inspect the ege/vert along the way
+// allowing the consumer to determine the ege/vert along the way
 export enum EDir {
   out = "out",
   in = "in",
