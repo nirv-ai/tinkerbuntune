@@ -78,10 +78,11 @@ export const throwIfEmpty = (
 export const throwInvalidQuery = (reason: string, ...extra: any[]) => {
   throw new Error(`Invalid Query\n${reason}\n${JSON.stringify(extra)}`);
 };
-
-/*
-  uses sack to create an updatable object over the lifetime of a traversal
-*/
+/**
+ * uses sack to create an updatable object over the lifetime of a traversal
+ * call sack() at anytime to get the current object state
+ * call project(as[X])...sack(addAll) to upsert into the sack object
+ */
 export interface ElementProps {
   elements: NextT["GT"];
   elKeys?: (string | EnumValue)[];
@@ -104,9 +105,10 @@ export const elementProps = ({
     .sack(addAll);
 };
 
-/*
-  a simpler version of elementProps that adds id & label
-*/
+/**
+ * a simpler version of {@link elementProps}
+ * also adds id and label as strings instead of the weird objects returned by elementMap
+ */
 export interface CombineProps extends Exclude<ElementProps, "as"> {
   traversals?: NextT["GT"][];
 }
@@ -129,10 +131,13 @@ export const combineProps = ({
 };
 
 /*
-  groups an element by some key
+  group element(s) by some key
 */
 export const groupByIdentity = ({
   elements,
-  elKeys = [t.id],
+  elKeys = [],
 }: Exclude<ElementProps, "as">) =>
-  elements.group().by(elKeys[0]).by(flatMap(identity()));
+  elements
+    .group()
+    .by(elKeys[0] ?? t.id)
+    .by(flatMap(identity()));
