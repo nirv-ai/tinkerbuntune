@@ -137,7 +137,7 @@ declare module "src/groovy/dsl" {
      */
     export type Nullable<T> = T | null;
     export type Traverser = typeof gremlin.process.Traverser;
-    export type TraverserMap = Traverser & Map<string, any>;
+    export type TraverserMap<T = unknown> = Traverser & IteratorResult<Map<string, T>, Map<string, T>>;
     export interface Graph extends structure.Graph {
     }
     export interface Bytecode extends gremlin.process.Bytecode {
@@ -448,21 +448,8 @@ declare module "src/loader/index" {
     export * from "src/loader/utils";
 }
 declare module "src/query/queryUtils" {
-    import { ValueOf } from "type-fest";
     import type { TraverserMap, GroovyTraversal } from "src/groovy/dsl";
     import { type EnumValue } from "src/groovy/common";
-    /**
-     * Generic return type for a {@link GroovyTraversal} invocation
-     * currently supports {@link GroovyTraversal} for chaining and {@link TraverserMap} for traversal results
-     */
-    export interface NextT {
-        GT: GroovyTraversal;
-        TM: TraverserMap;
-    }
-    /**
-     * union type of {@link NextT} object values
-     */
-    export type NextTUnion = ValueOf<NextT>;
     /**
      * base opts for a gremlin traversal
      * @prop end if truthy returns a traversal value, else returns a traversal for chaining
@@ -489,28 +476,26 @@ declare module "src/query/queryUtils" {
         limitY?: number | undefined;
     };
     export type Next = {
-        gt: NextT["GT"];
-        end?: BaseOpts["end"];
+        gt: GroovyTraversal;
+        end?: unknown;
     };
-    export type NextResult<T> = {
-        value: Map<string, T>;
-        done: boolean;
-    };
+    export type NextResult<T> = Promise<TraverserMap<T>>;
     /**
-     * takes a {@link GroovyTraversal} and returns either a {@link GroovyTraversal} or {@link TraverserMap}
-     * @see {@link NextT} for potential return types
+     * fuck typescript
+     * give param `end` any value and it will return {@link GroovyTraversal}
+     * else it returns a fucking {@link NextResult} of type T
      */
-    export const next: <T = NextTUnion>({ gt, end, }: Next) => T extends GroovyTraversal ? T : Promise<NextResult<T>>;
+    export function next<T = GroovyTraversal>({ gt, end, }: Next): T extends GroovyTraversal ? GroovyTraversal : NextResult<T>;
     export const throwIfEmpty: (thing: string, received?: unknown) => false | undefined;
     export const throwInvalidQuery: (reason: string, ...extra: any[]) => never;
     export interface ElementProps {
-        elements: NextT["GT"];
+        elements: GroovyTraversal;
         elKeys?: (string | EnumValue)[];
         as?: string[];
     }
-    export const elementProps: ({ as, elements, elKeys, }: ElementProps) => NextT["GT"];
+    export const elementProps: ({ as, elements, elKeys, }: ElementProps) => GroovyTraversal;
     export interface CombineProps extends Exclude<ElementProps, "as"> {
-        traversals?: NextT["GT"][];
+        traversals?: GroovyTraversal[];
     }
     export const combineProps: ({ elements, elKeys, traversals, }: CombineProps) => GroovyTraversal;
     export const groupByIdentity: ({ elements, elKeys, }: Exclude<ElementProps, "as">) => GroovyTraversal;

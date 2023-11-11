@@ -10,7 +10,8 @@ const { GraphTraversal, GraphTraversalSource } = gremlin.process;
  */
 export type Nullable<T> = T | null;
 export type Traverser = typeof gremlin.process.Traverser;
-export type TraverserMap = Traverser & Map<string, any>;
+export type TraverserMap<T = unknown> = Traverser &
+  IteratorResult<Map<string, T>, Map<string, T>>;
 export interface Graph extends structure.Graph {}
 export interface Bytecode extends gremlin.process.Bytecode {}
 export interface TraversalStrategies
