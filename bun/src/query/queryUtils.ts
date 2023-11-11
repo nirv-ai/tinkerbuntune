@@ -1,5 +1,3 @@
-import { ValueOf } from "type-fest";
-
 import type { TraverserMap, GroovyTraversal } from "groovy/dsl";
 import { common, type EnumValue } from "groovy/common";
 
