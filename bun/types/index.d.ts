@@ -481,11 +481,15 @@ declare module "src/query/queryUtils" {
     };
     export type NextResult<T> = Promise<TraverserMap<T>>;
     /**
-     * fuck typescript
-     * give param `end` any value and it will return {@link GroovyTraversal}
-     * else it returns a fucking {@link NextResult} of type T
+     * returns a {@link TraverserMap} that resolves to T
+     * @param nextOps {@link Next}
      */
-    export function next<T = GroovyTraversal>({ gt, end, }: Next): T extends GroovyTraversal ? GroovyTraversal : NextResult<T>;
+    export function next<T = unknown>(nextOps: Omit<Next, "end">): NextResult<T>;
+    /**
+     * returns a {@link GroovyTraversal} for chaining
+     * @param nextOpts {@link Next}
+     */
+    export function next<T = GroovyTraversal>(nextOpts: Next): GroovyTraversal;
     export const throwIfEmpty: (thing: string, received?: unknown) => false | undefined;
     export const throwInvalidQuery: (reason: string, ...extra: any[]) => never;
     export interface ElementProps {
