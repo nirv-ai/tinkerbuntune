@@ -10,20 +10,6 @@ const { flatMap, group, identity, project, select, unfold, union, valueMap } =
   common.__;
 
 /**
- * Generic return type for a {@link GroovyTraversal} invocation
- * currently supports {@link GroovyTraversal} for chaining and {@link TraverserMap} for traversal results
- */
-export interface NextT {
-  GT: GroovyTraversal;
-  TM: TraverserMap;
-}
-
-/**
- * union type of {@link NextT} object values
- */
-export type NextTUnion = ValueOf<NextT>;
-
-/**
  * base opts for a gremlin traversal
  * @prop end if truthy returns a traversal value, else returns a traversal for chaining
  * @prop limitX e.g. traversal.range(limitX, limitY)
@@ -47,21 +33,22 @@ export const getBaseOpts = <T>(overrides: BaseOpts<T>) => ({
   ...overrides,
 });
 
-export type Next = { gt: NextT["GT"]; end?: BaseOpts["end"] };
-export type NextResult<T> = { value: Map<string, T>; done: boolean };
+export type Next = { gt: GroovyTraversal; end?: unknown };
+export type NextResult<T> = Promise<TraverserMap<T>>;
 /**
- * takes a {@link GroovyTraversal} and returns either a {@link GroovyTraversal} or {@link TraverserMap}
- * @see {@link NextT} for potential return types
+ * fuck typescript
+ * give param `end` any value and it will return {@link GroovyTraversal}
+ * else it returns a fucking {@link NextResult} of type T
  */
-export const next = <T = NextTUnion>({
+export function next<T = GroovyTraversal>({
   gt,
-  end = true,
-}: Next): T extends NextT["GT"] ? T : Promise<NextResult<T>> => {
-  // @ts-ignore dunno how to fix this
-  // TODO (noah): find a more scalable pattern
-  // ^ the generic type should be the underlying domain object and not just a traversal/promise
-  return end ? <Promise<NextResult<T>>>gt.next() : <T>gt;
-};
+  end,
+}: Next): T extends GroovyTraversal ? GroovyTraversal : NextResult<T> {
+  // @ts-ignore fk typescript
+  return typeof end !== "undefined"
+    ? <GroovyTraversal>gt
+    : <NextResult<T>>gt.next();
+}
 
 export const throwIfEmpty = (
   thing: string,
@@ -83,7 +70,7 @@ export const throwInvalidQuery = (reason: string, ...extra: any[]) => {
   uses sack to create an updatable object over the lifetime of a traversal
 */
 export interface ElementProps {
-  elements: NextT["GT"];
+  elements: GroovyTraversal;
   elKeys?: (string | EnumValue)[];
   as?: string[];
 }
@@ -91,7 +78,7 @@ export const elementProps = ({
   as = [],
   elements,
   elKeys = [],
-}: ElementProps): NextT["GT"] => {
+}: ElementProps): GroovyTraversal => {
   return elements
     .as(...as.concat("base"))
     .valueMap(...elKeys)
@@ -108,7 +95,7 @@ export const elementProps = ({
   a simpler version of elementProps that adds id & label
 */
 export interface CombineProps extends Exclude<ElementProps, "as"> {
-  traversals?: NextT["GT"][];
+  traversals?: GroovyTraversal[];
 }
 export const combineProps = ({
   elements,
@@ -133,6 +120,9 @@ export const combineProps = ({
 */
 export const groupByIdentity = ({
   elements,
-  elKeys = [t.id],
+  elKeys = [],
 }: Exclude<ElementProps, "as">) =>
-  elements.group().by(elKeys[0]).by(flatMap(identity()));
+  elements
+    .group()
+    .by(elKeys[0] ?? t.id)
+    .by(flatMap(identity()));
