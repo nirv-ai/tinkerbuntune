@@ -1,5 +1,8 @@
 import * as buntest from "bun:test";
 
+import * as groovy from "groovy";
+import * as query from "query";
+
 declare global {
   // bun stuff
   var describe: typeof buntest.describe;
@@ -7,14 +10,15 @@ declare global {
   var test: typeof buntest.test;
 
   // not bun stuff
+  type GroovyTraversal = groovy.GroovyTraversal;
+  type NextResult<T> = query.NextResult<T>;
+  var next: typeof query.next;
 }
 
 // bun stuff
-// buntest.beforeAll(() => {
-// TODO (noah): create a bug with bun: beforeAll isnt being executed before the tests
 globalThis.describe = buntest.describe;
 globalThis.expect = buntest.expect;
 globalThis.test = buntest.test;
 
 // not bun stuff
-// });
+globalThis.next = query.next;
