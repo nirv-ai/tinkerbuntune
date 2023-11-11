@@ -14,7 +14,7 @@ const { flatMap, group, identity, project, select, unfold, union, valueMap } =
  * @prop limitY e.g. traversal.range(limitX, limitY)
  */
 export type BaseOpts<T = Record<string, any>> = T & {
-  end?: boolean;
+  end?: unknown;
   limitX?: number; // TODO (noah): this should be an array of limits
   limitY?: number;
 };
@@ -27,26 +27,26 @@ export type BaseOpts<T = Record<string, any>> = T & {
 export const getBaseOpts = <T>(overrides: BaseOpts<T>) => ({
   limitX: 0,
   limitY: (overrides.limitX ?? 0) + 10,
-  end: true,
   ...overrides,
 });
 
 export type Next = { gt: GroovyTraversal; end?: unknown };
-export type NextResult<T> = Promise<TraverserMap<T>>;
 /**
  * returns a {@link TraverserMap} that resolves to T
  * @param nextOps {@link Next}
  */
-export function next<T = unknown>(nextOps: Omit<Next, "end">): NextResult<T>;
+export function next<T = unknown>(
+  nextOps: Omit<Next, "end">
+): Promise<TraverserMap<T>>;
 /**
  * returns a {@link GroovyTraversal} for chaining
  * @param nextOpts {@link Next}
  */
 export function next<T = GroovyTraversal>(nextOpts: Next): GroovyTraversal;
-export function next<T = GroovyTraversal>({ gt, end }: Next) {
-  return typeof end === "undefined"
-    ? <NextResult<T>>gt.next()
-    : <GroovyTraversal>gt;
+export function next<T = GroovyTraversal>(nextOpts: Next) {
+  return typeof nextOpts.end === "undefined"
+    ? <Promise<TraverserMap<T>>>nextOpts.gt.next()
+    : <GroovyTraversal>nextOpts.gt;
 }
 
 export const throwIfEmpty = (

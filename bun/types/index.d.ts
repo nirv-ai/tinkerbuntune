@@ -137,7 +137,10 @@ declare module "src/groovy/dsl" {
      */
     export type Nullable<T> = T | null;
     export type Traverser = typeof gremlin.process.Traverser;
-    export type TraverserMap<T = unknown> = Traverser & IteratorResult<Map<string, T>, Map<string, T>>;
+    export type TraverserMap<T = unknown> = Traverser & {
+        done: boolean;
+        value: Map<string, T>;
+    };
     export interface Graph extends structure.Graph {
     }
     export interface Bytecode extends gremlin.process.Bytecode {
@@ -457,7 +460,7 @@ declare module "src/query/queryUtils" {
      * @prop limitY e.g. traversal.range(limitX, limitY)
      */
     export type BaseOpts<T = Record<string, any>> = T & {
-        end?: boolean;
+        end?: unknown;
         limitX?: number;
         limitY?: number;
     };
@@ -469,9 +472,8 @@ declare module "src/query/queryUtils" {
     export const getBaseOpts: <T>(overrides: BaseOpts<T>) => {
         limitX: number;
         limitY: number;
-        end: boolean;
     } & T & {
-        end?: boolean | undefined;
+        end?: unknown;
         limitX?: number | undefined;
         limitY?: number | undefined;
     };
@@ -479,12 +481,11 @@ declare module "src/query/queryUtils" {
         gt: GroovyTraversal;
         end?: unknown;
     };
-    export type NextResult<T> = Promise<TraverserMap<T>>;
     /**
      * returns a {@link TraverserMap} that resolves to T
      * @param nextOps {@link Next}
      */
-    export function next<T = unknown>(nextOps: Omit<Next, "end">): NextResult<T>;
+    export function next<T = unknown>(nextOps: Omit<Next, "end">): Promise<TraverserMap<T>>;
     /**
      * returns a {@link GroovyTraversal} for chaining
      * @param nextOpts {@link Next}
@@ -518,10 +519,15 @@ declare module "src/index" {
 declare module "src/examples/airRoutes" { }
 declare module "src/test/setup" {
     import * as buntest from "bun:test";
+    import * as groovy from "src/groovy/index";
+    import * as query from "src/query/index";
     global {
         var describe: typeof buntest.describe;
         var expect: typeof buntest.expect;
         var test: typeof buntest.test;
+        type GroovyTraversal = groovy.GroovyTraversal;
+        type TraverserMap = groovy.TraverserMap;
+        var next: typeof query.next;
     }
 }
 //# sourceMappingURL=index.d.ts.map

@@ -11,7 +11,7 @@ declare global {
 
   // not bun stuff
   type GroovyTraversal = groovy.GroovyTraversal;
-  type NextResult<T> = query.NextResult<T>;
+  type TraverserMap = groovy.TraverserMap;
   var next: typeof query.next;
 }
 
