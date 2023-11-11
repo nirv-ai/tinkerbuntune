@@ -1,5 +1,3 @@
-import { ValueOf } from "type-fest";
-
 import type { TraverserMap, GroovyTraversal } from "groovy/dsl";
 import { common, type EnumValue } from "groovy/common";
 
@@ -36,18 +34,19 @@ export const getBaseOpts = <T>(overrides: BaseOpts<T>) => ({
 export type Next = { gt: GroovyTraversal; end?: unknown };
 export type NextResult<T> = Promise<TraverserMap<T>>;
 /**
- * fuck typescript
- * give param `end` any value and it will return {@link GroovyTraversal}
- * else it returns a fucking {@link NextResult} of type T
+ * returns a {@link TraverserMap} that resolves to T
+ * @param nextOps {@link Next}
  */
-export function next<T = GroovyTraversal>({
-  gt,
-  end,
-}: Next): T extends GroovyTraversal ? GroovyTraversal : NextResult<T> {
-  // @ts-ignore fk typescript
-  return typeof end !== "undefined"
-    ? <GroovyTraversal>gt
-    : <NextResult<T>>gt.next();
+export function next<T = unknown>(nextOps: Omit<Next, "end">): NextResult<T>;
+/**
+ * returns a {@link GroovyTraversal} for chaining
+ * @param nextOpts {@link Next}
+ */
+export function next<T = GroovyTraversal>(nextOpts: Next): GroovyTraversal;
+export function next<T = GroovyTraversal>({ gt, end }: Next) {
+  return typeof end === "undefined"
+    ? <NextResult<T>>gt.next()
+    : <GroovyTraversal>gt;
 }
 
 export const throwIfEmpty = (
