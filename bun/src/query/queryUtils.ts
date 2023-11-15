@@ -100,7 +100,7 @@ export const combineProps = ({
   elements,
   elKeys = [],
   traversals = [],
-}: CombineProps) => {
+}: CombineProps): GroovyTraversal => {
   return elements.local(
     union(
       project("id", "label").by(t.id).by(t.label),
@@ -120,7 +120,7 @@ export const combineProps = ({
 export const groupByIdentity = ({
   elements,
   elKeys = [],
-}: Exclude<ElementProps, "as">) =>
+}: Exclude<ElementProps, "as">): GroovyTraversal =>
   elements
     .group()
     .by(elKeys[0] ?? t.id)
