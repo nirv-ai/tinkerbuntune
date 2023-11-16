@@ -69,15 +69,16 @@ export const throwInvalidQuery = (reason: string, ...extra: any[]) => {
   uses sack to create an updatable object over the lifetime of a traversal
 */
 export interface ElementProps {
-  elements: GroovyTraversal;
+  elements?: GroovyTraversal | ReturnType<typeof identity>;
   elKeys?: (string | EnumValue)[];
   as?: string[];
 }
 export const elementProps = ({
   as = [],
-  elements,
+  elements = identity(),
   elKeys = [],
 }: ElementProps): GroovyTraversal => {
+  // @ts-ignore GraphTraversal doesnt have keys
   return elements
     .as(...as.concat("base"))
     .valueMap(...elKeys)
@@ -97,10 +98,11 @@ export interface CombineProps extends Exclude<ElementProps, "as"> {
   traversals?: GroovyTraversal[];
 }
 export const combineProps = ({
-  elements,
+  elements = identity(),
   elKeys = [],
   traversals = [],
 }: CombineProps): GroovyTraversal => {
+  // @ts-ignore GraphTraversal doesnt have keys
   return elements.local(
     union(
       project("id", "label").by(t.id).by(t.label),
@@ -118,9 +120,10 @@ export const combineProps = ({
   groups an element by some key
 */
 export const groupByIdentity = ({
-  elements,
+  elements = identity(),
   elKeys = [],
 }: Exclude<ElementProps, "as">): GroovyTraversal =>
+  // @ts-ignore GraphTraversal doesnt have keys
   elements
     .group()
     .by(elKeys[0] ?? t.id)
