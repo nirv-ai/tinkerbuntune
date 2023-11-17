@@ -453,6 +453,7 @@ declare module "src/loader/index" {
 declare module "src/query/queryUtils" {
     import type { TraverserMap, GroovyTraversal } from "src/groovy/dsl";
     import { type EnumValue } from "src/groovy/common";
+    const identity: (...args: any[]) => import("gremlin").process.GraphTraversal;
     /**
      * base opts for a gremlin traversal
      * @prop end if truthy returns a traversal value, else returns a traversal for chaining
@@ -494,7 +495,7 @@ declare module "src/query/queryUtils" {
     export const throwIfEmpty: (thing: string, received?: unknown) => false | undefined;
     export const throwInvalidQuery: (reason: string, ...extra: any[]) => never;
     export interface ElementProps {
-        elements: GroovyTraversal;
+        elements?: GroovyTraversal | ReturnType<typeof identity>;
         elKeys?: (string | EnumValue)[];
         as?: string[];
     }
