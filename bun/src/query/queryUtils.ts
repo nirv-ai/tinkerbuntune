@@ -128,3 +128,14 @@ export const groupByIdentity = ({
     .group()
     .by(elKeys[0] ?? t.id)
     .by(flatMap(identity()));
+
+// @see https://stackoverflow.com/questions/29085197/how-do-you-json-stringify-an-es6-map
+function replacer(key: unknown, value: unknown) {
+  if (value instanceof Map) {
+    return Object.fromEntries(value.entries());
+  } else {
+    return value;
+  }
+}
+export const toJson = <T = Record<any, any>>(data: unknown): T =>
+  JSON.parse(JSON.stringify(data, replacer));
