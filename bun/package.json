@@ -13,16 +13,17 @@
     "test:types": "rm -rf types/*buildinfo && bunx tsc"
   },
   "devDependencies": {
-    "@types/gremlin": "^3.6.5",
+    "@types/gremlin": "3.6",
     "bun-types": "latest",
-    "csv": "^6.3.5",
-    "gremlin": "^3.6.2",
-    "type-fest": "^4.6.0"
+    "csv": "6.3.5",
+    "gremlin": "3.6.2",
+    "type-fest": "4.8"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0",
-    "gremlin": "^3.6.2",
-    "csv": "^6.3.5",
-    "type-fest": "^4.6.0"
+    "@types/gremlin": "3.6",
+    "csv": "6.3.5",
+    "gremlin": "3.6.2",
+    "type-fest": "4.8",
+    "typescript": "5.2"
   }
 }
