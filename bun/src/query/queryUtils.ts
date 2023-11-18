@@ -1,3 +1,5 @@
+import { serialize, deserialize } from "bun:jsc";
+
 import type { TraverserMap, GroovyTraversal } from "groovy/dsl";
 import { common, type EnumValue } from "groovy/common";
 
@@ -129,6 +131,7 @@ export const groupByIdentity = ({
     .by(elKeys[0] ?? t.id)
     .by(flatMap(identity()));
 
+/* serialization */
 // @see https://stackoverflow.com/questions/29085197/how-do-you-json-stringify-an-es6-map
 function replacer(key: unknown, value: unknown) {
   if (value instanceof Map) {
@@ -137,5 +140,31 @@ function replacer(key: unknown, value: unknown) {
     return value;
   }
 }
-export const toJson = <T = Record<any, any>>(data: unknown): T =>
-  JSON.parse(JSON.stringify(data, replacer));
+// @see https://stackoverflow.com/questions/29085197/how-do-you-json-stringify-an-es6-map
+function selfIterator<T = Record<any, any>>(map: Map<any, any>): T {
+  // @ts-ignore
+  return Array.from(map).reduce((acc, [key, value]) => {
+    if (value instanceof Map) {
+      // @ts-ignore
+      acc[key] = selfIterator(value);
+    } else {
+      // @ts-ignore
+      acc[key] = value;
+    }
+
+    return acc;
+  }, {});
+}
+// FYI: ~183k nanoseconds
+export const toJson = <T = Record<any, any>>(data: Map<any, any>): T =>
+  selfIterator<T>(data);
+// FYI: ~155k nanoseconds
+export const toJsonStringified = <T = Record<any, any>>(
+  data: Map<any, any>
+): T => JSON.parse(JSON.stringify(data, replacer));
+// @see https://bun.sh/docs/api/utils#serialize-deserialize-in-bun-jsc
+// FYI: ~28k nanoseconds to deserialize(serialize(data))
+export const toSharedBuffer = (data: unknown) => serialize(data);
+export const fromBuffer = <T = unknown>(
+  data: ArrayBufferLike | TypedArray | Buffer
+): T => deserialize(data);
