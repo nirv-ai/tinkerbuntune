@@ -1,9 +1,13 @@
 {
   "name": "bun",
+  "version": "0.3.4",
   "private": true,
   "type": "module",
-  "version": "0.3.4",
-  "module": "index.ts",
+  "types": "./types/index.d.ts",
+  "exports": {
+    "bun": "./src/index.ts",
+    "import": "./src/index.ts"
+  },
   "scripts": {
     "examples": "bun --watch src/examples/airRoutes.ts",
     "test:types": "rm -rf types/*buildinfo && bunx tsc"
