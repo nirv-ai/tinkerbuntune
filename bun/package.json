@@ -1,24 +1,29 @@
 {
   "name": "bun",
+  "version": "0.3.4",
   "private": true,
   "type": "module",
-  "version": "0.3.3",
-  "module": "index.ts",
+  "types": "./types/index.d.ts",
+  "exports": {
+    "bun": "./src/index.ts",
+    "import": "./src/index.ts"
+  },
   "scripts": {
     "examples": "bun --watch src/examples/airRoutes.ts",
     "test:types": "rm -rf types/*buildinfo && bunx tsc"
   },
   "devDependencies": {
-    "@types/gremlin": "^3.6.5",
+    "@types/gremlin": "3.6",
     "bun-types": "latest",
-    "csv": "^6.3.5",
-    "gremlin": "^3.6.2",
-    "type-fest": "^4.6.0"
+    "csv": "6.3.5",
+    "gremlin": "3.6.2",
+    "type-fest": "4.8"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0",
-    "gremlin": "^3.6.2",
-    "csv": "^6.3.5",
-    "type-fest": "^4.6.0"
+    "@types/gremlin": "3.6",
+    "csv": "6.3.5",
+    "gremlin": "3.6.2",
+    "type-fest": "4.8",
+    "typescript": "5.2"
   }
 }

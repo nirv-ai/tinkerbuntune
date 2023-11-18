@@ -11,7 +11,7 @@ services:
   gbun:
     profiles: ["bun"]
     container_name: gbun
-    image: oven/bun:1.0.8
+    image: oven/bun:1.0.13
     network_mode: host
     volumes:
       - ${PWD}/bun:/home/bun/app
