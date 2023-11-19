@@ -1,6 +1,6 @@
 {
   "name": "bun",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "private": true,
   "type": "module",
   "types": "./types/src/index.d.ts",
@@ -32,5 +32,8 @@
   },
   "dependencies": {
     "@msgpack/msgpack": "^3.0.0-beta2"
-  }
+  },
+  "bundledDependencies": [
+    "@msgpack/msgpack"
+  ]
 }

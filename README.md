@@ -1,4 +1,4 @@
-# TinkerBunTune
+# tinkerbuntune
 
 - ETL for tinkerpop & neptune with bun & docker
   - CSV to tinkergraph: complete
