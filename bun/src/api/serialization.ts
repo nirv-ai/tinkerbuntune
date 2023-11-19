@@ -105,12 +105,15 @@ extensionCodec.register({
 });
 
 // @see https://github.com/noahehall/theBookOfNoah/blob/master/languages/javascript/opensource/msgpack.md#web-example
-export const msgpackToJson = <T = Record<any, any>>(arr: [any, any]): T => {
-  // @ts-igngore
+export const msgpackToJsonIterator = <T = Record<any, any>>(
+  arr: [any, any]
+): T => {
   return arr.reduce((acc, [key, value]) => {
     if (value?.type === MAP_EXT_TYPE && value?.data instanceof Uint8Array) {
-      // @ts-ignore
-      acc[key] = msgpackToJson(decoder.decode(value.data, { extensionCodec }));
+      acc[key] = msgpackToJsonIterator(
+        // @ts-ignore object is unknown
+        decoder.decode(value.data, { extensionCodec })
+      );
     } else {
       // @ts-ignore
       acc[key] = value;
@@ -118,4 +121,18 @@ export const msgpackToJson = <T = Record<any, any>>(arr: [any, any]): T => {
 
     return acc;
   }, {});
+};
+
+export const msgpackToJson = async <T = Record<any, any>>(
+  resp: Response
+): Promise<T | null> => {
+  if (!resp.body) return null;
+  return <T>msgpackToJsonIterator<T>(
+    // @ts-ignore object is unknown
+    decoder.decode(
+      // @ts-ignore object is unknown
+      (await decoder.decodeAsync(resp.body, { extensionCodec })).data,
+      { extensionCodec }
+    )
+  );
 };
