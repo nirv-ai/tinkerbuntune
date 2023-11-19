@@ -164,3 +164,7 @@ export const csvToTinkergraph = async (config: Config) => {
   await transformUnmappedFiles(config);
   await loadTinkerData(config);
 };
+
+// FYI: @see https://kelvinlawrence.net/book/Gremlin-Graph-Guide.html#graphsonmapper
+// ^ v3 will give you the datatypes required for neptune loader
+export const tinkergraphToNeptuneCsv = () => null;
