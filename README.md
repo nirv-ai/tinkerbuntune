@@ -3,16 +3,17 @@
 - ETL for tinkerpop & neptune with bun & docker
   - CSV to tinkergraph: complete
   - tinkergraph to neptune: TBD
+- utils for building APIs and querying property graphs
 
 ## TLDR!
+
+- TODO (noah): repo under active development: this will eventually become a proper readme file ;)~
 
 ## links
 
 - [practical gremlin](https://kelvinlawrence.net/book/Gremlin-Graph-Guide.html)
 
 ## ETL
-
-- TODO (noah): this will eventually become a proper readme file ;)~
 
 ```sh
 ### add peer deps
