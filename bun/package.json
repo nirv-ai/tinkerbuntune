@@ -1,10 +1,9 @@
 {
   "name": "bun",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "private": true,
   "type": "module",
   "types": "./types/src/index.d.ts",
-  "main": "./js/index.js",
   "exports": {
     ".": {
       "bun": "./src/index.ts",

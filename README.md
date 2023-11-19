@@ -24,8 +24,7 @@ bun add type-fest csv gremlin
 bun add github:nirv-ai/tinkerbuntune
 # or specific version
 bun add github:nirv-ai/tinkerbuntune#0.0.5
-# or specific commit
-bun add github:nirv-ai/tinkerbunetune#57a7b1a
+
 ```
 
 ```ts
@@ -33,7 +32,7 @@ bun add github:nirv-ai/tinkerbunetune#57a7b1a
 // ETL a directory of CSVs into tinkergraph
 
 // somefile.ts
-import { csvToTinkergraph } from "tinkerbuntune/bun";
+import { csvToTinkergraph } from "tinkerbuntune/bun/src";
 import { config } from "./config";
 await csvToTinkergraph(config);
 
