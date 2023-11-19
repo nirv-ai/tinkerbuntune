@@ -1,17 +1,18 @@
 {
   "name": "bun",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "private": true,
   "type": "module",
   "types": "./types/src/index.d.ts",
-  "main": "./dist/src/index.js",
+  "main": "./js/index.js",
   "exports": {
     ".": {
       "bun": "./src/index.ts",
-      "default": "./dist/src/index.js"
+      "default": "./js/index.js"
     }
   },
   "scripts": {
+    "build:js": "bun build --entrypoints ./src/index.ts --outdir ./js --target browser --minify --external bun:jsc",
     "examples": "bun --watch src/examples/airRoutes.ts",
     "test:types": "rm -rf types/*buildinfo && bunx tsc"
   },
