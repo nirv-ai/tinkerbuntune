@@ -168,3 +168,4 @@ export const toSharedBuffer = (data: unknown) => serialize(data);
 export const fromBuffer = <T = unknown>(
   data: ArrayBufferLike | TypedArray | Buffer
 ): T => deserialize(data);
+// FYI: try this: https://github.com/msgpack/msgpack-javascript
