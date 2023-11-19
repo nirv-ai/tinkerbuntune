@@ -3,10 +3,13 @@
   "version": "0.3.5",
   "private": true,
   "type": "module",
-  "types": "./types/index.d.ts",
+  "types": "./types/src/index.d.ts",
+  "main": "./dist/src/index.js",
   "exports": {
-    "bun": "./src/index.ts",
-    "import": "./src/index.ts"
+    ".": {
+      "bun": "./src/index.ts",
+      "default": "./dist/src/index.js"
+    }
   },
   "scripts": {
     "examples": "bun --watch src/examples/airRoutes.ts",
