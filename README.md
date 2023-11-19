@@ -20,7 +20,7 @@ bun add type-fest csv gremlin
 ### add tinkerbuntune
 ### @see https://bun.sh/docs/cli/install#non-npm-dependencies
 # add latest
-bun add github:nirv-ai/tinkerbuntune=
+bun add github:nirv-ai/tinkerbuntune
 # or specific version
 bun add github:nirv-ai/tinkerbuntune#0.0.5
 # or specific commit
