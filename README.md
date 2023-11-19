@@ -32,7 +32,7 @@ bun add github:nirv-ai/tinkerbunetune#57a7b1a
 // ETL a directory of CSVs into tinkergraph
 
 // somefile.ts
-import { csvToTinkergraph } from "tinkerbuntune/bun/src";
+import { csvToTinkergraph } from "tinkerbuntune/bun";
 import { config } from "./config";
 await csvToTinkergraph(config);
 
