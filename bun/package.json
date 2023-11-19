@@ -11,7 +11,7 @@
     }
   },
   "scripts": {
-    "build:js": "bun build --entrypoints ./src/index.ts --outdir ./js --target browser --minify --external bun:jsc",
+    "build:js": "bun build --entrypoints ./src/index.ts --outdir ./js --target browser --external bun:jsc",
     "examples": "bun --watch src/examples/airRoutes.ts",
     "test:types": "rm -rf types/*buildinfo && bunx tsc"
   },
