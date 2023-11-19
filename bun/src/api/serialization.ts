@@ -126,8 +126,13 @@ export const msgpackToJsonIterator = <T = Record<any, any>>(
 export const msgpackToJson = async <T = Record<any, any>>(
   resp: Response
 ): Promise<T | null> => {
-  if (!resp.body) return null;
-  return <T>msgpackToJsonIterator<T>(
+  if (
+    resp.headers.get("Content-Type") !== MSGPACK_HEADERS["Content-Type"] ||
+    !resp.body
+  )
+    return null;
+
+  return msgpackToJsonIterator<T>(
     // @ts-ignore object is unknown
     decoder.decode(
       // @ts-ignore object is unknown
