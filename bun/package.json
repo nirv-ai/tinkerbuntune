@@ -32,5 +32,8 @@
   },
   "dependencies": {
     "@msgpack/msgpack": "^3.0.0-beta2"
-  }
+  },
+  "bundledDependencies": [
+    "@msgpack/msgpack"
+  ]
 }
