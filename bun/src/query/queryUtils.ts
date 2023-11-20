@@ -25,9 +25,9 @@ export type BaseOpts<T = Record<string, any>> = T & {
  * @returns
  */
 export const getBaseOpts = <T>(overrides: BaseOpts<T>) => ({
-  limitX: 0,
-  limitY: (overrides.limitX ?? 0) + 10,
   ...overrides,
+  limitX: overrides.limitX ?? 0,
+  limitY: overrides.limitY ?? (overrides.limitX ?? 0) + 10,
 });
 
 export type Next = { gt: GroovyTraversal; end?: unknown };
