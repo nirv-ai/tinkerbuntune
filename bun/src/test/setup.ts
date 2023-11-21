@@ -11,8 +11,6 @@ declare global {
 
   // not bun stuff
   type GroovyTraversal = groovy.GroovyTraversal;
-  type TraverserMap = groovy.TraverserMap;
-  var next: typeof query.next;
 }
 
 // bun stuff
@@ -21,4 +19,3 @@ globalThis.expect = buntest.expect;
 globalThis.test = buntest.test;
 
 // not bun stuff
-globalThis.next = query.next;

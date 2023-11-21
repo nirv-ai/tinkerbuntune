@@ -7,15 +7,17 @@
  */
 
 import gremlin from "gremlin";
+import { GroovyTraversal } from "./dsl";
 
-const __ = gremlin.process.statics;
+const __ = gremlin.process.statics as gremlin.process.Statics<GroovyTraversal>;
+
 // programmaticaly traverse the graph
 // allowing the consumer to determine the ege/vert along the way
 export enum EDir {
   out = "out",
   in = "in",
 }
-// @see https://tinkerpop.apache.org/docs/3.7.0/reference/#vertex-stepsm0ren1rv!
+// @see https://tinkerpop.apache.org/docs/3.7.0/reference/#vertex-steps
 export const go = (dir: EDir) => {
   const base = {
     both: __.both,

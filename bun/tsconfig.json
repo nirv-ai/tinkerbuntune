@@ -1,6 +1,5 @@
 {
   "include": ["src/**/*"],
-  "exclude": ["node_modules"],
   "compilerOptions": {
     "allowImportingTsExtensions": true,
     "allowJs": true,
@@ -12,6 +11,7 @@
     "declarationMap": true,
     "downlevelIteration": true,
     "emitDeclarationOnly": true,
+    "exactOptionalPropertyTypes": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
     "jsx": "react-jsx",
@@ -19,13 +19,14 @@
     "module": "esnext",
     "moduleDetection": "force",
     "moduleResolution": "bundler",
+    "noImplicitAny": true,
+    "noImplicitOverride": true,
     "outFile": "./types/index",
     "rootDirs": ["src"],
     "skipLibCheck": true,
     "strict": true,
+    "strictNullChecks": true,
     "target": "esnext",
-    "types": [
-      "bun-types" // add Bun global
-    ]
+    "types": ["bun-types", "gremlin"]
   }
 }

@@ -1,9 +1,9 @@
 {
-  "name": "bun",
+  "name": "utils",
   "version": "0.3.9",
   "private": true,
   "type": "module",
-  "types": "./types/src/index.d.ts",
+  "types": "./types/index.d.ts",
   "exports": {
     ".": {
       "bun": "./src/index.ts",
@@ -13,7 +13,7 @@
   "scripts": {
     "build:js": "bun build --entrypoints ./src/index.ts --outdir ./js --target browser --external bun:jsc",
     "examples": "bun --watch src/examples/airRoutes.ts",
-    "test:types": "rm -rf types/*buildinfo && bunx tsc"
+    "test:types": "bunx tsc"
   },
   "devDependencies": {
     "@types/gremlin": "3.6",
@@ -23,7 +23,6 @@
     "type-fest": "4.8"
   },
   "peerDependencies": {
-    "@types/gremlin": "3.6",
     "csv": "6.3.5",
     "gremlin": "3.6.2",
     "type-fest": "4.8",
@@ -31,8 +30,5 @@
   },
   "dependencies": {
     "@msgpack/msgpack": "^3.0.0-beta2"
-  },
-  "bundledDependencies": [
-    "@msgpack/msgpack"
-  ]
+  }
 }
