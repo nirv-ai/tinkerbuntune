@@ -1,12 +1,14 @@
 /// <reference types="bun-types" />
+/// <reference types="gremlin" />
 declare module "src/api/serialization" {
     import { encode, decode, decodeAsync, ExtensionCodec } from "@msgpack/msgpack";
-    export function jsonReplacer(key: unknown, value: unknown): any;
+    export function deepFreezeCopy(object: any): any;
     export function mapToJsonIterator<T = Record<any, any>>(map: Map<any, any>): T;
     export const toJson: <T = Record<any, any>>(data: Map<any, any>) => T;
+    export function jsonReplacer(key: unknown, value: unknown): any;
     export const toJsonStringified: (data: Map<any, any>) => string;
-    export const toSharedBuffer: (data: unknown) => SharedArrayBuffer;
-    export const fromBuffer: <T = unknown>(data: ArrayBufferLike | TypedArray | Buffer) => T;
+    export const toBunBuffer: (data: unknown) => SharedArrayBuffer;
+    export const fromBunBuffer: <T = unknown>(data: ArrayBufferLike | TypedArray | Buffer) => T;
     export const encoder: {
         encode: typeof encode;
     };
@@ -26,6 +28,46 @@ declare module "src/api/serialization" {
 declare module "src/api/index" {
     export * from "src/api/serialization";
 }
+declare module "src/groovy/dsl" {
+    /**
+     * @see https://tinkerpop.apache.org/docs/3.7.0/reference/#gremlin-javascript-dsl
+     */
+    import gremlin, { type structure } from "gremlin";
+    const GraphTraversal: typeof gremlin.process.GraphTraversal, GraphTraversalSource: typeof gremlin.process.GraphTraversalSource;
+    /**
+     * redeclare types
+     */
+    export type WithOptions = typeof gremlin.process.withOptions;
+    export type EnumValue = gremlin.process.EnumValue;
+    export type Nullable<T> = T | null;
+    export type Traverser = typeof gremlin.process.Traverser;
+    export type TraverserMap<T> = Map<string, T>;
+    export interface Graph extends structure.Graph {
+    }
+    export interface Bytecode extends gremlin.process.Bytecode {
+    }
+    export interface TraversalStrategies extends gremlin.process.TraversalStrategies {
+    }
+    /**
+     * GroovyTraversal
+     *
+     * steps that are made available on this class are also available as spawns for anonymous traversals
+     */
+    export class GroovyTraversal extends GraphTraversal {
+        constructor(graph: Nullable<Graph>, traversalStrategies: Nullable<TraversalStrategies>, bytecode: Bytecode);
+        keys(): this;
+        next<T>(): Promise<IteratorResult<TraverserMap<T>, any>>;
+    }
+    export const keys: () => GroovyTraversal;
+    /**
+     * GroovyTraversalSource
+     *
+     * Steps added here are meant to be start steps
+     */
+    export class GroovyTraversalSource extends GraphTraversalSource<GroovyTraversal> {
+        constructor(graph: Graph, traversalStrategies: TraversalStrategies, bytecode: Bytecode);
+    }
+}
 declare module "src/groovy/common" {
     /**
      * @see  https://tinkerpop.apache.org/docs/3.7.0/reference/#gremlin-javascript-imports
@@ -35,34 +77,33 @@ declare module "src/groovy/common" {
      * and want a similar environment in bun without violating typescript best practices
      */
     import gremlin from "gremlin";
+    import { GroovyTraversal } from "src/groovy/dsl";
     export enum EDir {
         out = "out",
         in = "in"
     }
     export const go: (dir: EDir) => {
         to: {
-            e: (...args: any[]) => gremlin.process.GraphTraversal;
-            v: (...args: any[]) => gremlin.process.GraphTraversal;
+            e: (...args: any[]) => GroovyTraversal;
+            v: (...args: any[]) => GroovyTraversal;
         };
-        both: (...args: any[]) => gremlin.process.GraphTraversal;
-        bothE: (...args: any[]) => gremlin.process.GraphTraversal;
-        bothV: (...args: any[]) => gremlin.process.GraphTraversal;
-        otherV: (...args: any[]) => gremlin.process.GraphTraversal;
-        inV: (...args: any[]) => gremlin.process.GraphTraversal;
-        outV: (...args: any[]) => gremlin.process.GraphTraversal;
-        inE: (...args: any[]) => gremlin.process.GraphTraversal;
-        in: (...args: any[]) => gremlin.process.GraphTraversal;
-        outE: (...args: any[]) => gremlin.process.GraphTraversal;
-        out: (...args: any[]) => gremlin.process.GraphTraversal;
+        both: (...args: any[]) => GroovyTraversal;
+        bothE: (...args: any[]) => GroovyTraversal;
+        bothV: (...args: any[]) => GroovyTraversal;
+        otherV: (...args: any[]) => GroovyTraversal;
+        inV: (...args: any[]) => GroovyTraversal;
+        outV: (...args: any[]) => GroovyTraversal;
+        inE: (...args: any[]) => GroovyTraversal;
+        in: (...args: any[]) => GroovyTraversal;
+        outE: (...args: any[]) => GroovyTraversal;
+        out: (...args: any[]) => GroovyTraversal;
     };
-    export type WithOptions = typeof gremlin.process.withOptions;
-    export type EnumValue = gremlin.process.EnumValue;
     export const common: {
         gremlin: typeof gremlin;
         p: typeof gremlin.process.P;
         traversal: typeof gremlin.process.AnonymousTraversalSource.traversal;
         DriverRemoteConnection: typeof gremlin.driver.DriverRemoteConnection;
-        __: gremlin.process.Statics<gremlin.process.GraphTraversal>;
+        __: gremlin.process.Statics<GroovyTraversal>;
         textp: typeof gremlin.process.TextP;
         Direction: {
             BOTH: gremlin.process.EnumValue;
@@ -73,19 +114,19 @@ declare module "src/groovy/common" {
         };
         go: (dir: EDir) => {
             to: {
-                e: (...args: any[]) => gremlin.process.GraphTraversal;
-                v: (...args: any[]) => gremlin.process.GraphTraversal;
+                e: (...args: any[]) => GroovyTraversal;
+                v: (...args: any[]) => GroovyTraversal;
             };
-            both: (...args: any[]) => gremlin.process.GraphTraversal;
-            bothE: (...args: any[]) => gremlin.process.GraphTraversal;
-            bothV: (...args: any[]) => gremlin.process.GraphTraversal;
-            otherV: (...args: any[]) => gremlin.process.GraphTraversal;
-            inV: (...args: any[]) => gremlin.process.GraphTraversal;
-            outV: (...args: any[]) => gremlin.process.GraphTraversal;
-            inE: (...args: any[]) => gremlin.process.GraphTraversal;
-            in: (...args: any[]) => gremlin.process.GraphTraversal;
-            outE: (...args: any[]) => gremlin.process.GraphTraversal;
-            out: (...args: any[]) => gremlin.process.GraphTraversal;
+            both: (...args: any[]) => GroovyTraversal;
+            bothE: (...args: any[]) => GroovyTraversal;
+            bothV: (...args: any[]) => GroovyTraversal;
+            otherV: (...args: any[]) => GroovyTraversal;
+            inV: (...args: any[]) => GroovyTraversal;
+            outV: (...args: any[]) => GroovyTraversal;
+            inE: (...args: any[]) => GroovyTraversal;
+            in: (...args: any[]) => GroovyTraversal;
+            outE: (...args: any[]) => GroovyTraversal;
+            out: (...args: any[]) => GroovyTraversal;
         };
         Bytecode: typeof gremlin.process.Bytecode;
         EnumValue: typeof gremlin.process.EnumValue;
@@ -153,46 +194,6 @@ declare module "src/groovy/common" {
         withOptions: gremlin.process.WithOptions;
         Transaction: typeof gremlin.process.Transaction;
     };
-}
-declare module "src/groovy/dsl" {
-    /**
-     * @see https://tinkerpop.apache.org/docs/3.7.0/reference/#gremlin-javascript-dsl
-     */
-    import gremlin, { type structure } from "gremlin";
-    const GraphTraversal: typeof gremlin.process.GraphTraversal, GraphTraversalSource: typeof gremlin.process.GraphTraversalSource;
-    /**
-     * redeclare types
-     */
-    export type Nullable<T> = T | null;
-    export type Traverser = typeof gremlin.process.Traverser;
-    export type TraverserMap<T = unknown> = Traverser & {
-        done: boolean;
-        value: Map<string, T>;
-    };
-    export interface Graph extends structure.Graph {
-    }
-    export interface Bytecode extends gremlin.process.Bytecode {
-    }
-    export interface TraversalStrategies extends gremlin.process.TraversalStrategies {
-    }
-    /**
-     * GroovyTraversal
-     *
-     * steps that are made available on this class are also available as spawns for anonymous traversals
-     */
-    export class GroovyTraversal extends GraphTraversal {
-        constructor(graph: Nullable<Graph>, traversalStrategies: Nullable<TraversalStrategies>, bytecode: Bytecode);
-        keys(): this;
-    }
-    export const keys: () => GroovyTraversal;
-    /**
-     * GroovyTraversalSource
-     *
-     * Steps added here are meant to be start steps
-     */
-    export class GroovyTraversalSource extends GraphTraversalSource<GroovyTraversal> {
-        constructor(graph: Graph, traversalStrategies: TraversalStrategies, bytecode: Bytecode);
-    }
 }
 declare module "src/groovy/index" {
     export * from "src/groovy/common";
@@ -480,51 +481,31 @@ declare module "src/loader/index" {
     export * from "src/loader/utils";
 }
 declare module "src/query/queryUtils" {
-    import type { TraverserMap, GroovyTraversal } from "src/groovy/dsl";
-    import { type EnumValue } from "src/groovy/common";
-    const identity: (...args: any[]) => import("gremlin").process.GraphTraversal;
+    import { GroovyTraversal, type EnumValue } from "src/groovy/dsl";
     /**
      * base opts for a gremlin traversal
-     * @prop end if truthy returns a traversal value, else returns a traversal for chaining
+     * @prop end if false returns a GroovyTraveral for chaining
      * @prop limitX e.g. traversal.range(limitX, limitY)
      * @prop limitY e.g. traversal.range(limitX, limitY)
      */
-    export type BaseOpts<T = Record<string, any>> = T & {
-        end?: unknown;
+    export interface BaseOpts {
         limitX?: number;
         limitY?: number;
-    };
+        [x: string]: unknown;
+    }
     /**
      * helper fn for supplying options to a {@link GroovyTraversal}
      * @param overrides
      * @returns
      */
-    export const getBaseOpts: <T>(overrides: BaseOpts<T>) => {
+    export const getBaseOpts: (overrides: BaseOpts) => {
         limitX: number;
         limitY: number;
-    } & T & {
-        end?: unknown;
-        limitX?: number | undefined;
-        limitY?: number | undefined;
     };
-    export type Next = {
-        gt: GroovyTraversal;
-        end?: unknown;
-    };
-    /**
-     * returns a {@link TraverserMap} that resolves to T
-     * @param nextOps {@link Next}
-     */
-    export function next<T = unknown>(nextOps: Omit<Next, "end">): Promise<TraverserMap<T>>;
-    /**
-     * returns a {@link GroovyTraversal} for chaining
-     * @param nextOpts {@link Next}
-     */
-    export function next<T = GroovyTraversal>(nextOpts: Next): GroovyTraversal;
     export const throwIfEmpty: (thing: string, received?: unknown) => false | undefined;
     export const throwInvalidQuery: (reason: string, ...extra: any[]) => never;
     export interface ElementProps {
-        elements?: GroovyTraversal | ReturnType<typeof identity>;
+        elements?: GroovyTraversal;
         elKeys?: (string | EnumValue)[];
         as?: string[];
     }
@@ -551,14 +532,11 @@ declare module "src/examples/airRoutes" { }
 declare module "src/test/setup" {
     import * as buntest from "bun:test";
     import * as groovy from "src/groovy/index";
-    import * as query from "src/query/index";
     global {
         var describe: typeof buntest.describe;
         var expect: typeof buntest.expect;
         var test: typeof buntest.test;
         type GroovyTraversal = groovy.GroovyTraversal;
-        type TraverserMap = groovy.TraverserMap;
-        var next: typeof query.next;
     }
 }
 //# sourceMappingURL=index.d.ts.map

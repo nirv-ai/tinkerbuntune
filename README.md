@@ -17,22 +17,22 @@
 
 ```sh
 ### add peer deps
-bun add type-fest csv gremlin
+bun add type-fest gremlin
+
 ### add tinkerbuntune
-### @see https://bun.sh/docs/cli/install#non-npm-dependencies
 # add latest
 bun add github:nirv-ai/tinkerbuntune
 # or specific version
-bun add github:nirv-ai/tinkerbuntune#0.0.5
+bun add github:nirv-ai/tinkerbuntune#1.2.3
 
 ```
 
 ```ts
-// everything is available @ tinkerbuntune/bun
+// everything is available @ tinkerbuntune/utils
 // ETL a directory of CSVs into tinkergraph
 
 // somefile.ts
-import { csvToTinkergraph } from "tinkerbuntune/bun/src";
+import { csvToTinkergraph } from "tinkerbuntune/utils";
 import { config } from "./config";
 await csvToTinkergraph(config);
 
@@ -50,13 +50,11 @@ await csvToTinkergraph(config);
 
 - example based on the practical gremlin air routes dataset
 
-### gconsole.sh: gremlin console + gremlin server
-
-- test and attach to the console container
+### runtinkerpop.sh: gremlin console > gremlin server > tinkergraph
 
 ```sh
 ###  starts a gremlin server and gremlin console
-./gconsole.sh
+./runtinkerpop.sh
 
 ### test the server is running & the tinker graph is loaded
 curl "localhost:8182/gremlin?gremlin=g.V().has('code','SFO').valueMap()"
@@ -89,11 +87,11 @@ g.V().count()
 ctrlp ctrlq
 ```
 
-### gbun.sh: bun (typescript) + gremlin server
+### runutils.sh: bun > gremlin server
 
 ```sh
 ###  starts a bun server with gremlin javascript
-./gbun.sh
+./runutils.sh
 
 ### install deps and execute examples file
 bun install

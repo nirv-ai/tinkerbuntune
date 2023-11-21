@@ -2,6 +2,6 @@
   "name": "tinkerbuntune",
   "private": true,
   "workspaces": [
-    "bun"
+    "utils"
   ]
 }

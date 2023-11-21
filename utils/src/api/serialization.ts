@@ -1,7 +1,41 @@
-import { serialize, deserialize } from "bun:jsc";
 import { encode, decode, decodeAsync, ExtensionCodec } from "@msgpack/msgpack";
 
+const jsc = typeof Bun !== "undefined" && (await import("bun:jsc"));
+
+// @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze#examples
+export function deepFreezeCopy(object: any) {
+  const copy = Object.create(null);
+  // Retrieve the property names defined on object
+  const propNames = Reflect.ownKeys(object).filter(
+    (k) => typeof k === "string"
+  );
+
+  // Freeze properties before freezing self
+  for (const name of propNames) {
+    const value = object[name];
+
+    copy[name] =
+      value && value instanceof Object ? deepFreezeCopy(value) : value;
+  }
+
+  return Object.freeze(copy);
+}
+
 // @see https://stackoverflow.com/questions/29085197/how-do-you-json-stringify-an-es6-map
+export function mapToJsonIterator<T = Record<any, any>>(map: Map<any, any>): T {
+  return Array.from(map).reduce((acc, [key, value]) => {
+    acc[key] = value instanceof Map ? mapToJsonIterator(value) : value;
+
+    return acc;
+  }, Object.create(null));
+}
+
+// FYI: ~183k nanoseconds
+export const toJson = <T = Record<any, any>>(data: Map<any, any>): T =>
+  deepFreezeCopy(mapToJsonIterator<T>(data));
+
+// @see https://stackoverflow.com/questions/29085197/how-do-you-json-stringify-an-es6-map
+// FYI: ~155k nanoseconds
 export function jsonReplacer(key: unknown, value: unknown) {
   if (value instanceof Map) {
     return Object.fromEntries(value.entries());
@@ -9,37 +43,21 @@ export function jsonReplacer(key: unknown, value: unknown) {
     return value;
   }
 }
-
-// @see https://stackoverflow.com/questions/29085197/how-do-you-json-stringify-an-es6-map
-export function mapToJsonIterator<T = Record<any, any>>(map: Map<any, any>): T {
-  // @ts-ignore
-  return Array.from(map).reduce((acc, [key, value]) => {
-    if (value instanceof Map) {
-      // @ts-ignore
-      acc[key] = mapToJsonIterator(value);
-    } else {
-      // @ts-ignore
-      acc[key] = value;
-    }
-
-    return acc;
-  }, {});
-}
-
-// FYI: ~183k nanoseconds
-export const toJson = <T = Record<any, any>>(data: Map<any, any>): T =>
-  mapToJsonIterator<T>(data);
-
-// FYI: ~155k nanoseconds
 export const toJsonStringified = (data: Map<any, any>): string =>
   JSON.stringify(data, jsonReplacer);
 
 // @see https://bun.sh/docs/api/utils#serialize-deserialize-in-bun-jsc
 // FYI: ~28k nanoseconds to deserialize(serialize(data))
-export const toSharedBuffer = (data: unknown) => serialize(data);
-export const fromBuffer = <T = unknown>(
+export const toBunBuffer = (data: unknown) => {
+  if (!jsc) throw new Error(`toBunBuffer requires the bun runtime`);
+  return jsc.serialize(data);
+};
+export const fromBunBuffer = <T = unknown>(
   data: ArrayBufferLike | TypedArray | Buffer
-): T => deserialize(data);
+): T => {
+  if (!jsc) throw new Error(`fromBunBuffer requires the bun runtime`);
+  return jsc.deserialize(data);
+};
 
 // MSG pack
 // @see https://github.com/msgpack/msgpack-javascript/issues/236
@@ -109,18 +127,15 @@ export const msgpackToJsonIterator = <T = Record<any, any>>(
   arr: [any, any]
 ): T => {
   return arr.reduce((acc, [key, value]) => {
-    if (value?.type === MAP_EXT_TYPE && value?.data instanceof Uint8Array) {
-      acc[key] = msgpackToJsonIterator(
-        // @ts-ignore object is unknown
-        decoder.decode(value.data, { extensionCodec })
-      );
-    } else {
-      // @ts-ignore
-      acc[key] = value;
-    }
+    acc[key] =
+      value?.type === MAP_EXT_TYPE && value?.data instanceof Uint8Array
+        ? msgpackToJsonIterator(
+            <[any, any]>decoder.decode(value.data, { extensionCodec })
+          )
+        : value;
 
     return acc;
-  }, {});
+  }, Object.create(null));
 };
 
 export const msgpackToJson = async <T = Record<any, any>>(
@@ -132,12 +147,13 @@ export const msgpackToJson = async <T = Record<any, any>>(
   )
     return null;
 
-  return msgpackToJsonIterator<T>(
-    // @ts-ignore object is unknown
-    decoder.decode(
-      // @ts-ignore object is unknown
-      (await decoder.decodeAsync(resp.body, { extensionCodec })).data,
-      { extensionCodec }
+  return deepFreezeCopy(
+    msgpackToJsonIterator<T>(
+      <[any, any]>decoder.decode(
+        // @ts-ignore object is unknown
+        (await decoder.decodeAsync(resp.body, { extensionCodec })).data,
+        { extensionCodec }
+      )
     )
   );
 };

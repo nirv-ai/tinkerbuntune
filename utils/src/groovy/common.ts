@@ -7,15 +7,17 @@
  */
 
 import gremlin from "gremlin";
+import { GroovyTraversal } from "./dsl";
 
-const __ = gremlin.process.statics;
+const __ = gremlin.process.statics as gremlin.process.Statics<GroovyTraversal>;
+
 // programmaticaly traverse the graph
 // allowing the consumer to determine the ege/vert along the way
 export enum EDir {
   out = "out",
   in = "in",
 }
-// @see https://tinkerpop.apache.org/docs/3.7.0/reference/#vertex-stepsm0ren1rv!
+// @see https://tinkerpop.apache.org/docs/3.7.0/reference/#vertex-steps
 export const go = (dir: EDir) => {
   const base = {
     both: __.both,
@@ -48,13 +50,6 @@ export const go = (dir: EDir) => {
   } else throw new Error(`invalid direction, expect in|out`);
 };
 
-// TODO: create bug in apache repo: this doesnt exist on gremlin.process
-// ^ const CardinalityValue = gremlin.process.CardinalityValue;
-
-// re-export types
-export type WithOptions = typeof gremlin.process.withOptions;
-export type EnumValue = gremlin.process.EnumValue;
-
 export const common = {
   ...gremlin.process,
   gremlin: gremlin,
@@ -81,5 +76,5 @@ export const common = {
   "driver",
   "TextP",
   "direction",
-  // @ts-ignore
+  // @ts-expect-error
 ].forEach((prop) => delete common[prop]);
