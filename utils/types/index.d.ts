@@ -7,8 +7,8 @@ declare module "src/api/serialization" {
     export const toJson: <T = Record<any, any>>(data: Map<any, any>) => T;
     export function jsonReplacer(key: unknown, value: unknown): any;
     export const toJsonStringified: (data: Map<any, any>) => string;
-    export const toSharedBuffer: (data: unknown) => SharedArrayBuffer;
-    export const fromBuffer: <T = unknown>(data: ArrayBufferLike | TypedArray | Buffer) => T;
+    export const toBunBuffer: (data: unknown) => SharedArrayBuffer;
+    export const fromBunBuffer: <T = unknown>(data: ArrayBufferLike | TypedArray | Buffer) => T;
     export const encoder: {
         encode: typeof encode;
     };

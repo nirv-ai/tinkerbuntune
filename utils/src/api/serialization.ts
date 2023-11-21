@@ -1,5 +1,6 @@
-import { serialize, deserialize } from "bun:jsc";
 import { encode, decode, decodeAsync, ExtensionCodec } from "@msgpack/msgpack";
+
+const jsc = typeof Bun !== "undefined" && (await import("bun:jsc"));
 
 // @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze#examples
 export function deepFreezeCopy(object: any) {
@@ -47,10 +48,16 @@ export const toJsonStringified = (data: Map<any, any>): string =>
 
 // @see https://bun.sh/docs/api/utils#serialize-deserialize-in-bun-jsc
 // FYI: ~28k nanoseconds to deserialize(serialize(data))
-export const toSharedBuffer = (data: unknown) => serialize(data);
-export const fromBuffer = <T = unknown>(
+export const toBunBuffer = (data: unknown) => {
+  if (!jsc) throw new Error(`toBunBuffer requires the bun runtime`);
+  return jsc.serialize(data);
+};
+export const fromBunBuffer = <T = unknown>(
   data: ArrayBufferLike | TypedArray | Buffer
-): T => deserialize(data);
+): T => {
+  if (!jsc) throw new Error(`fromBunBuffer requires the bun runtime`);
+  return jsc.deserialize(data);
+};
 
 // MSG pack
 // @see https://github.com/msgpack/msgpack-javascript/issues/236
