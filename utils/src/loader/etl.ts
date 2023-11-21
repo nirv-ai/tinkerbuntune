@@ -23,7 +23,7 @@ import type {
 export const getStore = (overrides = {}) => ({
   files: new Set<string>(),
   parsed: new Map<string, CsvParsed>(),
-  done: new Map<
+  transformed: new Map<
     string,
     { spec: ConfigSpec; data: TinkerDataEdge[] | TinkerDataVertex[] }
   >(),
@@ -36,7 +36,7 @@ export const getStore = (overrides = {}) => ({
  * @param spec associated {@link ConfigSpec}
  * @param dataKey generally only used when spec.recursive = actualBname
  */
-export const saveTinkerData = async (
+export const transformAndSaveTinkerData = async (
   bname: string,
   spec: ConfigSpec,
   dataKey?: string,
@@ -44,7 +44,7 @@ export const saveTinkerData = async (
 ) => {
   if (!store.parsed.has(bname)) throw new Error(`csv not parsed: ${bname}`);
 
-  store.done.set(dataKey || bname, {
+  store.transformed.set(dataKey || bname, {
     spec,
     data: await transform.csvToTinkerData(spec, store.parsed.get(bname)!),
   });
@@ -90,7 +90,7 @@ export const transformConfigFiles = async (
 
     // recursive specs depend on previously loaded files
     if (configSpec.recursive) {
-      await saveTinkerData(
+      await transformAndSaveTinkerData(
         configSpec.recursive,
         configSpec,
         bnameOrDataKey,
@@ -105,11 +105,16 @@ export const transformConfigFiles = async (
       store.files.delete(fname);
 
       await parseFile(bnameOrDataKey, `${config.csvDir}/${fname}`, store);
-      await saveTinkerData(bnameOrDataKey, configSpec, undefined, store);
+      await transformAndSaveTinkerData(
+        bnameOrDataKey,
+        configSpec,
+        undefined,
+        store
+      );
     }
   }
 
-  log("transformed config.files", store.done.size);
+  log("transformed config.files", store.transformed.size);
 };
 
 /**
@@ -135,7 +140,7 @@ export const transformUnmappedFiles = async (
     store.files.delete(fname);
 
     await parseFile(bname, `${config.csvDir}/${fname}`, store);
-    await saveTinkerData(bname, configSpec, undefined, store);
+    await transformAndSaveTinkerData(bname, configSpec, undefined, store);
   }
 
   log(
@@ -150,17 +155,17 @@ export const transformUnmappedFiles = async (
  * loads all {@link TinkerData} into tinkergraph
  */
 export const loadTinkerData = async (config: Config, store = getStore()) => {
-  if (!store.done.size)
+  if (!store.transformed.size)
     throw new Error(
       `
       no CSV files transformed. Did you correctly map CSV filenames to config specs?
       CSVs pared: ${store.parsed.size}
       CSVs ignored: ${store.files.size}
-      CSVs transformed: ${store.done.size}
+      CSVs transformed: ${store.transformed.size}
       `
     );
 
-  for (const [dataKey, data] of store.done.entries()) {
+  for (const [dataKey, data] of store.transformed.entries()) {
     const result = await loaders.tinkerData(data.data, data.spec);
     if (config.persistResultLog) {
       const logname = `${config.csvDir}/${dataKey}.csv.json`;
@@ -173,7 +178,7 @@ export const loadTinkerData = async (config: Config, store = getStore()) => {
       failure: result?.failure.length ?? 0,
     });
   }
-  log("total csvs loaded in tinkergraph", store.done.size);
+  log("total csvs loaded in tinkergraph", store.transformed.size);
 };
 
 /**
