@@ -6,12 +6,13 @@
   "types": "./types/index.d.ts",
   "exports": {
     ".": {
-      "bun": "./src/index.ts",
-      "default": "./js/index.js"
+      "bun": "./build/bun/index.js",
+      "browser": "./build/browser/index.js",
+      "node": "./build/node/index.js"
     }
   },
   "scripts": {
-    "build:js": "bun build --entrypoints ./src/index.ts --outdir ./js --target browser --external bun:jsc",
+    "build": "for runtime in bun browser node; do bun build --entrypoints ./src/index.ts --outdir ./build/${runtime} --target ${runtime} --external bun:jsc --minify-whitespace --minify-syntax; done;",
     "examples": "bun --watch src/examples/airRoutes.ts",
     "test:types": "bunx tsc"
   },
