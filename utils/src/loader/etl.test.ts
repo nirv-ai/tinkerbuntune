@@ -10,4 +10,10 @@ describe("etl", () => {
       expect(false).toBeTrue();
     });
   });
+
+  describe("csvToTinkergraph", () => {
+    test.skip("ETL: csv > tinkergraph", async () => {
+      expect(false).toBeTrue();
+    });
+  });
 });

@@ -1,7 +1,7 @@
 import * as buntest from "bun:test";
 
+import * as remote from "remote";
 import * as groovy from "groovy";
-import * as query from "query";
 import type * as types from "types";
 
 declare global {
@@ -9,11 +9,12 @@ declare global {
   var describe: typeof buntest.describe;
   var expect: typeof buntest.expect;
   var test: typeof buntest.test;
-  var config: types.Config;
-  var configSpec: types.ConfigSpec;
 
   // not bun stuff
   type GroovyTraversal = groovy.GroovyTraversal;
+  var common: typeof groovy.common;
+  var config: types.Config;
+  var g: typeof remote.g;
 }
 
 // bun stuff
@@ -22,3 +23,5 @@ globalThis.expect = buntest.expect;
 globalThis.test = buntest.test;
 
 // not bun stuff
+globalThis.g = remote.g;
+globalThis.common = groovy.common;

@@ -4,10 +4,6 @@
  * groovy api translator: https://www.gremlator.com/
  */
 
-import { g, client } from "remote";
-import { common } from "groovy/common";
-import { log } from "logger";
-
 const { scope, column, order, __, t, p } = common;
 
 describe("practical gremlin examples", () => {
