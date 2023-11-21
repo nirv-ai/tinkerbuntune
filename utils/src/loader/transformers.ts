@@ -77,7 +77,7 @@ export const csvToTinkerDataEdge = (
           f: edgeConfig.f(pl, record),
           t: edgeConfig.t(pl, record),
           l: edgeConfig.l(pl, record),
-          p: edgeConfig.p?.(pl),
+          p: edgeConfig.p?.(pl) ?? {},
           recordId: edgeConfig.recordId(pl, record),
         };
       }),

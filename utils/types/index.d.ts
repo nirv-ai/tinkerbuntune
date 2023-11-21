@@ -37,6 +37,8 @@ declare module "src/groovy/dsl" {
     /**
      * redeclare types
      */
+    export type WithOptions = typeof gremlin.process.withOptions;
+    export type EnumValue = gremlin.process.EnumValue;
     export type Nullable<T> = T | null;
     export type Traverser = typeof gremlin.process.Traverser;
     export type TraverserMap<T> = Map<string, T>;
@@ -96,8 +98,6 @@ declare module "src/groovy/common" {
         outE: (...args: any[]) => GroovyTraversal;
         out: (...args: any[]) => GroovyTraversal;
     };
-    export type WithOptions = typeof gremlin.process.withOptions;
-    export type EnumValue = gremlin.process.EnumValue;
     export const common: {
         gremlin: typeof gremlin;
         p: typeof gremlin.process.P;
@@ -481,43 +481,31 @@ declare module "src/loader/index" {
     export * from "src/loader/utils";
 }
 declare module "src/query/queryUtils" {
-    import { GroovyTraversal } from "src/groovy/dsl";
-    import { type EnumValue } from "src/groovy/common";
-    const identity: (...args: any[]) => GroovyTraversal;
+    import { GroovyTraversal, type EnumValue } from "src/groovy/dsl";
     /**
      * base opts for a gremlin traversal
      * @prop end if false returns a GroovyTraveral for chaining
      * @prop limitX e.g. traversal.range(limitX, limitY)
      * @prop limitY e.g. traversal.range(limitX, limitY)
      */
-    export type OptsForResult = {
+    export interface BaseOpts {
         limitX?: number;
         limitY?: number;
-    };
-    export type BaseOpts<T extends {
-        [x: string]: any;
-    }> = T["end"] extends "T" ? T & OptsForResult : {
-        end: "F";
-    } & OptsForResult;
-    export type CreateBaseOpts<T, Opts> = BaseOpts<{
-        end: T;
-    }> & Opts;
+        [x: string]: unknown;
+    }
     /**
      * helper fn for supplying options to a {@link GroovyTraversal}
      * @param overrides
      * @returns
      */
-    export const getBaseOpts: <T extends {
-        [x: string]: any;
-    }>(overrides: BaseOpts<T>) => BaseOpts<T> & {
+    export const getBaseOpts: (overrides: BaseOpts) => {
         limitX: number;
         limitY: number;
     };
-    export function isGroovy(gt: any, end?: "T" | "F" | undefined): gt is GroovyTraversal;
     export const throwIfEmpty: (thing: string, received?: unknown) => false | undefined;
     export const throwInvalidQuery: (reason: string, ...extra: any[]) => never;
     export interface ElementProps {
-        elements?: GroovyTraversal | ReturnType<typeof identity>;
+        elements?: GroovyTraversal;
         elKeys?: (string | EnumValue)[];
         as?: string[];
     }

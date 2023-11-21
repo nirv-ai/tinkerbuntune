@@ -8,6 +8,8 @@ const { GraphTraversal, GraphTraversalSource } = gremlin.process;
 /**
  * redeclare types
  */
+export type WithOptions = typeof gremlin.process.withOptions;
+export type EnumValue = gremlin.process.EnumValue;
 export type Nullable<T> = T | null;
 export type Traverser = typeof gremlin.process.Traverser;
 export type TraverserMap<T> = Map<string, T>;
@@ -33,7 +35,7 @@ export class GroovyTraversal extends GraphTraversal {
   keys() {
     return this.valueMap().select(gremlin.process.column.keys);
   }
-  next<T>() {
+  override next<T>() {
     return super.next() as Promise<IteratorResult<TraverserMap<T>>>;
   }
 }

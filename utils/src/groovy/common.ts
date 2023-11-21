@@ -50,10 +50,6 @@ export const go = (dir: EDir) => {
   } else throw new Error(`invalid direction, expect in|out`);
 };
 
-// re-export types
-export type WithOptions = typeof gremlin.process.withOptions;
-export type EnumValue = gremlin.process.EnumValue;
-
 export const common = {
   ...gremlin.process,
   gremlin: gremlin,
