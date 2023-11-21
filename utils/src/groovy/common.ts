@@ -50,9 +50,6 @@ export const go = (dir: EDir) => {
   } else throw new Error(`invalid direction, expect in|out`);
 };
 
-// TODO: create bug in apache repo: this doesnt exist on gremlin.process
-// ^ const CardinalityValue = gremlin.process.CardinalityValue;
-
 // re-export types
 export type WithOptions = typeof gremlin.process.withOptions;
 export type EnumValue = gremlin.process.EnumValue;
@@ -83,5 +80,5 @@ export const common = {
   "driver",
   "TextP",
   "direction",
-  // @ts-ignore
+  // @ts-expect-error
 ].forEach((prop) => delete common[prop]);

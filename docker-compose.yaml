@@ -8,9 +8,9 @@ services:
     volumes:
       - ${PWD}/server/air-routes.groovy:/opt/gremlin-server/scripts/air-routes.groovy
       - ${PWD}/data/air-routes.graphml:/opt/gremlin-server/data/air-routes.graphml
-  gbun:
-    profiles: ["bun"]
-    container_name: gbun
+  tinkerbuntune-utils:
+    profiles: ["tinkerbuntune-utils"]
+    container_name: tinkerbuntune
     image: oven/bun:1.0.13
     network_mode: host
     volumes:

@@ -23,12 +23,12 @@
     "type-fest": "4.8"
   },
   "peerDependencies": {
-    "csv": "6.3.5",
     "gremlin": "3.6.2",
     "type-fest": "4.8",
     "typescript": "5.2"
   },
   "dependencies": {
+    "csv": "6.3.5",
     "@msgpack/msgpack": "^3.0.0-beta2"
   }
 }
