@@ -59,7 +59,6 @@ export const elementProps = ({
   elements = identity(),
   elKeys = [],
 }: ElementProps): GroovyTraversal => {
-  // @ts-ignore GraphTraversal doesnt have keys
   return elements
     .as(...as.concat("base"))
     .valueMap(...elKeys)
@@ -83,7 +82,6 @@ export const combineProps = ({
   elKeys = [],
   traversals = [],
 }: CombineProps): GroovyTraversal => {
-  // @ts-ignore GraphTraversal doesnt have keys
   return elements.local(
     union(
       project("id", "label").by(t.id).by(t.label),
@@ -104,7 +102,6 @@ export const groupByIdentity = ({
   elements = identity(),
   elKeys = [],
 }: Exclude<ElementProps, "as">): GroovyTraversal =>
-  // @ts-ignore GraphTraversal doesnt have keys
   elements
     .group()
     .by(elKeys[0] ?? t.id)

@@ -18,8 +18,8 @@
   "devDependencies": {
     "@types/gremlin": "3.6",
     "bun-types": "latest",
-    "csv": "6.3.5",
     "gremlin": "3.6.2",
+    "hono": "^3.10.2",
     "type-fest": "4.8"
   },
   "peerDependencies": {
