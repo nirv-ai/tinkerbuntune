@@ -91,7 +91,7 @@ ctrlp ctrlq
 
 ```sh
 ###  starts a bun server with gremlin javascript
-./gbun.sh
+./runutils.sh
 
 ### install deps and execute examples file
 bun install

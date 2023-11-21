@@ -8,13 +8,15 @@ services:
     volumes:
       - ${PWD}/server/air-routes.groovy:/opt/gremlin-server/scripts/air-routes.groovy
       - ${PWD}/data/air-routes.graphml:/opt/gremlin-server/data/air-routes.graphml
-  tinkerbuntune-utils:
-    profiles: ["tinkerbuntune-utils"]
-    container_name: tinkerbuntune
+  utils:
+    profiles: ["utils"]
+    container_name: utils
     image: oven/bun:1.0.13
     network_mode: host
     volumes:
-      - ${PWD}/bun:/home/bun/app
+      - ${PWD}/utils:/home/bun/app
+      - ${PWD}/node_modules:/home/bun/app/node_modules
+      - ${PWD}/bun.lockb:/home/bun/app/bun.lockb
     depends_on:
       gserver:
         condition: service_started
