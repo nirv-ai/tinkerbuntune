@@ -1,23 +1,24 @@
-/**
- * @see  https://tinkerpop.apache.org/docs/3.7.0/reference/#gremlin-javascript-imports
- *
- * common imports to match globals available in gremlin-groovy
- * useful for those coming from the practical gremlin book
- * and want a similar environment in bun without violating typescript best practices
- */
-
 import gremlin from "gremlin";
 import { GroovyTraversal } from "./dsl";
 
 const __ = gremlin.process.statics as gremlin.process.Statics<GroovyTraversal>;
 
-// programmaticaly traverse the graph
-// allowing the consumer to determine the ege/vert along the way
+/**
+ * used with {@link go} to programmatically traverse the graph
+ * consumers dont need to know the direction, but can still pick the edge/vert
+ */
 export enum EDir {
   out = "out",
   in = "in",
 }
-// @see https://tinkerpop.apache.org/docs/3.7.0/reference/#vertex-steps
+
+/**
+ * aids in reusing traversal patterns
+ * e.g. a bunch of common queries from V > E > V can be specified in a json config
+ * { x: [vID, eID, vID], y: [vID, eID, vID]} you can use {@link go} to automatically traverse this graph
+ * @param dir {@link EDir}
+ * @returns
+ */
 export const go = (dir: EDir) => {
   const base = {
     both: __.both,
@@ -31,25 +32,35 @@ export const go = (dir: EDir) => {
     outE: __.outE,
     out: __.out,
   };
-  if (dir === EDir.in) {
-    return {
-      ...base,
-      to: {
-        e: __.inE,
-        v: __.in_,
-      },
-    };
-  } else if (dir === EDir.out) {
-    return {
-      ...base,
-      to: {
-        e: __.outE,
-        v: __.out,
-      },
-    };
-  } else throw new Error(`invalid direction, expect in|out`);
+  switch (dir) {
+    case EDir.in:
+      return {
+        ...base,
+        to: {
+          e: __.inE,
+          v: __.in_,
+        },
+      };
+    case EDir.out:
+      return {
+        ...base,
+        to: {
+          e: __.outE,
+          v: __.out,
+        },
+      };
+    default:
+      throw new Error(`invalid: ${dir}\nexpected an EDir}`);
+  }
 };
 
+/**
+ * common imports to match globals available in gremlin-groovy.
+ * useful for those coming from the practical gremlin book
+ * and want a similar environment in bun without violating typescript best practices
+ *
+ * @see  https://tinkerpop.apache.org/docs/3.7.0/reference/#gremlin-javascript-imports
+ */
 export const common = {
   ...gremlin.process,
   gremlin: gremlin,
@@ -76,5 +87,5 @@ export const common = {
   "driver",
   "TextP",
   "direction",
-  // @ts-expect-error
+  // @ts-expect-error implicit any
 ].forEach((prop) => delete common[prop]);
