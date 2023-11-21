@@ -1,5 +1,5 @@
 import gremlin from "gremlin";
-import { GroovyTraversal } from "./dsl";
+import { type GroovyTraversal } from "./dsl";
 
 const __ = gremlin.process.statics as gremlin.process.Statics<GroovyTraversal>;
 

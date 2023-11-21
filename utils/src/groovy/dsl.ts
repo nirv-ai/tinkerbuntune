@@ -36,7 +36,10 @@ export class GroovyTraversal extends GraphTraversal {
     return this.valueMap().select(gremlin.process.column.keys);
   }
   override next<T>() {
-    return super.next() as Promise<IteratorResult<TraverserMap<T>>>;
+    return super.next() as Promise<IteratorResult<T>>;
+  }
+  nextMap<T>() {
+    return this.next<TraverserMap<T>>();
   }
 }
 
