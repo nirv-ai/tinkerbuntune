@@ -9,11 +9,12 @@
       "bun": "./build/bun/index.js",
       "browser": "./build/browser/index.js",
       "node": "./build/node/index.js"
-    }
+    },
+    "./types": "./types/index.d.ts"
   },
   "scripts": {
     "build": "for runtime in bun browser node; do bun build --entrypoints ./src/index.ts --outdir ./build/${runtime} --target ${runtime} --external bun:jsc --minify-whitespace --minify-syntax; done;",
-    "examples": "bun --watch src/examples/airRoutes.ts",
+    "test:watch": "bun test --watch",
     "test:types": "bunx tsc"
   },
   "devDependencies": {

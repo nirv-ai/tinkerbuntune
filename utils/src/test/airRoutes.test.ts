@@ -10,23 +10,38 @@ import { log } from "logger";
 
 const { scope, column, order, __, t, p } = common;
 
-///////////////////////// CREATE/UPSERT
-log(
-  "CONDITIONAL CREATE: airport with a code of 'XYZ'",
-  await g
-    .V()
-    .has("airport", "code", "XYZ")
-    .fold()
-    .coalesce(
-      __.unfold(),
-      __.addV("airport")
-        .property("code", "XYZ")
-        .property("icao", "KXYZ")
-        .property("desc", "This is not a real airport")
-    )
-    .toList()
-);
+describe("practical gremlin examples", () => {
+  describe("conditional create", () => {
+    test("airport with a code of XYZ", async () => {
+      const upsert = async () =>
+        g
+          .V()
+          .has("airport", "code", "XYZ")
+          .fold()
+          .coalesce(
+            __.unfold(),
+            __.addV("airport")
+              .property("code", "XYZ")
+              .property("icao", "KXYZ")
+              .property("desc", "This is not a real airport")
+          )
+          .toList();
+
+      const first = await upsert();
+      const second = await upsert();
+
+      // @ts-expect-error
+      expect(first?.[0]?.label).toEqual("airport");
+      expect(first).toMatchObject(second);
+    });
+  });
+});
+
 ///////////////////////// READS
+/*
+these are copypasta from practical gremlin i think
+can reuse in other tests
+
 log("edge labels", await g.E().label().dedup().toList());
 log("vertex labels", await g.V().label().dedup().toList());
 log(
@@ -195,3 +210,4 @@ log(
     }
   )
 );
+*/
