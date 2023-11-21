@@ -13,8 +13,9 @@ declare global {
   // not bun stuff
   type GroovyTraversal = groovy.GroovyTraversal;
   var common: typeof groovy.common;
-  var config: types.Config;
+  var configs: Record<string, Map<string, types.Config>>;
   var g: typeof remote.g;
+  var testCsvDirPath: string;
 }
 
 // bun stuff
@@ -25,3 +26,16 @@ globalThis.test = buntest.test;
 // not bun stuff
 globalThis.g = remote.g;
 globalThis.common = groovy.common;
+globalThis.testCsvDirPath = `${import.meta.dir}/csvs`;
+globalThis.configs = {
+  good: new Map([
+    ["functionSpecs", {}],
+    ["jsonSpecs", {}],
+    ["recursiveSpecs", {}],
+    ["mixedSpec", {}],
+  ]),
+  bad: new Map([
+    ["noMatchingCsvSpec", {}],
+    ["configWithNoFiles", {}],
+  ]),
+};

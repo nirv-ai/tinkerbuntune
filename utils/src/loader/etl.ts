@@ -70,10 +70,9 @@ export const parseFile = async (
  * retrieves all filenames with .csv extension at path
  */
 export const readCsvDir = async (csvDir: string, store = getStore()) => {
-  // get all CSVs
-  (await fs.readdir(csvDir))
-    .filter((x) => x.endsWith(".csv"))
-    .forEach((fname) => store.files.add(fname));
+  (await fs.readdir(csvDir)).forEach(
+    (fname) => fname.endsWith(".csv") && store.files.add(fname)
+  );
   log("total csv files found", store.files.size);
 };
 
@@ -189,7 +188,7 @@ export const csvToTinkergraph = async (config: Config, store = getStore()) => {
 };
 
 // FYI: @see https://kelvinlawrence.net/book/Gremlin-Graph-Guide.html#graphsonmapper
-// FYI: @see https://github.com/awslabs/amazon-neptune-tools/blob/master/csv-gremlin/README.md
 // ^ v3 will give you the datatypes required for neptune loader
+// FYI: @see https://github.com/awslabs/amazon-neptune-tools/blob/master/csv-gremlin/README.md
 // TODO (noah): make sure you review the above links before continuing
 export const tinkergraphToNeptuneCsv = () => null;

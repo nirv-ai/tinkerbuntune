@@ -1,6 +1,6 @@
 import { encode, decode, decodeAsync, ExtensionCodec } from "@msgpack/msgpack";
 
-const jsc = typeof Bun !== "undefined" && (await import("bun:jsc"));
+const jsc = import.meta.resolveSync("bun:jsc") && (await import("bun:jsc"));
 
 // @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze#examples
 export function deepFreezeCopy(object: any) {
