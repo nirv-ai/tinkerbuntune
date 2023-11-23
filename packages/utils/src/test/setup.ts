@@ -1,8 +1,7 @@
 import * as buntest from "bun:test";
 
-import * as remote from "remote";
-import * as groovy from "groovy";
-import type * as types from "types";
+import type * as types from "#utils";
+import * as utils from "#utils";
 
 declare global {
   // bun stuff
@@ -11,10 +10,10 @@ declare global {
   var test: typeof buntest.test;
 
   // not bun stuff
-  type GroovyTraversal = groovy.GroovyTraversal;
-  var common: typeof groovy.common;
+  type GroovyTraversal = utils.GroovyTraversal;
+  var common: typeof utils.common;
   var configs: Record<string, Map<string, types.Config>>;
-  var g: typeof remote.g;
+  var g: typeof utils.g;
   var testCsvDirPath: string;
 }
 
@@ -24,8 +23,8 @@ globalThis.expect = buntest.expect;
 globalThis.test = buntest.test;
 
 // not bun stuff
-globalThis.g = remote.g;
-globalThis.common = groovy.common;
+globalThis.g = utils.g;
+globalThis.common = utils.common;
 globalThis.testCsvDirPath = `${import.meta.dir}/csvs`;
 globalThis.configs = {
   good: new Map([

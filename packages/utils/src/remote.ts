@@ -1,5 +1,4 @@
-import { common } from "groovy/common";
-import { GroovyTraversalSource } from "groovy/dsl";
+import { GroovyTraversalSource, common } from "#utils";
 
 const { traversal, DriverRemoteConnection, gremlin } = common;
 

@@ -5,7 +5,7 @@
  * @see remote.ts for consumption of stuff in ./dsl
  *
  */
-import * as dsl from "./dsl";
+import * as dsl from "#utils/groovy/dsl";
 
 describe("dsl", () => {
   describe("GroovyTraversal", () => {

@@ -1,4 +1,4 @@
-import * as etl from "./etl";
+import * as etl from "#utils/loader/etl";
 
 const goodConfigTests = (configMap: typeof configs.good) => {
   describe(`good configs`, () => {

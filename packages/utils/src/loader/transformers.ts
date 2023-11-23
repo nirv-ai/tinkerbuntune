@@ -8,7 +8,7 @@ import type {
   PropsAndLabels,
   TinkerDataEdge,
   TinkerDataVertex,
-} from "types";
+} from "#utils";
 
 export const validateNumStr = (value: NeptuneValue): NumStr => {
   if (typeof value !== "string" || typeof value !== "number")

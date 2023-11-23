@@ -1,0 +1,37 @@
+{
+  "watchOptions": {
+    "excludeDirectories": ["**/node_modules", "**/build", "**/types"],
+    "excludeFiles": ["**/*.test.ts"]
+  },
+  "compilerOptions": {
+    "downlevelIteration": true,
+    "allowArbitraryExtensions": true,
+    "allowImportingTsExtensions": true,
+    "allowJs": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "alwaysStrict": true,
+    "checkJs": true,
+    "composite": true,
+    "declaration": false,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "exactOptionalPropertyTypes": true,
+    "incremental": true,
+    "jsx": "react-jsx",
+    "lib": ["ESNext"],
+    "module": "esnext",
+    "moduleDetection": "force",
+    "moduleResolution": "bundler",
+    "noErrorTruncation": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "resolveJsonModule": true,
+    "resolvePackageJsonImports": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "esnext"
+  }
+}

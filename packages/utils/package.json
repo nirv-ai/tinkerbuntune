@@ -1,0 +1,62 @@
+{
+  "name": "utils",
+  "version": "0.4.0",
+  "type": "module",
+  "types": "./types/index.d.ts",
+  "main": "build/browser.index.js",
+  "module": "build/node.index.js",
+  "packageManager": "bun@1.0.14",
+  "engines": {
+    "bun": ">=1.0.13"
+  },
+  "files": [
+    "build",
+    "src",
+    "types",
+    "tsconfig.json"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nirv-ai/tinkerbuntune.git",
+    "directory": "packages/utils"
+  },
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "bun": "./build/bun.index.js",
+      "node": "./build/node.index.js",
+      "default": "./build/browser.index.js"
+    },
+    "./src/test/*": null,
+    "./*.test.ts": null,
+    "./*.ts": "./src/*.ts",
+    "./package.json": "./package.json"
+  },
+  "imports": {
+    "#utils": "./src/index.ts",
+    "#utils/*": "./src/*.ts"
+  },
+  "scripts": {
+    "build": "bun build:src ; bun build:types",
+    "build:src": "rm -rf build && for runtime in bun browser node; do bun build --entrypoints ./src/${runtime}.ts --outdir ./build --target ${runtime} --external bun:jsc --external gremlin --external type-fest --entry-naming $runtime.index.[ext] --minify --root .; done;",
+    "build:types": "bunx tsc -b tsconfig.build.json --force",
+    "test:watch": "bun test --watch",
+    "types:explain": "bunx tsc -b tsconfig.build.json --explainFiles"
+  },
+  "devDependencies": {
+    "@types/gremlin": "3.6",
+    "bun-types": "^1.0.14",
+    "gremlin": "3.6.2",
+    "hono": "^3.10.2",
+    "type-fest": "4.8"
+  },
+  "peerDependencies": {
+    "gremlin": "3.6.2",
+    "type-fest": "4.8",
+    "typescript": "5.2"
+  },
+  "dependencies": {
+    "csv": "6.3.5",
+    "@msgpack/msgpack": "^3.0.0-beta2"
+  }
+}

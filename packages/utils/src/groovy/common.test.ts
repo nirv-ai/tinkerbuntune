@@ -2,7 +2,7 @@
  * this file only tests modifications made to common
  */
 
-import * as common from "./common";
+import * as common from "#utils/groovy/common";
 
 describe("common", () => {
   describe("go", () => {

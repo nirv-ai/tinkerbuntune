@@ -1,7 +1,7 @@
-import { common } from "groovy/common";
-import { g } from "remote";
+import { common, g } from "#utils";
+
 import * as utils from "./utils";
-import type { ConfigSpec, TinkerDataEdge, TinkerDataVertex } from "types";
+import type { ConfigSpec, TinkerDataEdge, TinkerDataVertex } from "#utils";
 
 const { t, Direction, merge } = common;
 
