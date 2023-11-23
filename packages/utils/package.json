@@ -37,9 +37,10 @@
     "#utils/*": "./src/*.ts"
   },
   "scripts": {
-    "build": "bun build:src ; bun build:types",
+    "build": "bun build:src && bun build:types && bun build:docs",
     "build:src": "rm -rf build && for runtime in bun browser node; do bun build --entrypoints ./src/${runtime}.ts --outdir ./build --target ${runtime} --external bun:jsc --external gremlin --external type-fest --entry-naming $runtime.index.[ext] --minify --root .; done;",
     "build:types": "bunx tsc -b tsconfig.build.json --force",
+    "build:docs": "bunx typedoc",
     "test:watch": "bun test --watch",
     "types:explain": "bunx tsc -b tsconfig.build.json --explainFiles"
   },
@@ -48,7 +49,8 @@
     "bun-types": "^1.0.14",
     "gremlin": "3.6.2",
     "hono": "^3.10.2",
-    "type-fest": "4.8"
+    "type-fest": "4.8",
+    "typedoc": "^0.25.3"
   },
   "peerDependencies": {
     "gremlin": "3.6.2",
