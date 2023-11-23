@@ -1,9 +1,6 @@
 import path from "node:path";
 
-import { common } from "#utils";
 import type { NumStr, ConfigSpec } from "#utils";
-
-const { __ } = common;
 
 /**
  * drops the extension from a path

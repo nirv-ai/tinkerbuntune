@@ -36,15 +36,12 @@ export const toJson = <T = Record<any, any>>(data: Map<any, any>): T =>
 
 // @see https://stackoverflow.com/questions/29085197/how-do-you-json-stringify-an-es6-map
 // FYI: ~155k nanoseconds
-export function jsonReplacer(key: unknown, value: unknown) {
-  if (value instanceof Map) {
-    return Object.fromEntries(value.entries());
-  } else {
-    return value;
-  }
+export function mapTojsonReplacer(key: unknown, value: unknown) {
+  if (typeof key !== "string" || typeof key !== "number") return undefined;
+  return value instanceof Map ? Object.fromEntries(value.entries()) : value;
 }
 export const toJsonStringified = (data: Map<any, any>): string =>
-  JSON.stringify(data, jsonReplacer);
+  JSON.stringify(data, mapTojsonReplacer);
 
 // @see https://bun.sh/docs/api/utils#serialize-deserialize-in-bun-jsc
 // FYI: ~28k nanoseconds to deserialize(serialize(data))

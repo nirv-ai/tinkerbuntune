@@ -66,7 +66,7 @@ export const csvToTinkerDataEdge = (
   data: string[][],
   headers: string[]
 ): TinkerDataEdge[] => {
-  return data.map((recordRaw, i) => {
+  return data.map((recordRaw) => {
     const record = spec.transformRecord?.(recordRaw) ?? recordRaw;
 
     const pl = transformPropsAndLabels(spec, headers, record);
@@ -93,7 +93,7 @@ export const csvToTinkerDataVertex = (
   data: string[][],
   headers: string[]
 ): TinkerDataVertex[] => {
-  return data.map((recordRaw, i) => {
+  return data.map((recordRaw) => {
     const record = spec.transformRecord?.(recordRaw) ?? recordRaw;
     const pl = transformPropsAndLabels(spec, headers, record);
     const recordId = spec.recordId(pl, record);

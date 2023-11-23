@@ -5,7 +5,7 @@ declare module "src/api/serialization" {
     export function deepFreezeCopy(object: any): any;
     export function mapToJsonIterator<T = Record<any, any>>(map: Map<any, any>): T;
     export const toJson: <T = Record<any, any>>(data: Map<any, any>) => T;
-    export function jsonReplacer(key: unknown, value: unknown): any;
+    export function mapTojsonReplacer(key: unknown, value: unknown): any;
     export const toJsonStringified: (data: Map<any, any>) => string;
     export const toBunBuffer: (data: unknown) => SharedArrayBuffer;
     export const fromBunBuffer: <T = unknown>(data: ArrayBufferLike | TypedArray | Buffer) => T;
