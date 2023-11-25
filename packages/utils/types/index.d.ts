@@ -1,10 +1,27 @@
 /// <reference types="bun-types" />
 /// <reference types="gremlin" />
+declare module "eslint.config" {
+    const _default: any[];
+    export default _default;
+}
 declare module "src/api/serialization" {
-    import { encode, decode, decodeAsync, ExtensionCodec } from "@msgpack/msgpack";
+    import { encode, decode, decodeAsync, ExtensionCodec } from '@msgpack/msgpack';
+    /**
+     *
+     * @param object
+     */
     export function deepFreezeCopy(object: any): any;
+    /**
+     *
+     * @param map
+     */
     export function mapToJsonIterator<T = Record<any, any>>(map: Map<any, any>): T;
     export const toJson: <T = Record<any, any>>(data: Map<any, any>) => T;
+    /**
+     *
+     * @param key
+     * @param value
+     */
     export function mapTojsonReplacer(key: unknown, value: unknown): any;
     export const toJsonStringified: (data: Map<any, any>) => string;
     export const toBunBuffer: (data: unknown) => SharedArrayBuffer;
@@ -18,7 +35,7 @@ declare module "src/api/serialization" {
     };
     export const extensionCodec: ExtensionCodec<undefined>;
     export const MSGPACK_HEADERS: {
-        "Content-Type": string;
+        'Content-Type': string;
     };
     export const SET_EXT_TYPE = 0;
     export const MAP_EXT_TYPE = 1;
@@ -35,7 +52,7 @@ declare module "src/groovy/dsl" {
     /**
      * @see https://tinkerpop.apache.org/docs/3.7.0/reference/#gremlin-javascript-dsl
      */
-    import gremlin, { type structure } from "gremlin";
+    import gremlin, { type structure } from 'gremlin';
     const GraphTraversal: typeof gremlin.process.GraphTraversal, GraphTraversalSource: typeof gremlin.process.GraphTraversalSource;
     /**
      * redeclare types
@@ -45,12 +62,9 @@ declare module "src/groovy/dsl" {
     export type Nullable<T> = T | null;
     export type Traverser = typeof gremlin.process.Traverser;
     export type TraverserMap<T> = Map<string, T>;
-    export interface Graph extends structure.Graph {
-    }
-    export interface Bytecode extends gremlin.process.Bytecode {
-    }
-    export interface TraversalStrategies extends gremlin.process.TraversalStrategies {
-    }
+    export type Graph = structure.Graph;
+    export type Bytecode = gremlin.process.Bytecode;
+    export type TraversalStrategies = gremlin.process.TraversalStrategies;
     /**
      * GroovyTraversal
      *
@@ -73,7 +87,7 @@ declare module "src/groovy/dsl" {
     }
 }
 declare module "src/groovy/common" {
-    import gremlin from "gremlin";
+    import gremlin from 'gremlin';
     import { type GroovyTraversal } from "src/groovy/dsl";
     /**
      * used with {@link go} to programmatically traverse the graph
@@ -110,7 +124,6 @@ declare module "src/groovy/common" {
      * common imports to match globals available in gremlin-groovy.
      * useful for those coming from the practical gremlin book
      * and want a similar environment in bun without violating typescript best practices
-     *
      * @see  https://tinkerpop.apache.org/docs/3.7.0/reference/#gremlin-javascript-imports
      */
     export const common: {
@@ -221,14 +234,12 @@ declare module "src/loader/utils" {
     import type { NumStr } from "src/index";
     /**
      * drops the extension from a path
-     *
      * @param fname string e.g. blah.csv
      * @returns string
      */
     export const fnameToBname: (fname: string) => string;
     /**
      * adds an extension to a filename
-     *
      * @param bname a filename e.g. `blah`
      * @param ext to add to filename e.g. `csv`
      * @returns string with extension added
@@ -237,19 +248,18 @@ declare module "src/loader/utils" {
     /**
      * converts a postgres date string to a javascript date object
      * @see https://docs.aws.amazon.com/neptune/latest/userguide/best-practices-gremlin-datetime-glv.html
-     *
      * @param date string
      * @returns javascript Date
      */
     export const pgDateToJs: (date: string) => Date;
     /**
      * creates a hash of some string
+     * @param id
      * @see https://bun.sh/docs/api/hashing#bun-hash
      */
     export const hashId: (id: string) => string;
     /**
      * neptune requires 1 label for every edge
-     *
      * @param data array with a single edge label
      * @returns {@link NumStr}
      */
@@ -257,21 +267,18 @@ declare module "src/loader/utils" {
     /**
      * neptune allows 1/more labels for every vertex but recommends at most 1
      * but tinkergraph only allows 1 label, we use the label at index 0
-     *
      * @param data array with 1/more edge labels
      * @returns
      */
     export const getVertexLabel: (data: NumStr[]) => NumStr;
     /**
      * returns a fn to retrieve a vertex/edge label depending on the config type
-     *
      * @param type V or E
      * @returns
      */
     export const getLabel: <T = "v" | "e">(type: T) => typeof getVertexLabel | typeof getEdgeLabel;
     /**
      * reduces a Promise.allSettled response to {success[], failure[]} object
-     *
      * @param result PromiseSettledResult
      * @returns
      */
@@ -286,6 +293,8 @@ declare module "src/loader/loaders" {
     export const tinkerDataVertex: (tdata: TinkerDataVertex) => Map<string | import("gremlin").process.EnumValue, any>[];
     /**
      * merges vertices and edges into a tinkergraph based on a specification
+     * @param data
+     * @param spec
      */
     export const tinkerData: (data: TinkerDataEdge[] | TinkerDataVertex[], spec: ConfigSpec) => Promise<{
         success: string[];
@@ -297,18 +306,29 @@ declare module "src/loader/transformers" {
     export const validateNumStr: (value: NeptuneValue) => NumStr;
     /**
      * extracts properties and labels from a CSV record
+     * @param spec
+     * @param headers
+     * @param record
      */
     export const transformPropsAndLabels: (spec: ConfigSpec, headers: string[], record: NeptuneValue[]) => PropsAndLabels;
     /**
      * converts a csv record to {@link TinkerDataEdge}
+     * @param spec
+     * @param data
+     * @param headers
      */
     export const csvToTinkerDataEdge: (spec: ConfigSpecEdge, data: string[][], headers: string[]) => TinkerDataEdge[];
     /**
      * converts a csv record to {@link TinkerDataVertex}
+     * @param spec
+     * @param data
+     * @param headers
      */
     export const csvToTinkerDataVertex: (spec: ConfigSpecVertex, data: string[][], headers: string[]) => TinkerDataVertex[];
     /**
      * transforms a csv file to {@link TinkerDataEdge} or {@link TinkerDataVertex} based on a {@link ConfigSpec}
+     * @param spec
+     * @param dataParsed
      */
     export const csvToTinkerData: (spec: ConfigSpec, dataParsed: CsvParsed) => Promise<TinkerDataEdge[] | TinkerDataVertex[]>;
 }
@@ -327,6 +347,7 @@ declare module "src/loader/etl" {
      * @param bname filename of the CSV file without extension
      * @param spec associated {@link ConfigSpec}
      * @param dataKey generally only used when spec.recursive = actualBname
+     * @param store
      */
     export const transformAndSaveTinkerData: (bname: string, spec: ConfigSpec, dataKey?: string, store?: {
         files: Set<string>;
@@ -338,6 +359,9 @@ declare module "src/loader/etl" {
     }) => Promise<void>;
     /**
      * parses and saves a file
+     * @param bname
+     * @param filepath
+     * @param store
      */
     export const parseFile: (bname: string, filepath: string, store?: {
         files: Set<string>;
@@ -349,6 +373,8 @@ declare module "src/loader/etl" {
     }) => Promise<void>;
     /**
      * retrieves all filenames with .csv extension at path
+     * @param csvDir
+     * @param store
      */
     export const readCsvDir: (csvDir: string, store?: {
         files: Set<string>;
@@ -360,6 +386,8 @@ declare module "src/loader/etl" {
     }) => Promise<void>;
     /**
      * transforms all {@link ConfigSpec}s in {@link Config}.files and saves each as {@link TinkerData}
+     * @param config
+     * @param store
      */
     export const transformConfigFiles: (config: Config, store?: {
         files: Set<string>;
@@ -371,6 +399,8 @@ declare module "src/loader/etl" {
     }) => Promise<void>;
     /**
      * transforms unmapped csv files and saves each as {@link TinkerData}
+     * @param config
+     * @param store
      */
     export const transformUnmappedFiles: (config: Config, store?: {
         files: Set<string>;
@@ -382,6 +412,8 @@ declare module "src/loader/etl" {
     }) => Promise<void>;
     /**
      * loads all {@link TinkerData} into tinkergraph
+     * @param config
+     * @param store
      */
     export const loadTinkerData: (config: Config, store?: {
         files: Set<string>;
@@ -394,6 +426,7 @@ declare module "src/loader/etl" {
     /**
      * extracts CSV data, transforms to Tinkerdata and loads into Tinkergraph
      * @param config {@link Config}
+     * @param store
      */
     export const csvToTinkergraph: (config: Config, store?: {
         files: Set<string>;
@@ -412,12 +445,13 @@ declare module "src/loader/index" {
     export * from "src/loader/utils";
 }
 declare module "src/query/queryUtils" {
-    import { GroovyTraversal, type EnumValue } from "src/index";
+    import type { GroovyTraversal } from "src/index";
+    import { type EnumValue } from "src/index";
     /**
      * base opts for a gremlin traversal
-     * @prop end if false returns a GroovyTraveral for chaining
-     * @prop limitX e.g. traversal.range(limitX, limitY)
-     * @prop limitY e.g. traversal.range(limitX, limitY)
+     * @property end if false returns a GroovyTraveral for chaining
+     * @property limitX e.g. traversal.range(limitX, limitY)
+     * @property limitY e.g. traversal.range(limitX, limitY)
      */
     export interface BaseOpts {
         limitX?: number;
@@ -441,11 +475,11 @@ declare module "src/query/queryUtils" {
         as?: string[];
     }
     export const elementProps: ({ as, elements, elKeys, }: ElementProps) => GroovyTraversal;
-    export interface CombineProps extends Exclude<ElementProps, "as"> {
+    export interface CombineProps extends Exclude<ElementProps, 'as'> {
         traversals?: GroovyTraversal[];
     }
     export const combineProps: ({ elements, elKeys, traversals, }: CombineProps) => GroovyTraversal;
-    export const groupByIdentity: ({ elements, elKeys, }: Exclude<ElementProps, "as">) => GroovyTraversal;
+    export const groupByIdentity: ({ elements, elKeys, }: Exclude<ElementProps, 'as'>) => GroovyTraversal;
 }
 declare module "src/query/index" {
     export * from "src/query/queryUtils";
@@ -456,7 +490,7 @@ declare module "src/remote" {
     export const client: import("gremlin").driver.Client;
 }
 declare module "src/types" {
-    import type { RequireAtLeastOne, SetRequired } from "type-fest";
+    import type { RequireAtLeastOne, SetRequired } from 'type-fest';
     export type CsvParsed = string[][];
     export type NumStr = string | number;
     export type NeptuneValueSingle = NumStr | boolean | Date;
@@ -472,55 +506,52 @@ declare module "src/types" {
         t: PropLabelNumStr;
         l: PropLabelNumStr;
         recordId: PropLabelNumStr;
-        p?: (pl: PropsAndLabels) => PropsAndLabels["p"];
+        p?: (pl: PropsAndLabels) => PropsAndLabels['p'];
     }
     export interface EdgeData {
-        f: ReturnType<EdgeConfig["f"]>;
-        t: ReturnType<EdgeConfig["t"]>;
-        l: ReturnType<EdgeConfig["l"]>;
-        p?: Pick<PropsAndLabels, "p">;
-        recordId: ReturnType<EdgeConfig["recordId"]>;
+        f: ReturnType<EdgeConfig['f']>;
+        t: ReturnType<EdgeConfig['t']>;
+        l: ReturnType<EdgeConfig['l']>;
+        p?: Pick<PropsAndLabels, 'p'>;
+        recordId: ReturnType<EdgeConfig['recordId']>;
     }
     /**
      * specifies how to transform a CSV into a {@link TinkerData} configuration
-     *
-     * @prop default p: property | l: label
+     * @property default p: property | l: label
      *    default col assignment for unassigned columns
      *    will ignore unknown columns if not set
-     * @prop ignoreCols always ignore these columns
-     * @prop ignoreEmptyCol whether to ignore empty columns
-     * @prop l map specific col indexes to labels
-     * @prop p map specific col indexes to properties
-     * @prop transform mutate the column's value
+     * @property ignoreCols always ignore these columns
+     * @property ignoreEmptyCol whether to ignore empty columns
+     * @property l map specific col indexes to labels
+     * @property p map specific col indexes to properties
+     * @property transform mutate the column's value
      */
-    export type ConfigSpecColMap = {
-        default?: "p" | "l";
+    export interface ConfigSpecColMap {
+        default?: 'p' | 'l';
         ignoreCols?: number[];
         ignoreEmptyCol?: boolean;
         l?: number[];
         p?: number[];
         transform?: (i: number, col: NeptuneValue) => NeptuneValue;
-    };
+    }
     /**
      * inject new labels / properties before any other transformations take place
-     *
-     * @prop l labels
-     * @prop p properties
+     * @property l labels
+     * @property p properties
      */
     export type ConfigSpecInject = RequireAtLeastOne<{
         l?: NumStr[];
         p?: Record<string, NeptuneValue>;
-    }, "l" | "p">;
+    }, 'l' | 'p'>;
     /**
      * Base type for configs
-     *
-     * @prop colMap {@link ConfigSpecColMap}
-     * @prop edges {@link EdgeConfig}
-     * @prop inject {@link ConfigSpecInject}
-     * @prop recursive basename of a previously parsed csv file to reuse a {@link TinkerData} for a new ETL job
-     * @prop transformHeaders process the header array
-     * @prop transformRecord process the record as a whole
-     * @prop type the CSV contains v (vertices) or e (edges)
+     * @property colMap {@link ConfigSpecColMap}
+     * @property edges {@link EdgeConfig}
+     * @property inject {@link ConfigSpecInject}
+     * @property recursive basename of a previously parsed csv file to reuse a {@link TinkerData} for a new ETL job
+     * @property transformHeaders process the header array
+     * @property transformRecord process the record as a whole
+     * @property type the CSV contains v (vertices) or e (edges)
      */
     interface ConfigSpecBase {
         colMap?: ConfigSpecColMap;
@@ -529,7 +560,7 @@ declare module "src/types" {
         recursive?: string;
         transformHeaders?: (headers: string[]) => string[];
         transformRecord?: (record: string[]) => NeptuneValue[];
-        type: "v" | "e";
+        type: 'v' | 'e';
     }
     /**
      * Vertex {@link ConfigSpec}
@@ -537,14 +568,14 @@ declare module "src/types" {
     export type ConfigSpecVertex = ConfigSpecBase & {
         colMap: ConfigSpecColMap;
         recordId: PropLabelNumStr;
-        type: "v";
+        type: 'v';
     };
     /**
      * Edge {@link ConfigSpec}
      */
     export type ConfigSpecEdge = ConfigSpecBase & {
         edges: EdgeConfig[];
-        type: "e";
+        type: 'e';
     };
     export type ConfigSpec = ConfigSpecVertex | ConfigSpecEdge;
     /**
@@ -558,12 +589,11 @@ declare module "src/types" {
     export type ConfigFilesMapValue = ConfigSpec | ((fname: string) => ConfigSpec);
     /**
      * Loader Configuration
-     *
-     * @prop csvDir absolute path to directory containing csv files
-     * @prop files map of filenames to explicit {@link ConfigSpec}s definitions
-     * @prop getSpec {@link ConfigSpecGetter} called for each load file
-     * @prop includeUnmappeDfiles if true, will process any csv if getSpec returns a valid {@link ConfigSpec}
-     * @prop persistResultLog will save whatever is returned from tinkergraph to file
+     * @property csvDir absolute path to directory containing csv files
+     * @property files map of filenames to explicit {@link ConfigSpec}s definitions
+     * @property getSpec {@link ConfigSpecGetter} called for each load file
+     * @property includeUnmappeDfiles if true, will process any csv if getSpec returns a valid {@link ConfigSpec}
+     * @property persistResultLog will save whatever is returned from tinkergraph to file
      */
     export type Config = RequireAtLeastOne<{
         csvDir: string;
@@ -571,7 +601,7 @@ declare module "src/types" {
         getSpec?: ConfigSpecGetter;
         includeUnmappedFiles?: boolean;
         persistResultLog?: boolean;
-    }, "files" | "getSpec">;
+    }, 'files' | 'getSpec'>;
     /**
      * base TinkerData for vertices and edges
      */
@@ -582,13 +612,11 @@ declare module "src/types" {
     /**
      * Vertex {@link TinkerDataBase}
      */
-    export interface TinkerDataVertex extends SetRequired<TinkerDataBase, "recordId"> {
-    }
+    export type TinkerDataVertex = SetRequired<TinkerDataBase, 'recordId'>;
     /**
      * Edge {@link TinkerDataBase}
      */
-    export interface TinkerDataEdge extends SetRequired<TinkerDataBase, "edges"> {
-    }
+    export type TinkerDataEdge = SetRequired<TinkerDataBase, 'edges'>;
     export type TinkerData = TinkerDataVertex | TinkerDataEdge;
 }
 declare module "src/index" {

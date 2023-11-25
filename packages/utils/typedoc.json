@@ -1,6 +1,9 @@
 {
   "extends": ["../../typedoc.json"],
   "entryPoints": ["src/node.ts", "src/browser.ts", "src/bun.ts"],
-  "json": "docs",
-  "entryPointStrategy": "resolve"
+  "json": "./docs/exports.json",
+  "entryPointStrategy": "resolve",
+  "emit": "none",
+  "skipErrorChecking": true,
+  "excludeNotDocumented": false
 }

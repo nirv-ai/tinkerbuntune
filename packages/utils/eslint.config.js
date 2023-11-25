@@ -52,8 +52,16 @@ export default [
       },
     },
   },
-  ...compat.plugins('@typescript-eslint'),
-  ...eslintConfigESLint,
+  ...compat.plugins('@typescript-eslint', 'eslint-plugin-tsdoc'),
+  ...eslintConfigESLint
+    .map(({ files, ...rest }) =>
+      rest.plugins?.jsdoc || rest.settings?.jsdoc
+        ? false
+        : !files || files.includes('**/*.js')
+        ? rest
+        : { files, ...rest }
+    )
+    .filter(Boolean),
   {
     rules: tseslint.configs['strict-type-checked'].rules,
   },
