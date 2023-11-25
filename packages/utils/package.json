@@ -48,13 +48,6 @@
     "test:watch": "bun test --watch",
     "types:explain": "bunx tsc -b tsconfig.build.json --explainFiles"
   },
-  "lint-staged": {
-    "*.*{js,ts}x?": [
-      "bunx eslint --fix",
-      "bun run test:ci",
-      "bun run build"
-    ]
-  },
   "devDependencies": {
     "@eslint/eslintrc": "2.1.3",
     "@stylistic/eslint-plugin": "1.4.1",
