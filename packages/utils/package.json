@@ -52,8 +52,8 @@
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
-    "*.js": "eslint --fix",
-    ".ts": "eslint --fix"
+    "*.js*": "eslint --fix",
+    "*.ts*": "eslint --fix"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^2.1.3",

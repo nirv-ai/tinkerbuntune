@@ -1,7 +1,13 @@
 {
   "name": "tinkerbuntune",
   "private": true,
+  "scripts": {
+    "build:docs": "bunx typedoc"
+  },
   "workspaces": [
     "./packages/*"
-  ]
+  ],
+  "devDependencies": {
+    "typedoc-plugin-merge-modules": "^5.1.0"
+  }
 }

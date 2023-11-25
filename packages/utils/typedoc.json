@@ -1,9 +1,17 @@
 {
   "extends": ["../../typedoc.json"],
+  "tsconfig": "tsconfig.typedoc.json",
   "entryPoints": ["src/node.ts", "src/browser.ts", "src/bun.ts"],
   "json": "./docs/exports.json",
   "entryPointStrategy": "resolve",
-  "emit": "none",
   "skipErrorChecking": true,
-  "excludeNotDocumented": false
+  "excludeNotDocumented": false,
+  "treatWarningsAsErrors": false,
+  "cleanOutputDir": true,
+  "githubPages": false,
+  "validation": {
+    "notExported": true,
+    "invalidLink": true,
+    "notDocumented": true
+  }
 }

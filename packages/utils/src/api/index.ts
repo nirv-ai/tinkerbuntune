@@ -1,1 +1,1 @@
-export * from '#utils/api/serialization';
+export * from '#utils/api/serialization'
