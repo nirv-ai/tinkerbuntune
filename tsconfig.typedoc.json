@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["packages/utils/src", "packages/utils/types"],
+  "compilerOptions": {
+    "noEmit": true,
+    "declaration": true,
+    "declarationMap": true
+  }
+}

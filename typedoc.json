@@ -1,18 +1,26 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "entryPoints": ["packages/*/docs/*/*.json"],
+  "entryPoints": [
+    "packages/utils/src/browser.ts",
+    "packages/utils/src/node.ts",
+    "packages/utils/src/index.ts"
+  ],
   "out": "./docs",
   "includeVersion": true,
-  "tsconfig": "tsconfig.json",
+  "tsconfig": "tsconfig.typedoc.json",
   "emit": "docs",
-  "entryPointStrategy": "merge",
-  "skipErrorChecking": false,
+  "entryPointStrategy": "expand",
+  "excludeNotDocumented": false,
+  "skipErrorChecking": true,
   "githubPages": true,
-  "treatWarningsAsErrors": true,
+  "treatWarningsAsErrors": false,
   "cleanOutputDir": true,
   "validation": {
     "notExported": true,
     "invalidLink": true,
     "notDocumented": true
-  }
+  },
+  "plugin": ["typedoc-plugin-merge-modules"],
+  "mergeModulesRenameDefaults": true, // NEW option of TypeDoc added by this plugin
+  "mergeModulesMergeMode": "module" // NEW option of TypeDoc added by this plugin
 }

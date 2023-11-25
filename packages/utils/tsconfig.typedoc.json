@@ -1,7 +1,0 @@
-{
-  "extends": "./tsconfig.build.json",
-  "files": ["types/index.d.ts"],
-  "compilerOptions": {
-    "noEmit": true
-  }
-}
