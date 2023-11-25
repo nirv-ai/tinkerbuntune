@@ -2,7 +2,10 @@ import micromatch from 'micromatch';
 
 export default (stagedFiles) => {
   const codeFiles = micromatch(stagedFiles, ['**/src/**/*.*{js,ts}']).join(' ');
-  const bulidFiles = micromatch(stagedFiles, ['**/tsconfig*.json']).join(' ');
+  const bulidFiles = micromatch(stagedFiles, [
+    '**/tsconfig*.json',
+    '**/package.json',
+  ]).join(' ');
 
   // console.info('\n\n utils/codeFiles', codeFiles);
   const linters = codeFiles.length

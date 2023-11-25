@@ -6,8 +6,8 @@
     "./packages/*"
   ],
   "scripts": {
-    "build": "bun run --bun build:docs",
-    "build:docs": "bunx --bun typedoc",
+    "build": "bun run build:docs",
+    "build:docs": "bunx typedoc",
     "prepare": "husky install"
   },
   "devDependencies": {

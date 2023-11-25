@@ -2,4 +2,7 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 [ -n "$CI" ] && exit 0
-bunx --bun lint-staged --concurrent false
+
+# to force use of bun requires bun to implement more node APIs
+# bunx --bun lint-staged --concurrent false
+bunx lint-staged --concurrent false

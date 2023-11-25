@@ -3,6 +3,7 @@ import micromatch from 'micromatch';
 export default (stagedFiles) => {
   const buildFiles = micromatch(stagedFiles, [
     '**/packages/**/{build,types}',
+    '**/package.json',
     '**/tsconfig*.json',
     '**/typedoc.json',
   ]).join(' ');
