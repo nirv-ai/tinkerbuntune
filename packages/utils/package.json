@@ -41,19 +41,21 @@
   },
   "scripts": {
     "lint": "eslint --fix src",
-    "build": "bun build:src && bun build:types && bun build:docs",
+    "build": "bun build:src && bun build:types",
     "build:src": "rm -rf build && for runtime in bun browser node; do bun build --entrypoints ./src/${runtime}.ts --outdir ./build --target ${runtime} --external bun:jsc --external gremlin --external type-fest --entry-naming $runtime.index.[ext] --minify --root .; done;",
     "build:types": "bunx tsc -b tsconfig.build.json --force",
-    "build:docs": "bunx typedoc",
     "test:watch": "bun test --watch",
     "types:explain": "bunx tsc -b tsconfig.build.json --explainFiles"
   },
-  "gitHooks": {
-    "pre-commit": "lint-staged"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
-    "*.js*": "eslint --fix",
-    "*.ts*": "eslint --fix"
+    "*.*{js,ts}*": [
+      "eslint --ext .ts,.tsx,.js --fix"
+    ]
   },
   "devDependencies": {
     "@eslint/eslintrc": "^2.1.3",
@@ -69,12 +71,10 @@
     "eslint-config-eslint": "^9.0.0",
     "eslint-plugin-tsdoc": "^0.2.17",
     "globals": "^13.23.0",
+    "typescript": "^5.3.2",
     "gremlin": "3.6.2",
     "hono": "^3.10.2",
-    "lint-staged": "^15.1.0",
-    "type-fest": "4.8",
-    "typedoc": "^0.25.3",
-    "typescript": "^5.3.2"
+    "type-fest": "4.8"
   },
   "peerDependencies": {
     "gremlin": "3.6.2",
