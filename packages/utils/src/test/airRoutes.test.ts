@@ -4,36 +4,36 @@
  * groovy api translator: https://www.gremlator.com/
  */
 
-const { scope, column, order, __, t, p } = common;
+const { scope, column, order, __, t, p } = common
 
-describe("practical gremlin examples", () => {
-  describe("conditional create", () => {
-    test("airport with a code of XYZ", async () => {
+describe('practical gremlin examples', () => {
+  describe('conditional create', () => {
+    test('airport with a code of XYZ', async () => {
       const upsert = async () =>
         g
           .V()
-          .has("airport", "code", "XYZ")
+          .has('airport', 'code', 'XYZ')
           .fold()
           .coalesce(
             __.unfold(),
-            __.addV("airport")
-              .property("code", "XYZ")
-              .property("icao", "KXYZ")
-              .property("desc", "This is not a real airport")
+            __.addV('airport')
+              .property('code', 'XYZ')
+              .property('icao', 'KXYZ')
+              .property('desc', 'This is not a real airport'),
           )
-          .toList();
+          .toList()
 
-      const first = await upsert();
-      const second = await upsert();
+      const first = await upsert()
+      const second = await upsert()
 
       // @ts-expect-error
-      expect(first?.[0]?.label).toEqual("airport");
-      expect(first).toMatchObject(second);
-    });
-  });
-});
+      expect(first[0]?.label).toEqual('airport')
+      expect(first).toMatchObject(second)
+    })
+  })
+})
 
-///////////////////////// READS
+// /////////////////////// READS
 /*
 these are copypasta from practical gremlin i think
 can reuse in other tests

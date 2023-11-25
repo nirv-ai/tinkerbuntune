@@ -1,22 +1,21 @@
 /**
  * @see https://tinkerpop.apache.org/docs/3.7.0/reference/#gremlin-javascript-dsl
  */
-import gremlin, { type structure } from "gremlin";
+import gremlin, { type structure } from 'gremlin'
 
-const { GraphTraversal, GraphTraversalSource } = gremlin.process;
+const { GraphTraversal, GraphTraversalSource } = gremlin.process
 
 /**
  * redeclare types
  */
-export type WithOptions = typeof gremlin.process.withOptions;
-export type EnumValue = gremlin.process.EnumValue;
-export type Nullable<T> = T | null;
-export type Traverser = typeof gremlin.process.Traverser;
-export type TraverserMap<T> = Map<string, T>;
-export interface Graph extends structure.Graph {}
-export interface Bytecode extends gremlin.process.Bytecode {}
-export interface TraversalStrategies
-  extends gremlin.process.TraversalStrategies {}
+export type WithOptions = typeof gremlin.process.withOptions
+export type EnumValue = gremlin.process.EnumValue
+export type Nullable<T> = T | null
+export type Traverser = typeof gremlin.process.Traverser
+export type TraverserMap<T> = Map<string, T>
+export type Graph = structure.Graph
+export type Bytecode = gremlin.process.Bytecode
+export type TraversalStrategies = gremlin.process.TraversalStrategies
 
 /**
  * GroovyTraversal
@@ -27,19 +26,21 @@ export class GroovyTraversal extends GraphTraversal {
   constructor(
     graph: Nullable<Graph>,
     traversalStrategies: Nullable<TraversalStrategies>,
-    bytecode: Bytecode
+    bytecode: Bytecode,
   ) {
-    super(graph, traversalStrategies, bytecode);
+    super(graph, traversalStrategies, bytecode)
   }
 
   keys() {
-    return this.valueMap().select(gremlin.process.column.keys);
+    return this.valueMap().select(gremlin.process.column.keys)
   }
+
   override next<T>() {
-    return super.next() as Promise<IteratorResult<T>>;
+    return super.next() as Promise<IteratorResult<T>>
   }
+
   nextMap<T>() {
-    return this.next<TraverserMap<T>>();
+    return this.next<TraverserMap<T>>()
   }
 }
 
@@ -49,9 +50,9 @@ export class GroovyTraversal extends GraphTraversal {
  * similar to gremlin.process.statics
  */
 function anonymous() {
-  return new GroovyTraversal(null, null, new gremlin.process.Bytecode());
+  return new GroovyTraversal(null, null, new gremlin.process.Bytecode())
 }
-export const keys = () => anonymous().keys();
+export const keys = () => anonymous().keys()
 
 /**
  * GroovyTraversalSource
@@ -62,14 +63,14 @@ export class GroovyTraversalSource extends GraphTraversalSource<GroovyTraversal>
   constructor(
     graph: Graph,
     traversalStrategies: TraversalStrategies,
-    bytecode: Bytecode
+    bytecode: Bytecode,
   ) {
     super(
       graph,
       traversalStrategies,
       bytecode,
       GroovyTraversalSource,
-      GroovyTraversal
-    );
+      GroovyTraversal,
+    )
   }
 }

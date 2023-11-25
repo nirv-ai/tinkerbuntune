@@ -1,8 +1,6 @@
 {
-  "$schema": "https://typedoc.org/schema.json",
+  "extends": ["../../typedoc.json"],
   "entryPoints": ["src/node.ts", "src/browser.ts", "src/bun.ts"],
-  "out": "docs",
-  "tsconfig": "tsconfig.build.json",
-  "emit": "docs",
-  "skipErrorChecking": true
+  "json": "docs",
+  "entryPointStrategy": "resolve"
 }

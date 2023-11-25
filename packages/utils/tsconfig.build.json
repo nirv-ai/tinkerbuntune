@@ -1,4 +1,12 @@
 {
   "extends": "./tsconfig.json",
-  "exclude": ["src/test/**/*", "src/**/*.test.ts"]
+  "exclude": ["src/test/**/*", "src/**/*.test.ts"],
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "exactOptionalPropertyTypes": true,
+    "outFile": "./types/index.d.ts"
+  }
 }

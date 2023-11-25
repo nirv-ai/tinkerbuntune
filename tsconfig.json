@@ -1,6 +1,11 @@
 {
   "watchOptions": {
-    "excludeDirectories": ["**/node_modules", "**/build", "**/types"],
+    "excludeDirectories": [
+      "**/node_modules",
+      "**/build",
+      "**/types",
+      "**/docs"
+    ],
     "excludeFiles": ["**/*.test.ts"]
   },
   "compilerOptions": {
@@ -11,12 +16,9 @@
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "alwaysStrict": true,
-    "checkJs": true,
+    "checkJs": false,
     "composite": true,
-    "declaration": false,
-    "declarationMap": true,
-    "emitDeclarationOnly": true,
-    "exactOptionalPropertyTypes": true,
+    "noEmit": true,
     "incremental": true,
     "jsx": "react-jsx",
     "lib": ["ESNext"],

@@ -13,7 +13,9 @@
     "build",
     "src",
     "types",
-    "tsconfig.json"
+    "docs",
+    "tsconfig.json",
+    "tsconfig.build.json"
   ],
   "repository": {
     "type": "git",
@@ -30,13 +32,15 @@
     "./src/test/*": null,
     "./*.test.ts": null,
     "./*.ts": "./src/*.ts",
-    "./package.json": "./package.json"
+    "./*.json": "./*.json"
   },
   "imports": {
     "#utils": "./src/index.ts",
-    "#utils/*": "./src/*.ts"
+    "#utils/*": "./src/*.ts",
+    "#utils/*.json": "./src/*.json"
   },
   "scripts": {
+    "lint": "eslint --fix src",
     "build": "bun build:src && bun build:types && bun build:docs",
     "build:src": "rm -rf build && for runtime in bun browser node; do bun build --entrypoints ./src/${runtime}.ts --outdir ./build --target ${runtime} --external bun:jsc --external gremlin --external type-fest --entry-naming $runtime.index.[ext] --minify --root .; done;",
     "build:types": "bunx tsc -b tsconfig.build.json --force",
@@ -44,18 +48,37 @@
     "test:watch": "bun test --watch",
     "types:explain": "bunx tsc -b tsconfig.build.json --explainFiles"
   },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": "eslint --fix",
+    ".ts": "eslint --fix"
+  },
   "devDependencies": {
+    "@eslint/eslintrc": "^2.1.3",
+    "@stylistic/eslint-plugin": "^1.4.1",
+    "@types/eslint": "^8.44.7",
+    "@types/eslint__eslintrc": "^2.1.1",
+    "@types/eslint__js": "^8.42.3",
     "@types/gremlin": "3.6",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
     "bun-types": "^1.0.14",
+    "eslint": "^8.54.0",
+    "eslint-config-eslint": "^9.0.0",
+    "globals": "^13.23.0",
     "gremlin": "3.6.2",
     "hono": "^3.10.2",
+    "lint-staged": "^15.1.0",
     "type-fest": "4.8",
-    "typedoc": "^0.25.3"
+    "typedoc": "^0.25.3",
+    "typescript": "^5.3.2"
   },
   "peerDependencies": {
     "gremlin": "3.6.2",
     "type-fest": "4.8",
-    "typescript": "5.2"
+    "typescript": "5.3"
   },
   "dependencies": {
     "csv": "6.3.5",

@@ -1,11 +1,15 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["./src/**/*"],
+  "include": ["eslint.config.js", "index.d.ts", "src"],
   "compilerOptions": {
-    "declaration": true,
     "rootDir": ".",
     "outDir": "./types",
-    "outFile": "./types/index.d.ts",
-    "types": ["bun-types", "gremlin"]
+    "types": [
+      "bun-types",
+      "gremlin",
+      "eslint__js",
+      "eslint",
+      "eslint__eslintrc"
+    ]
   }
 }
