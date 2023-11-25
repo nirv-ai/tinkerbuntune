@@ -13,6 +13,6 @@ export default (stagedFiles) => {
     : [];
 
   return linters.length || bulidFiles.length
-    ? linters.concat('bun run build', 'git add')
+    ? linters.concat('bun run build', 'git add -a')
     : [];
 };

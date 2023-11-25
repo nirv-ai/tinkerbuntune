@@ -10,5 +10,5 @@ export default (stagedFiles) => {
 
   // console.info('\n\n root/files', buildFiles);
 
-  return buildFiles.length ? ['bun run build', 'git add'] : [];
+  return buildFiles.length ? ['bun run build', 'git add -a'] : [];
 };
