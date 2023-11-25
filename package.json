@@ -1,7 +1,21 @@
 {
   "name": "tinkerbuntune",
   "private": true,
+  "type": "module",
   "workspaces": [
-    "utils"
-  ]
+    "./packages/*"
+  ],
+  "scripts": {
+    "build": "bun run build:docs",
+    "build:docs": "bunx typedoc",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "15.1.0",
+    "typedoc": "0.25.3",
+    "typedoc-plugin-coverage": "2.2.0",
+    "typedoc-plugin-merge-modules": "5.1.0",
+    "typescript": "5.3.2"
+  }
 }

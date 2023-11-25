@@ -1,0 +1,80 @@
+{
+  "name": "utils",
+  "private": true,
+  "version": "0.4.0",
+  "type": "module",
+  "types": "./types/index.d.ts",
+  "main": "build/browser.index.js",
+  "module": "build/node.index.js",
+  "packageManager": "bun@1.0.14",
+  "engines": {
+    "bun": ">=1.0.14"
+  },
+  "files": [
+    "build",
+    "src",
+    "types",
+    "index.d.ts",
+    "tsconfig.json",
+    "tsconfig.build.json"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nirv-ai/tinkerbuntune.git",
+    "directory": "packages/utils"
+  },
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "bun": "./build/bun.index.js",
+      "node": "./build/node.index.js",
+      "default": "./build/browser.index.js"
+    },
+    "./src/test/*": null,
+    "./*.test.ts": null,
+    "./*.ts": "./src/*.ts",
+    "./*.json": "./*.json"
+  },
+  "imports": {
+    "#utils": "./src/index.ts",
+    "#utils/*": "./src/*.ts",
+    "#utils/*.json": "./src/*.json"
+  },
+  "scripts": {
+    "lint": "eslint --fix src",
+    "build": "bun build:src && bun build:types",
+    "build:src": "rm -rf build && for runtime in bun browser node; do bun build --entrypoints ./src/${runtime}.ts --outdir ./build --target ${runtime} --external bun:jsc --external gremlin --external type-fest --entry-naming $runtime.index.[ext] --minify --sourcemap=external --root .; done;",
+    "build:types": "bunx tsc -b tsconfig.build.json --force",
+    "test:ci": "bun test --bail",
+    "test:watch": "bun test --watch",
+    "types:explain": "bunx tsc -b tsconfig.build.json --explainFiles"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "2.1.3",
+    "@stylistic/eslint-plugin": "1.4.1",
+    "@types/eslint": "8.44.7",
+    "@types/eslint__eslintrc": "2.1.1",
+    "@types/eslint__js": "8.42.3",
+    "@types/gremlin": "3.6",
+    "@typescript-eslint/eslint-plugin": "6.12.0",
+    "@typescript-eslint/parser": "6.12.0",
+    "bun-types": "1.0.14",
+    "eslint": "8.54.0",
+    "eslint-config-eslint": "9.0.0",
+    "eslint-plugin-tsdoc": "0.2.17",
+    "globals": "13.23.0",
+    "typescript": "5.3.2",
+    "gremlin": "3.6.2",
+    "hono": "3.10.2",
+    "type-fest": "4.8"
+  },
+  "peerDependencies": {
+    "gremlin": "3.6.2",
+    "type-fest": "4.8",
+    "typescript": "5.3"
+  },
+  "dependencies": {
+    "csv": "6.3.5",
+    "@msgpack/msgpack": "3.0.0-beta2"
+  }
+}
