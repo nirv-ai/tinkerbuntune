@@ -1,3 +1,6 @@
 **/docs/** -diff
 **/docs/** binary
 **/docs/** linguist-generated=true
+**/build/** -diff
+**/build/** binary
+**/build/** linguist-generated=true

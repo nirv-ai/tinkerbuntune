@@ -8,7 +8,7 @@ declare module "src/api/serialization" {
     import { encode, decode, decodeAsync, ExtensionCodec } from '@msgpack/msgpack';
     /**
      *
-     * @param object
+     * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze#examples
      */
     export function deepFreezeCopy(object: any): any;
     /**

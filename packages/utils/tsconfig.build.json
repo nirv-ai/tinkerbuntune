@@ -7,6 +7,7 @@
     "declarationMap": true,
     "emitDeclarationOnly": true,
     "exactOptionalPropertyTypes": true,
-    "outFile": "./types/index.d.ts"
+    "outFile": "./types/index.d.ts",
+    "types": ["bun-types", "gremlin"]
   }
 }
