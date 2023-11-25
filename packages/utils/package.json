@@ -48,7 +48,7 @@
     "types:explain": "bunx tsc -b tsconfig.build.json --explainFiles"
   },
   "lint-staged": {
-    "*.*{js,ts}*": [
+    "*.*{js,ts}": [
       "bun run lint",
       "bun run test",
       "bun run build"

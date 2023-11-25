@@ -20,7 +20,8 @@
     "invalidLink": true,
     "notDocumented": true
   },
-  "plugin": ["typedoc-plugin-merge-modules"],
+  "plugin": ["typedoc-plugin-merge-modules", "typedoc-plugin-coverage"],
+  "coverageLabel": "coverage",
   "mergeModulesRenameDefaults": true, // NEW option of TypeDoc added by this plugin
   "mergeModulesMergeMode": "module" // NEW option of TypeDoc added by this plugin
 }
