@@ -2,11 +2,11 @@
   "extends": "./tsconfig.json",
   "exclude": ["src/test/**/*", "src/**/*.test.ts"],
   "compilerOptions": {
-    "noEmit": false,
     "declaration": true,
     "declarationMap": true,
     "emitDeclarationOnly": true,
     "exactOptionalPropertyTypes": true,
+    "noEmit": false,
     "outFile": "./types/index.d.ts",
     "types": ["bun-types", "gremlin"]
   }

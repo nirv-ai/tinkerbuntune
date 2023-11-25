@@ -6,9 +6,9 @@ export default (stagedFiles) => {
     '**/package.json',
     '**/tsconfig*.json',
     '**/typedoc.json',
-  ]).join(' ');
+  ]);
 
   // console.info('\n\n root/files', buildFiles);
 
-  return buildFiles.length ? ['bun run build'] : [];
+  return buildFiles.length ? ['bun run build', 'git add'] : [];
 };
