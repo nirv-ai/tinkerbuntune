@@ -47,14 +47,11 @@
     "test:watch": "bun test --watch",
     "types:explain": "bunx tsc -b tsconfig.build.json --explainFiles"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "*.*{js,ts}*": [
-      "eslint --ext .ts,.tsx,.js --fix"
+      "bun run lint",
+      "bun run test",
+      "bun run build"
     ]
   },
   "devDependencies": {

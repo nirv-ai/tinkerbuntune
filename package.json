@@ -5,17 +5,13 @@
     "./packages/*"
   ],
   "scripts": {
+    "build": "bun run build:docs",
     "build:docs": "bunx typedoc",
     "prepare": "husky install"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
-    "*.*{ts}*": [
-      "bun test"
+    "*.*{ts,js}*": [
+      "bun run build"
     ]
   },
   "devDependencies": {
