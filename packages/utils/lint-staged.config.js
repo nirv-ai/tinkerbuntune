@@ -9,10 +9,7 @@ export default (stagedFiles) => {
 
   // console.info('\n\n utils/codeFiles', codeFiles);
   const linters = codeFiles.length
-    ? [
-        `bunx --bun eslint --fix src --fix-type directive, problem, suggestion, layout ${codeFiles}`,
-        `bun run test:ci ${codeFiles}`,
-      ]
+    ? [`bunx --bun eslint --fix ${codeFiles}`, `bun run test:ci ${codeFiles}`]
     : [];
 
   return linters.length || bulidFiles.length

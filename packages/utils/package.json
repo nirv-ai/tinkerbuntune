@@ -41,7 +41,7 @@
     "#utils/*.json": "./src/*.json"
   },
   "scripts": {
-    "lint": "bunx --bun eslint --fix src --fix-type directive, problem, suggestion, layout",
+    "lint": "bunx --bun eslint --fix src",
     "build": "bun build:src && bun build:types",
     "build:src": "rm -rf build && for runtime in bun browser node; do bun build --entrypoints ./src/${runtime}.ts --outdir ./build --target ${runtime} --external bun:jsc --external gremlin --external type-fest --entry-naming $runtime.index.[ext] --minify --sourcemap=external --root .; done;",
     "build:types": "bunx tsc -b tsconfig.build.json --force",
