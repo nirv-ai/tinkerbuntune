@@ -1,12 +1,13 @@
 import { encode, decode, decodeAsync, ExtensionCodec } from '@msgpack/msgpack'
 
+// @eslint-disable-line "bun:jsc" n/no-missing import
 const jsc = import.meta.resolveSync('bun:jsc') && (await import('bun:jsc'))
 
 /**
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze#examples
  */
-export function deepFreezeCopy(object: any) {
+export function deepFreezeCopy(object: unknown) {
   const copy = Object.create(null)
 
   // Retrieve the property names defined on object
@@ -30,7 +31,7 @@ export function deepFreezeCopy(object: any) {
  *
  * @param map
  */
-export function mapToJsonIterator<T = Record<any, any>>(map: Map<any, any>): T {
+export function mapToJsonIterator<T = Record<unknown, unknown>>(map: Map<unknown, unknown>): T {
   return Array.from(map).reduce((acc, [key, value]) => {
     acc[key] = value instanceof Map ? mapToJsonIterator(value) : value
 
@@ -39,7 +40,7 @@ export function mapToJsonIterator<T = Record<any, any>>(map: Map<any, any>): T {
 }
 
 // FYI: ~183k nanoseconds
-export const toJson = <T = Record<any, any>>(data: Map<any, any>): T =>
+export const toJson = <T = Record<unknown, unknown>>(data: Map<unknown, unknown>): T =>
   deepFreezeCopy(mapToJsonIterator<T>(data))
 
 // @see https://stackoverflow.com/questions/29085197/how-do-you-json-stringify-an-es6-map
@@ -55,7 +56,7 @@ export function mapTojsonReplacer(key: unknown, value: unknown) {
   }
   return value instanceof Map ? Object.fromEntries(value.entries()) : value
 }
-export const toJsonStringified = (data: Map<any, any>): string =>
+export const toJsonStringified = (data: Map<unknown, unknown>): string =>
   JSON.stringify(data, mapTojsonReplacer)
 
 // @see https://bun.sh/docs/api/utils#serialize-deserialize-in-bun-jsc
@@ -141,21 +142,21 @@ extensionCodec.register({
 })
 
 // @see https://github.com/noahehall/theBookOfNoah/blob/master/languages/javascript/opensource/msgpack.md#web-example
-export const msgpackToJsonIterator = <T = Record<any, any>>(
-  arr: [any, any],
+export const msgpackToJsonIterator = <T = Record<unknown, unknown>>(
+  arr: [unknown, unknown],
 ): T =>
     arr.reduce((acc, [key, value]) => {
       acc[key]
       = value?.type === MAP_EXT_TYPE && value?.data instanceof Uint8Array
           ? msgpackToJsonIterator(
-            decoder.decode(value.data, { extensionCodec }) as [any, any],
+            decoder.decode(value.data, { extensionCodec }) as [unknown, unknown],
           )
           : value
 
       return acc
     }, Object.create(null))
 
-export const msgpackToJson = async <T = Record<any, any>>(
+export const msgpackToJson = async <T = Record<unknown, unknown>>(
   resp: Response,
 ): Promise<T | null> => {
   if (
@@ -171,7 +172,7 @@ export const msgpackToJson = async <T = Record<any, any>>(
         // @ts-expect-error object is unknown
         (await decoder.decodeAsync(resp.body, { extensionCodec })).data,
         { extensionCodec },
-      ) as [any, any],
+      ) as [unknown, unknown],
     ),
   )
 }

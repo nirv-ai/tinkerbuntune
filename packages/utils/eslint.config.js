@@ -18,6 +18,8 @@ const compat = new FlatCompat({
 
 const tsFiles = ['src/**/*.*ts*'];
 const jsFiles = ['src/**/*.*js*'];
+const testFiles = ['src/test/**/*.*ts*', 'src/**/*.test.*ts*'];
+
 const files = tsFiles.concat(jsFiles);
 
 export default [
@@ -29,7 +31,7 @@ export default [
   },
   {
     linterOptions: {
-      noInlineConfig: true,
+      noInlineConfig: false,
       reportUnusedDisableDirectives: true,
     },
     languageOptions: {
@@ -72,6 +74,25 @@ export default [
   stylistic.configs['recommended-flat'],
   {
     rules: {
+      'eslint-comments/require-description': [
+        'error',
+        {
+          ignore: [
+            'eslint-disable-next-line',
+            'eslint-disable-line',
+            'eslint-env',
+            'global',
+            'globals',
+          ],
+        },
+      ],
+      '@typescript-eslint/no-explicit-any': [
+        'error',
+        { fixToUnknown: true, ignoreRestArgs: true },
+      ],
+      'func-style': ['error', 'declaration', { allowArrowFunctions: true }],
+      'new-cap': 'off',
+      'no-underscore-dangle': 'off',
       'no-undef': 'off',
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': 'error',
@@ -98,6 +119,8 @@ export default [
           minimumDescriptionLength: 5,
         },
       ],
+      'n/no-missing-import': 'off', // hella buggy
+      'n/no-extraneous-import': 'off', // hella buggy
     },
   },
   {
@@ -111,15 +134,17 @@ export default [
     },
   },
   {
-    files: ['src/**/*.test.*ts*'],
+    files: testFiles,
     languageOptions: {
       globals: {
         ...globals.jest,
       },
     },
     rules: {
-      // allow console logs in tools and tests
       'no-console': 'off',
+      'no-var': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      'func-style': 'off',
     },
   },
 ];

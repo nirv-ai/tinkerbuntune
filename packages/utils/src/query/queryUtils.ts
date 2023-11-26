@@ -36,7 +36,7 @@ export const throwIfEmpty = (
 ): false | undefined => {
   if (!Array.isArray(received) || !received.length) {
     throw new Error(
-            `${thing} must be a non empty array\nreceived: ${received}`,
+      `${thing} must be a non empty array\nreceived: ${received?.toString?.()}`,
     )
   }
 
@@ -59,16 +59,17 @@ export const elementProps = ({
   as = [],
   elements = identity(),
   elKeys = [],
-}: ElementProps): GroovyTraversal => elements
-  .as(...as.concat('base'))
-  .valueMap(...elKeys)
-  .by(unfold())
-  .sack(addAll)
-  .select('base')
-  .project('id', 'label')
-  .by(t.id)
-  .by(t.label)
-  .sack(addAll)
+}: ElementProps): GroovyTraversal =>
+  elements
+    .as(...as.concat('base'))
+    .valueMap(...elKeys)
+    .by(unfold())
+    .sack(addAll)
+    .select('base')
+    .project('id', 'label')
+    .by(t.id)
+    .by(t.label)
+    .sack(addAll)
 
 /*
   a simpler version of elementProps that adds id & label
@@ -80,17 +81,18 @@ export const combineProps = ({
   elements = identity(),
   elKeys = [],
   traversals = [],
-}: CombineProps): GroovyTraversal => elements.local(
-  union(
-    project('id', 'label').by(t.id).by(t.label),
-    valueMap(...elKeys).by(unfold()),
-    ...traversals,
+}: CombineProps): GroovyTraversal =>
+  elements.local(
+    union(
+      project('id', 'label').by(t.id).by(t.label),
+      valueMap(...elKeys).by(unfold()),
+      ...traversals,
+    )
+      .unfold()
+      .group()
+      .by(keys)
+      .by(select(values)),
   )
-    .unfold()
-    .group()
-    .by(keys)
-    .by(select(values)),
-)
 
 /*
   groups an element by some key

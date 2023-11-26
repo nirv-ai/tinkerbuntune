@@ -16,7 +16,7 @@ export const tinkerDataEdge = (tdata: TinkerDataEdge) =>
       )
     }
 
-    const recordProps = new Map<string | EnumValue, any>(
+    const recordProps = new Map<string | EnumValue, unknown>(
       Object.entries(edgeData.p || {}),
     )
 
@@ -32,7 +32,7 @@ export const tinkerDataVertex = (tdata: TinkerDataVertex) => {
     throw new Error('all vertices require a user supplied recordId')
   }
 
-  const recordProps = new Map<string | EnumValue, any>(
+  const recordProps = new Map<string | EnumValue, unknown>(
     Object.entries(tdata.p!),
   )
 

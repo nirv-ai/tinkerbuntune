@@ -26,7 +26,7 @@ describe('practical gremlin examples', () => {
       const first = await upsert()
       const second = await upsert()
 
-      // @ts-expect-error
+      // @ts-expect-error label doesnt exist on type
       expect(first[0]?.label).toEqual('airport')
       expect(first).toMatchObject(second)
     })

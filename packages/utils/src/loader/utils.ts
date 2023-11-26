@@ -15,8 +15,7 @@ export const fnameToBname = (fname: string) => path.parse(fname).name
  * @param ext to add to filename e.g. `csv`
  * @returns string with extension added
  */
-export const bnameTofname = (bname: string, ext = 'csv') =>
-    `${bname}.${ext}`
+export const bnameTofname = (bname: string, ext = 'csv') => `${bname}.${ext}`
 
 /**
  * converts a postgres date string to a javascript date object
@@ -25,9 +24,9 @@ export const bnameTofname = (bname: string, ext = 'csv') =>
  * @returns javascript Date
  */
 export const pgDateToJs = (date: string) =>
-  new Date(date.replace(/['"]+/g, ''))
+  new Date(date.replace(/['"]+/gu, ''))
 
-const hashIdCache = Object.create(null)
+const hashIdCache = Object.create(null) as Record<string, unknown>
 
 // TODO (noah): consumers should be able to override this fn
 /**
@@ -50,7 +49,7 @@ export const hashId = (id: string): string => {
 export const getEdgeLabel = (data: NumStr) => {
   if (!String(data).length) {
     throw new Error(
-            `neptune requires edges to have exactly 1 label: ${data} received`,
+      `neptune requires edges to have exactly 1 label: ${data} received`,
     )
   }
 
@@ -80,7 +79,7 @@ export const getVertexLabel = (data: NumStr[]): NumStr => {
 export const getLabel = <T = ConfigSpec['type']>(
   type: T,
 ): typeof getVertexLabel | typeof getEdgeLabel =>
-    (type === 'v' ? getVertexLabel : getEdgeLabel)
+    type === 'v' ? getVertexLabel : getEdgeLabel
 
 /**
  * reduces a Promise.allSettled response to {success[], failure[]} object
@@ -90,10 +89,10 @@ export const getLabel = <T = ConfigSpec['type']>(
 export const recordsCreatedHandler = (
   result: PromiseSettledResult<unknown[]>[],
 ) =>
-  result.reduce<{ success: any[], failure: string[] }>(
+  result.reduce<{ success: unknown[], failure: string[] }>(
     (p, c) => {
       if (c.status === 'rejected') {
-        p.failure.push((c.reason as string))
+        p.failure.push(c.reason as string)
       }
       else {
         p.success.push(c.value)

@@ -9,7 +9,9 @@
       "eslint__eslintrc",
       "eslint__js",
       "eslint",
-      "gremlin"
+      "gremlin",
+      "msgpack",
+      "type-fest"
     ]
   }
 }

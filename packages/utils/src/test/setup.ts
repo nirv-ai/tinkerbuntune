@@ -4,7 +4,6 @@ import type * as types from '#utils'
 import * as utils from '#utils'
 
 declare global {
-
   // bun stuff
   var describe: typeof buntest.describe
   var expect: typeof buntest.expect
