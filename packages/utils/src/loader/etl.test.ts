@@ -3,7 +3,7 @@
 const goodConfigTests = (configMap: typeof configs.good) => {
   describe('good configs', () => {
     describe('readCsvDir', () => {
-      test.skip('adds csv file names to store', async () => {
+      test.skip('adds csv file names to store', () => {
         expect(false).toBeTrue()
       })
     })
@@ -11,39 +11,36 @@ const goodConfigTests = (configMap: typeof configs.good) => {
     for (const [configName, config] of configMap.entries()) {
       describe(`${configName}`, () => {
         describe('csvToTinkergraph', () => {
-          test.skip('ETL success', async () => {
+          test.skip('ETL success', () => {
             expect(false).toBeTrue()
           })
         })
 
         describe('transformConfigFiles', () => {
-          test.if((config.files?.size ?? 0) > 0)(
-            'config with files',
-            async () => {
-              // should always save output to store
-              // but if not recursive
-              // ^ aso delete config.files from store
-              // ^ also parse file
-              expect(false).toBeTrue()
-            },
-          )
+          test.if((config.files?.size ?? 0) > 0)('config with files', () => {
+            // should always save output to store
+            // but if not recursive
+            // ^ aso delete config.files from store
+            // ^ also parse file
+            expect(false).toBeTrue()
+          })
         })
 
         describe('transformUnmappedFiles', () => {
-          test.skip('deletes unmapped file from store', async () => {
+          test.skip('deletes unmapped file from store', () => {
             expect(false).toBeTrue()
           })
-          test.skip('parses file', async () => {
+          test.skip('parses file', () => {
             expect(false).toBeTrue()
           })
 
-          test.skip('saves file to store', async () => {
+          test.skip('saves file to store', () => {
             expect(false).toBeTrue()
           })
         })
 
         describe('loadTinkerData', () => {
-          test.skip('pushes transformed files into tinkergraph', async () => {
+          test.skip('pushes transformed files into tinkergraph', () => {
             // calls loaders.tinkerdata
             // persists results log disk
             expect(false).toBeTrue()
@@ -51,13 +48,13 @@ const goodConfigTests = (configMap: typeof configs.good) => {
         })
 
         describe('parseFile', () => {
-          test('parses and saves file to store', async () => {
+          test('parses and saves file to store', () => {
             expect(false).toBeTrue()
           })
         })
 
         describe('transformAndSaveTinkerData', () => {
-          test('parses and saves file to store', async () => {
+          test('parses and saves file to store', () => {
             // calls transformsers.csvToTInkerData
             // saves to store
             expect(false).toBeTrue()
@@ -71,37 +68,37 @@ const goodConfigTests = (configMap: typeof configs.good) => {
 const badConfigTests = (configMap: typeof configs.bad) => {
   describe('bad configs', () => {
     describe('readCsvDir', () => {
-      test.skip('invalid path to csv dir', async () => {
+      test.skip('invalid path to csv dir', () => {
         expect(false).toBeTrue()
       })
     })
 
     describe('transformConfigFiles', () => {
-      test.skip('throws if config file not in store', async () => {
+      test.skip('throws if config file not in store', () => {
         expect(false).toBeTrue()
       })
     })
 
     describe('transformUnmappedFiles', () => {
-      test.skip('throws if getSpec not defined', async () => {
+      test.skip('throws if getSpec not defined', () => {
         expect(false).toBeTrue()
       })
     })
 
     describe('loadTinkerData', () => {
-      test.skip('throws if no files transformed', async () => {
+      test.skip('throws if no files transformed', () => {
         expect(false).toBeTrue()
       })
     })
 
     describe('parseFile', () => {
-      test('throws if unable to parse file', async () => {
+      test('throws if unable to parse file', () => {
         expect(false).toBeTrue()
       })
     })
 
     describe('transformAndSaveTinkerData', () => {
-      test('throws if thing not in store', async () => {
+      test('throws if thing not in store', () => {
         expect(false).toBeTrue()
       })
     })
@@ -109,7 +106,7 @@ const badConfigTests = (configMap: typeof configs.bad) => {
     for (const [configName, config] of configMap.entries()) {
       describe(`${configName}`, () => {
         describe('csvToTinkergraph', () => {
-          test.skip('ETL failure', async () => {
+          test.skip('ETL failure', () => {
             try {
               // g.V().count() should not change
               // g.E().count() should not change

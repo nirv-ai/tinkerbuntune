@@ -8,7 +8,7 @@
 describe('dsl', () => {
   describe('GroovyTraversal', () => {
     describe('keys', () => {
-      test.skip('is chainable', async () => {
+      test.skip('is chainable', () => {
         expect(false).toBeTrue()
       })
     })

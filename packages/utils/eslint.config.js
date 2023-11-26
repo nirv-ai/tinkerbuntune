@@ -74,6 +74,11 @@ export default [
   stylistic.configs['recommended-flat'],
   {
     rules: {
+      'no-shadow': 'off',
+      '@typescript-eslint/no-shadow': 'error',
+      '@typescript-eslint/unbound-method': ['error', { ignoreStatic: true }],
+      'no-useless-constructor': 'off',
+      '@typescript-eslint/no-useless-constructor': ['error'],
       'eslint-comments/require-description': [
         'error',
         {
@@ -141,10 +146,11 @@ export default [
       },
     },
     rules: {
-      'no-console': 'off',
-      'no-var': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       'func-style': 'off',
+      'no-console': 'off',
+      'no-var': 'off',
     },
   },
 ];

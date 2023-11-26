@@ -1,5 +1,5 @@
 import gremlin from 'gremlin'
-import { type GroovyTraversal } from './dsl'
+import type { GroovyTraversal } from '#utils/groovy/dsl'
 
 const __ = gremlin.process.statics as gremlin.process.Statics<GroovyTraversal>
 
@@ -51,7 +51,7 @@ export const go = (dir: EDir) => {
         },
       }
     default:
-      throw new Error(`invalid: ${dir}\nexpected an EDir}`)
+      throw new Error(`invalid: ${dir as string}\nexpected an EDir}`)
   }
 }
 
@@ -89,4 +89,5 @@ export const common = {
   'direction',
 
   // @ts-expect-error implicit any
+  // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
 ].forEach(prop => delete common[prop])
