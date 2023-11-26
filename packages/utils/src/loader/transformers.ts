@@ -13,7 +13,7 @@ import type {
 export const validateNumStr = (value: NeptuneValue): NumStr => {
   if (typeof value !== 'string' || typeof value !== 'number') {
     throw new Error(
-            `invalid type, expected number|string, received: ${typeof value}`,
+      `invalid type, expected number|string, received: ${typeof value}`,
     )
   }
 
@@ -31,7 +31,7 @@ export const transformPropsAndLabels = (
   headers: string[],
   record: NeptuneValue[],
 ): PropsAndLabels => {
-  const p = { ...(spec.inject?.p || {}) },
+  const p = { ...(spec.inject?.p ?? {}) },
     l = spec.inject?.l?.slice() ?? []
 
   record.forEach((col, i2) => {
@@ -87,21 +87,22 @@ export const csvToTinkerDataEdge = (
   spec: ConfigSpecEdge,
   data: string[][],
   headers: string[],
-): TinkerDataEdge[] => data.map((recordRaw) => {
-  const record = spec.transformRecord?.(recordRaw) ?? recordRaw
+): TinkerDataEdge[] =>
+  data.map((recordRaw) => {
+    const record = spec.transformRecord?.(recordRaw) ?? recordRaw
 
-  const pl = transformPropsAndLabels(spec, headers, record)
+    const pl = transformPropsAndLabels(spec, headers, record)
 
-  return {
-    edges: spec.edges.map(edgeConfig => ({
-      f: edgeConfig.f(pl, record),
-      t: edgeConfig.t(pl, record),
-      l: edgeConfig.l(pl, record),
-      p: edgeConfig.p?.(pl) ?? {},
-      recordId: edgeConfig.recordId(pl, record),
-    })),
-  }
-})
+    return {
+      edges: spec.edges.map(edgeConfig => ({
+        f: edgeConfig.f(pl, record),
+        t: edgeConfig.t(pl, record),
+        l: edgeConfig.l(pl, record),
+        p: edgeConfig.p?.(pl) ?? {},
+        recordId: edgeConfig.recordId(pl, record),
+      })),
+    }
+  })
 
 /**
  * converts a csv record to {@link TinkerDataVertex}
@@ -113,20 +114,21 @@ export const csvToTinkerDataVertex = (
   spec: ConfigSpecVertex,
   data: string[][],
   headers: string[],
-): TinkerDataVertex[] => data.map((recordRaw) => {
-  const record = spec.transformRecord?.(recordRaw) ?? recordRaw
-  const pl = transformPropsAndLabels(spec, headers, record)
-  const recordId = spec.recordId(pl, record)
+): TinkerDataVertex[] =>
+  data.map((recordRaw) => {
+    const record = spec.transformRecord?.(recordRaw) ?? recordRaw
+    const pl = transformPropsAndLabels(spec, headers, record)
+    const recordId = spec.recordId(pl, record)
 
-  return { recordId, ...pl }
-})
+    return { recordId, ...pl }
+  })
 
 /**
  * transforms a csv file to {@link TinkerDataEdge} or {@link TinkerDataVertex} based on a {@link ConfigSpec}
  * @param spec
  * @param dataParsed
  */
-export const csvToTinkerData = async (
+export const csvToTinkerData = (
   spec: ConfigSpec,
   dataParsed: CsvParsed,
 ): Promise<TinkerDataEdge[] | TinkerDataVertex[]> => {
@@ -137,5 +139,8 @@ export const csvToTinkerData = async (
       return csvToTinkerDataVertex(spec, dataParsed.slice(1), headers)
     case 'e':
       return csvToTinkerDataEdge(spec, dataParsed.slice(1), headers)
+    default:
+      // @ts-expect-error spec is anow a never
+      throw new Error(`invalid spec type: ${spec.type}`)
   }
 }

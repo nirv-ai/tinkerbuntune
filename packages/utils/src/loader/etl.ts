@@ -40,7 +40,7 @@ export const getStore = (overrides = {}) => ({
 export const transformAndSaveTinkerData = async (
   bname: string,
   spec: ConfigSpec,
-  dataKey?: string,
+  dataKey: string,
   store = getStore(),
 ) => {
   if (!store.parsed.has(bname)) {
@@ -66,7 +66,10 @@ export const parseFile = async (
 ) => {
   // TODO (noah): convert bun.file to stream api
   try {
-    store.parsed.set(bname, (parse(await Bun.file(filepath).text()) as CsvParsed))
+    store.parsed.set(
+      bname,
+      parse(await Bun.file(filepath).text()) as CsvParsed,
+    )
   }
   catch (e) {
     throw new Error(`invalid csv ${bname}: ${filepath}\n${e}`)
@@ -163,11 +166,11 @@ export const transformUnmappedFiles = async (
     store.files.delete(fname)
 
     await parseFile(bname, `${config.csvDir}/${fname}`, store)
-    await transformAndSaveTinkerData(bname, configSpec, undefined, store)
+    await transformAndSaveTinkerData(bname, configSpec, '', store)
   }
 
   log(
-        `
+    `
     unmapped csvs processed ${filesProcessed}
     unmapped csvs ignored: ${store.files.size}
     `,
@@ -182,7 +185,7 @@ export const transformUnmappedFiles = async (
 export const loadTinkerData = async (config: Config, store = getStore()) => {
   if (!store.transformed.size) {
     throw new Error(
-            `
+      `
       no CSV files transformed. Did you correctly map CSV filenames to config specs?
       CSVs pared: ${store.parsed.size}
       CSVs ignored: ${store.files.size}
@@ -197,13 +200,13 @@ export const loadTinkerData = async (config: Config, store = getStore()) => {
     if (config.persistResultLog) {
       const logname = `${config.csvDir}/${dataKey}.csv.json`
 
-      Bun.write(logname, JSON.stringify(result || 'result is empty'))
+      void Bun.write(logname, JSON.stringify(result))
 
       log(`result log saved to ${logname}`)
     }
     log(`loaded ${dataKey} into tinkergraph`, {
-      success: result.success.length ?? 0,
-      failure: result.failure.length ?? 0,
+      success: result.success.length,
+      failure: result.failure.length,
     })
   }
   log('total csvs loaded in tinkergraph', store.transformed.size)

@@ -17,7 +17,7 @@ export const tinkerDataEdge = (tdata: TinkerDataEdge) =>
     }
 
     const recordProps = new Map<string | EnumValue, unknown>(
-      Object.entries(edgeData.p || {}),
+      Object.entries(edgeData.p ?? {}),
     )
 
     recordProps.set(t.label, edgeData.l)
@@ -32,11 +32,15 @@ export const tinkerDataVertex = (tdata: TinkerDataVertex) => {
     throw new Error('all vertices require a user supplied recordId')
   }
 
-  const recordProps = new Map<string | EnumValue, unknown>(
-    Object.entries(tdata.p!),
-  )
+  const recordProps = tdata.p
+    ? new Map<string | EnumValue, unknown>(Object.entries(tdata.p))
+    : new Map()
 
-  recordProps.set(t.label, utils.getVertexLabel(tdata.l!))
+  if (!tdata.l) {
+    throw new Error(`all vertex require a label: ${tdata.l}`)
+  }
+
+  recordProps.set(t.label, utils.getVertexLabel(tdata.l))
 
   return [new Map([[t.id, tdata.recordId]]), recordProps]
 }
