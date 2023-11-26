@@ -5,30 +5,30 @@
 
 // TODO (noah): check how he loads it via g.inject: https://github.com/krlawrence/graph/blob/main/sample-data/tree-with-500-nodes-map.groovy
 
-import { parse } from 'csv/sync' // TODO (noah): convert to async api
-import fs from 'node:fs/promises'
+import { parse } from 'csv/sync'; // TODO (noah): convert to async api
+import fs from 'node:fs/promises';
 
-import { log } from '../logger'
-import * as loaders from './loaders'
-import * as transform from './transformers'
-import * as utils from './utils'
+import { log } from '../logger';
+import * as loaders from './loaders';
+import * as transform from './transformers';
+import * as utils from './utils';
 import type {
   Config,
   ConfigSpec,
   CsvParsed,
   TinkerDataEdge,
   TinkerDataVertex,
-} from '#utils'
+} from '#utils';
 
 export const getStore = (overrides = {}) => ({
   files: new Set<string>(),
   parsed: new Map<string, CsvParsed>(),
   transformed: new Map<
     string,
-    { spec: ConfigSpec, data: TinkerDataEdge[] | TinkerDataVertex[] }
+    { spec: ConfigSpec; data: TinkerDataEdge[] | TinkerDataVertex[] }
   >(),
   ...overrides,
-})
+});
 
 /**
  * transforms a CSV file to TinkerData and saves it as dataKey || bname
@@ -41,17 +41,18 @@ export const transformAndSaveTinkerData = async (
   bname: string,
   spec: ConfigSpec,
   dataKey: string,
-  store = getStore(),
+  store = getStore()
 ) => {
-  if (!store.parsed.has(bname)) {
-    throw new Error(`csv not parsed: ${bname}`)
+  const csvParsed = store.parsed.get(bname);
+  if (!csvParsed) {
+    throw new Error(`csv not parsed: ${bname}`);
+  } else {
+    store.transformed.set(dataKey || bname, {
+      spec,
+      data: await transform.csvToTinkerData(spec, csvParsed),
+    });
   }
-
-  store.transformed.set(dataKey || bname, {
-    spec,
-    data: await transform.csvToTinkerData(spec, store.parsed.get(bname)!),
-  })
-}
+};
 
 /**
  * parses and saves a file
@@ -62,19 +63,19 @@ export const transformAndSaveTinkerData = async (
 export const parseFile = async (
   bname: string,
   filepath: string,
-  store = getStore(),
+  store = getStore()
 ) => {
   // TODO (noah): convert bun.file to stream api
   try {
     store.parsed.set(
       bname,
-      parse(await Bun.file(filepath).text()) as CsvParsed,
-    )
+      parse(await Bun.file(filepath).text()) as CsvParsed
+    );
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : 'unknown error';
+    throw new Error(`invalid csv ${bname}: ${filepath}\n${msg}`);
   }
-  catch (e) {
-    throw new Error(`invalid csv ${bname}: ${filepath}\n${e}`)
-  }
-}
+};
 
 /**
  * retrieves all filenames with .csv extension at path
@@ -83,10 +84,10 @@ export const parseFile = async (
  */
 export const readCsvDir = async (csvDir: string, store = getStore()) => {
   (await fs.readdir(csvDir)).forEach(
-    fname => fname.endsWith('.csv') && store.files.add(fname),
-  )
-  log('total csv files found', store.files.size)
-}
+    (fname) => fname.endsWith('.csv') && store.files.add(fname)
+  );
+  log('total csv files found', store.files.size);
+};
 
 /**
  * transforms all {@link ConfigSpec}s in {@link Config}.files and saves each as {@link TinkerData}
@@ -95,14 +96,14 @@ export const readCsvDir = async (csvDir: string, store = getStore()) => {
  */
 export const transformConfigFiles = async (
   config: Config,
-  store = getStore(),
+  store = getStore()
 ) => {
   if (!config.files) {
-    return
+    return;
   }
 
   for (const [bnameOrDataKey, spec] of config.files) {
-    const configSpec = typeof spec === 'function' ? spec(bnameOrDataKey) : spec
+    const configSpec = typeof spec === 'function' ? spec(bnameOrDataKey) : spec;
 
     // recursive specs depend on previously loaded files
     if (configSpec.recursive) {
@@ -110,30 +111,24 @@ export const transformConfigFiles = async (
         configSpec.recursive,
         configSpec,
         bnameOrDataKey,
-        store,
-      )
-    }
-    else {
+        store
+      );
+    } else {
       // need to load file
-      const fname = utils.bnameTofname(bnameOrDataKey)
+      const fname = utils.bnameTofname(bnameOrDataKey);
 
       if (!store.files.has(fname)) {
-        throw new Error(`could not find file: ${fname}`)
+        throw new Error(`could not find file: ${fname}`);
       }
-      store.files.delete(fname)
+      store.files.delete(fname);
 
-      await parseFile(bnameOrDataKey, `${config.csvDir}/${fname}`, store)
-      await transformAndSaveTinkerData(
-        bnameOrDataKey,
-        configSpec,
-        undefined,
-        store,
-      )
+      await parseFile(bnameOrDataKey, `${config.csvDir}/${fname}`, store);
+      await transformAndSaveTinkerData(bnameOrDataKey, configSpec, '', store);
     }
   }
 
-  log('transformed config.files', store.transformed.size)
-}
+  log('transformed config.files', store.transformed.size);
+};
 
 /**
  * transforms unmapped csv files and saves each as {@link TinkerData}
@@ -142,40 +137,40 @@ export const transformConfigFiles = async (
  */
 export const transformUnmappedFiles = async (
   config: Config,
-  store = getStore(),
+  store = getStore()
 ) => {
   if (!config.includeUnmappedFiles) {
-    return
+    return;
   }
   if (!config.getSpec) {
     throw new Error(
-      'Including unmapped files requires config.getSpec to be defined',
-    )
+      'Including unmapped files requires config.getSpec to be defined'
+    );
   }
 
-  let filesProcessed = 0
+  let filesProcessed = 0;
 
   for (const fname of store.files) {
-    const bname = utils.fnameToBname(fname)
-    const configSpec = config.getSpec(bname)
+    const bname = utils.fnameToBname(fname);
+    const configSpec = config.getSpec(bname);
 
     if (!configSpec) {
-      continue
+      continue;
     }
-    filesProcessed++
-    store.files.delete(fname)
+    filesProcessed++;
+    store.files.delete(fname);
 
-    await parseFile(bname, `${config.csvDir}/${fname}`, store)
-    await transformAndSaveTinkerData(bname, configSpec, '', store)
+    await parseFile(bname, `${config.csvDir}/${fname}`, store);
+    await transformAndSaveTinkerData(bname, configSpec, '', store);
   }
 
   log(
     `
     unmapped csvs processed ${filesProcessed}
     unmapped csvs ignored: ${store.files.size}
-    `,
-  )
-}
+    `
+  );
+};
 
 /**
  * loads all {@link TinkerData} into tinkergraph
@@ -190,27 +185,27 @@ export const loadTinkerData = async (config: Config, store = getStore()) => {
       CSVs pared: ${store.parsed.size}
       CSVs ignored: ${store.files.size}
       CSVs transformed: ${store.transformed.size}
-      `,
-    )
+      `
+    );
   }
 
   for (const [dataKey, data] of store.transformed.entries()) {
-    const result = await loaders.tinkerData(data.data, data.spec)
+    const result = await loaders.tinkerData(data.data, data.spec);
 
     if (config.persistResultLog) {
-      const logname = `${config.csvDir}/${dataKey}.csv.json`
+      const logname = `${config.csvDir}/${dataKey}.csv.json`;
 
-      void Bun.write(logname, JSON.stringify(result))
+      void Bun.write(logname, JSON.stringify(result));
 
-      log(`result log saved to ${logname}`)
+      log(`result log saved to ${logname}`);
     }
     log(`loaded ${dataKey} into tinkergraph`, {
       success: result.success.length,
       failure: result.failure.length,
-    })
+    });
   }
-  log('total csvs loaded in tinkergraph', store.transformed.size)
-}
+  log('total csvs loaded in tinkergraph', store.transformed.size);
+};
 
 /**
  * extracts CSV data, transforms to Tinkerdata and loads into Tinkergraph
@@ -218,14 +213,14 @@ export const loadTinkerData = async (config: Config, store = getStore()) => {
  * @param store
  */
 export const csvToTinkergraph = async (config: Config, store = getStore()) => {
-  await readCsvDir(config.csvDir, store)
-  await transformConfigFiles(config, store)
-  await transformUnmappedFiles(config, store)
-  await loadTinkerData(config, store)
-}
+  await readCsvDir(config.csvDir, store);
+  await transformConfigFiles(config, store);
+  await transformUnmappedFiles(config, store);
+  await loadTinkerData(config, store);
+};
 
 // FYI: @see https://kelvinlawrence.net/book/Gremlin-Graph-Guide.html#graphsonmapper
 // ^ v3 will give you the datatypes required for neptune loader
 // FYI: @see https://github.com/awslabs/amazon-neptune-tools/blob/master/csv-gremlin/README.md
 // TODO (noah): make sure you review the above links before continuing
-export const tinkergraphToNeptuneCsv = () => null
+export const tinkergraphToNeptuneCsv = () => null;
