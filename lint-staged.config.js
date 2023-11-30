@@ -10,6 +10,5 @@ export default (stagedFiles) => {
 
   // console.info('\n\n root/files', buildFiles);
 
-  return [];
   return buildFiles.length ? ['bun run build'] : [];
 };
