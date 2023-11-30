@@ -1,6 +1,6 @@
 import { encode, decode, decodeAsync, ExtensionCodec } from '@msgpack/msgpack';
 
-// @eslint-disable-line "bun:jsc" n/no-missing import
+// @eslint-disable-line "bun:jsc" n/no-missing import wtf
 const jsc = import.meta.resolveSync('bun:jsc') && (await import('bun:jsc'));
 
 /**

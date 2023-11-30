@@ -1,18 +1,31 @@
 import micromatch from 'micromatch';
 
-export default (stagedFiles) => {
-  const codeFiles = micromatch(stagedFiles, ['**/src/**/*.*{js,ts}']).join(' ');
+export default async (stagedFiles) => {
+  const codeFiles = micromatch(stagedFiles, ['**/src/**/*.*{js,ts}?(x)']).join(
+    ' '
+  );
   const bulidFiles = micromatch(stagedFiles, [
     '**/tsconfig*.json',
     '**/package.json',
   ]).join(' ');
 
   // console.info('\n\n utils/codeFiles', codeFiles);
-  const linters = codeFiles.length
-    ? [`bunx --bun eslint --fix ${codeFiles}`, `bun run test:ci ${codeFiles}`]
+  const tsOnly = micromatch(stagedFiles, ['**/**.*ts?(x)']).join(' ');
+
+  const tsLinters = tsOnly.length
+    ? [
+        `bunx typescript-coverage-report -o './coverage-ts' -p './tsconfig.build.json' --cache=false -s=true -t=99`,
+      ]
     : [];
 
-  return linters.length || bulidFiles.length
-    ? linters.concat('bun run build', 'git add -A')
+  const linters = codeFiles.length
+    ? [
+        `bunx --bun eslint --max-warnings=0 --no-warn-ignored --fix --fix-type suggestion,layout,problem,directive -f unix ${codeFiles}`,
+        `bun run test:ci ${codeFiles}`,
+      ]
     : [];
+
+  return tsLinters.concat(
+    linters.length || bulidFiles.length ? linters.concat('bun run build') : []
+  );
 };

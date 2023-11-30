@@ -1,12 +1,25 @@
 /* eslint-env node */
-import parser from '@typescript-eslint/parser';
-import tseslint from '@typescript-eslint/eslint-plugin';
-import globals from 'globals';
-import eslintConfigESLint from 'eslint-config-eslint';
-import stylistic from '@stylistic/eslint-plugin';
-import { FlatCompat } from '@eslint/eslintrc';
-import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { FlatCompat } from '@eslint/eslintrc';
+import * as tsImport from 'eslint-import-resolver-typescript';
+import eslintConfigESLint from 'eslint-config-eslint';
+import eslintImport from 'eslint-plugin-import';
+import globals from 'globals';
+import jsoncParser from 'jsonc-eslint-parser';
+import jsoncPlugin from 'eslint-plugin-jsonc';
+import parser from '@typescript-eslint/parser';
+import path from 'node:path';
+import promisePlugin from 'eslint-plugin-promise';
+import stylistic from '@stylistic/eslint-plugin';
+import tseslint from '@typescript-eslint/eslint-plugin';
+
+const typeScriptExtensions = ['.ts', '.cts', '.mts', '.tsx', '.d.ts'].map(
+  (x) => `**/*${x}`
+);
+const javaScriptExtensions = ['.js', '.jsx', '.mjs', '.cjs'].map(
+  (x) => `**/*${x}`
+);
+const allExtensions = [...typeScriptExtensions, ...javaScriptExtensions];
 
 // mimic CommonJS variables -- not needed if using CommonJS
 const __filename = fileURLToPath(import.meta.url);
@@ -18,6 +31,7 @@ const compat = new FlatCompat({
 
 const tsFiles = ['src/**/*.*ts*'];
 const jsFiles = ['src/**/*.*js*'];
+const dtsFiles = ['**/*.d.ts'];
 const testFiles = ['src/test/**/*.*ts*', 'src/**/*.test.*ts*'];
 
 const files = tsFiles.concat(jsFiles);
@@ -28,6 +42,42 @@ export default [
   },
   {
     ignores: ['build/*', 'docs/*', 'types/*'],
+  },
+  ...compat.plugins(
+    '@typescript-eslint',
+    'eslint-plugin-tsdoc',
+    'import',
+    'jsonc',
+    'promise'
+  ),
+  {
+    settings: {
+      'import/extensions': files,
+      'import/external-module-folders': [
+        'node_modules',
+        'node_modules/@types',
+        'packages/utils',
+      ],
+      'import/cache': {
+        lifetime: Infinity,
+      },
+      'import/resolver': {
+        node: {
+          extensions: files,
+        },
+        typescript: {
+          alwaysTryTypes: true,
+          project: './tsconfig.json',
+          ...tsImport,
+          conditionNames: ['bun'].concat(tsImport.conditionNames),
+        },
+      },
+      'import/parsers': {
+        // TODO: remove this line once eslint-plugin-import #2556 is fixed
+        espree: jsFiles,
+        '@typescript-eslint/parser': tsFiles,
+      },
+    },
   },
   {
     linterOptions: {
@@ -54,7 +104,6 @@ export default [
       },
     },
   },
-  ...compat.plugins('@typescript-eslint', 'eslint-plugin-tsdoc'),
   ...eslintConfigESLint
     .map(({ files, ...rest }) =>
       rest.plugins?.jsdoc || rest.settings?.jsdoc
@@ -65,6 +114,9 @@ export default [
     )
     .filter(Boolean),
   {
+    rules: promisePlugin.configs.recommended.rules,
+  },
+  {
     rules: tseslint.configs['strict-type-checked'].rules,
   },
   {
@@ -74,6 +126,7 @@ export default [
   stylistic.configs['recommended-flat'],
   {
     rules: {
+      'import/no-unresolved': 'error',
       'no-shadow': 'off',
       '@typescript-eslint/no-shadow': 'error',
       '@typescript-eslint/unbound-method': ['error', { ignoreStatic: true }],
@@ -129,6 +182,12 @@ export default [
     },
   },
   {
+    rules: {
+      ...eslintImport.configs.recommended.rules,
+      ...eslintImport.configs.typescript.rules,
+    },
+  },
+  {
     files: jsFiles,
     languageOptions: {
       parserOptions: tseslint.configs['disable-type-checked'].parserOptions,
@@ -136,6 +195,13 @@ export default [
     rules: {
       ...tseslint.configs['disable-type-checked'].rules,
       '@typescript-eslint/explicit-function-return-type': 'off',
+    },
+  },
+  {
+    files: dtsFiles,
+    rules: {
+      'import/no-duplicates': 'off',
+      'unused-imports/no-unused-vars': 'off',
     },
   },
   {
@@ -152,5 +218,13 @@ export default [
       'no-console': 'off',
       'no-var': 'off',
     },
+  },
+  {
+    files: ['**/*.json*?'],
+    parser: jsoncParser,
+    plugins: {
+      jsonc: jsoncPlugin,
+    },
+    rules: jsoncPlugin.configs['auto-config'],
   },
 ];

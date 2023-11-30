@@ -41,7 +41,9 @@
     "#utils/*.json": "./src/*.json"
   },
   "scripts": {
-    "lint": "bunx --bun eslint --fix src",
+    "lint:types": "typescript-coverage-report",
+    "lint:src": "bunx --bun eslint --no-warn-ignored  --cache --fix --fix-type suggestion,layout,problem,directive -f stylish 'src/**/*'",
+    "lint": "bun lint:types ; bun lint:src",
     "build": "bun build:src && bun build:types",
     "build:src": "rm -rf build && for runtime in bun browser node; do bun build --entrypoints ./src/${runtime}.ts --outdir ./build --target ${runtime} --external bun:jsc --external gremlin --external type-fest --entry-naming $runtime.index.[ext] --minify --sourcemap=external --root .; done;",
     "build:types": "bunx tsc -b tsconfig.build.json --force",
@@ -62,12 +64,19 @@
     "bun-types": "1.0.14",
     "eslint": "8.54.0",
     "eslint-config-eslint": "9.0.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "npm:eslint-plugin-i@latest",
+    "eslint-plugin-jsonc": "^2.10.0",
+    "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-tsdoc": "0.2.17",
     "globals": "13.23.0",
     "gremlin": "3.6.2",
     "hono": "3.10.2",
+    "jsonc-eslint-parser": "^2.4.0",
+    "type-coverage": "^2.27.0",
     "type-fest": "^4.8.2",
-    "typescript": "5.3.2"
+    "typescript": "5.3.2",
+    "typescript-coverage-report": "^0.8.0"
   },
   "peerDependencies": {
     "gremlin": "3.6.2",
@@ -77,5 +86,23 @@
   "dependencies": {
     "csv": "6.3.5",
     "@msgpack/msgpack": "3.0.0-beta2"
+  },
+  "typeCoverage": {
+    "atLeast": 99,
+    "cache": true,
+    "project": "./tsconfig.json",
+    "strict": true,
+    "ignoreUnread": true,
+    "ignoreNested": true,
+    "ignoreAsAssertion": true,
+    "ignoreTypeAssertion": true,
+    "ignoreNonNullAssertion": true,
+    "ignoreObject": true,
+    "ignoreEmptyType": true,
+    "showRelativePath": true,
+    "historyFile": "typecoverage.json",
+    "noDetailWhenFailed": true,
+    "reportSemanticError": true,
+    "jsonOutput": false
   }
 }
