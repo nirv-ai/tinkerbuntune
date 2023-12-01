@@ -14,9 +14,9 @@ export enum EDir {
 
 /**
  * aids in reusing traversal patterns
- * e.g. a bunch of common queries from V > E > V can be specified in a json config
- * { x: [vID, eID, vID], y: [vID, eID, vID]} you can use {@link go} to automatically traverse this graph
- * @param dir {@link EDir}
+ * e.g. a bunch of common queries from V \> E \> V can be specified in a json config
+ * \{ x: [vID, eID, vID], y: [vID, eID, vID]\} you can use {@link go} to automatically traverse this graph
+ * @param dir - {@link EDir}
  * @returns
  */
 export const go = (dir: EDir) => {

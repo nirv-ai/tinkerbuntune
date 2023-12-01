@@ -47,8 +47,8 @@ export const tinkerDataVertex = (tdata: TinkerDataVertex) => {
 
 /**
  * merges vertices and edges into a tinkergraph based on a specification
- * @param data
- * @param spec
+ * @param data -
+ * @param spec -
  */
 export const tinkerData = async (
   data: TinkerDataEdge[] | TinkerDataVertex[],

@@ -5,7 +5,7 @@ import type {
   CsvParsed,
   NeptuneValue,
   NumStr,
-  PropsAndLabels,
+  PropertiesAndLabels,
   TinkerDataEdge,
   TinkerDataVertex,
 } from '#utils'
@@ -22,15 +22,15 @@ export const validateNumStr = (value: NeptuneValue): NumStr => {
 
 /**
  * extracts properties and labels from a CSV record
- * @param spec
- * @param headers
- * @param record
+ * @param spec -
+ * @param headers -
+ * @param record -
  */
-export const transformPropsAndLabels = (
+export const transformPropertiesAndLabels = (
   spec: ConfigSpec,
   headers: string[],
   record: NeptuneValue[],
-): PropsAndLabels => {
+): PropertiesAndLabels => {
   const p = { ...(spec.inject?.p) },
     l = spec.inject?.l?.slice() ?? []
 
@@ -81,9 +81,9 @@ export const transformPropsAndLabels = (
 
 /**
  * converts a csv record to {@link TinkerDataEdge}
- * @param spec
- * @param data
- * @param headers
+ * @param spec -
+ * @param data -
+ * @param headers -
  */
 export const csvToTinkerDataEdge = (
   spec: ConfigSpecEdge,
@@ -93,7 +93,7 @@ export const csvToTinkerDataEdge = (
   data.map((recordRaw) => {
     const record = spec.transformRecord?.(recordRaw) ?? recordRaw
 
-    const pl = transformPropsAndLabels(spec, headers, record)
+    const pl = transformPropertiesAndLabels(spec, headers, record)
 
     return {
       edges: spec.edges.map(edgeConfig => ({
@@ -108,9 +108,9 @@ export const csvToTinkerDataEdge = (
 
 /**
  * converts a csv record to {@link TinkerDataVertex}
- * @param spec
- * @param data
- * @param headers
+ * @param spec -
+ * @param data -
+ * @param headers -
  */
 export const csvToTinkerDataVertex = (
   spec: ConfigSpecVertex,
@@ -119,7 +119,7 @@ export const csvToTinkerDataVertex = (
 ): TinkerDataVertex[] =>
   data.map((recordRaw) => {
     const record = spec.transformRecord?.(recordRaw) ?? recordRaw
-    const pl = transformPropsAndLabels(spec, headers, record)
+    const pl = transformPropertiesAndLabels(spec, headers, record)
     const recordId = spec.recordId(pl, record)
 
     return { recordId, ...pl }
@@ -127,8 +127,8 @@ export const csvToTinkerDataVertex = (
 
 /**
  * transforms a csv file to {@link TinkerDataEdge} or {@link TinkerDataVertex} based on a {@link ConfigSpec}
- * @param spec
- * @param dataParsed
+ * @param spec -
+ * @param dataParsed -
  */
 export const csvToTinkerData = (
   spec: ConfigSpec,

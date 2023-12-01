@@ -29,7 +29,7 @@ const cjsFiles = ['**/*.cjs']
 
 const eslintOptions = (language = {}, settings = {}) => ({
   linterOptions: {
-    noInlineConfig: true,
+    noInlineConfig: false,
     reportUnusedDisableDirectives: true,
   },
   languageOptions: {
@@ -171,6 +171,7 @@ export default [
       ],
       'n/no-missing-import': 'off', // hella buggy
       'n/no-extraneous-import': 'off', // hella buggy
+      'import/no-named-as-default-member': 'off',
       'unicorn/prevent-abbreviations': 'off',
       'unicorn/consistent-destructuring': 'off',
       'unicorn/no-array-reduce': 'off',

@@ -4,15 +4,15 @@ import type { NumStr, ConfigSpec } from '#utils'
 
 /**
  * drops the extension from a path
- * @param fname string e.g. blah.csv
+ * @param fname - string e.g. blah.csv
  * @returns string
  */
 export const fnameToBname = (fname: string) => path.parse(fname).name
 
 /**
  * adds an extension to a filename
- * @param bname a filename e.g. `blah`
- * @param ext to add to filename e.g. `csv`
+ * @param bname - a filename e.g. `blah`
+ * @param ext - to add to filename e.g. `csv`
  * @returns string with extension added
  */
 export const bnameTofname = (bname: string, extension = 'csv') => `${bname}.${extension}`
@@ -20,7 +20,7 @@ export const bnameTofname = (bname: string, extension = 'csv') => `${bname}.${ex
 /**
  * converts a postgres date string to a javascript date object
  * @see https://docs.aws.amazon.com/neptune/latest/userguide/best-practices-gremlin-datetime-glv.html
- * @param date string
+ * @param date - string
  * @returns javascript Date
  */
 export const pgDateToJs = (date: string) =>
@@ -31,7 +31,7 @@ const hashIdCache = Object.create(null) as Record<string, unknown>
 // TODO (noah): consumers should be able to override this fn
 /**
  * creates a hash of some string
- * @param id
+ * @param id -
  * @see https://bun.sh/docs/api/hashing#bun-hash
  */
 export const hashId = (id: string): string => {
@@ -43,7 +43,7 @@ export const hashId = (id: string): string => {
 
 /**
  * neptune requires 1 label for every edge
- * @param data array with a single edge label
+ * @param data - array with a single edge label
  * @returns {@link NumStr}
  */
 export const getEdgeLabel = (data: NumStr) => {
@@ -61,7 +61,7 @@ export const getEdgeLabel = (data: NumStr) => {
 /**
  * neptune allows 1/more labels for every vertex but recommends at most 1
  * but tinkergraph only allows 1 label, we use the label at index 0
- * @param data array with 1/more edge labels
+ * @param data - array with 1/more edge labels
  * @returns
  */
 export const getVertexLabel = (data: NumStr[]): NumStr => {
@@ -73,7 +73,7 @@ export const getVertexLabel = (data: NumStr[]): NumStr => {
 
 /**
  * returns a fn to retrieve a vertex/edge label depending on the config type
- * @param type V or E
+ * @param type - V or E
  * @returns
  */
 export const getLabel = <T = ConfigSpec['type']>(
@@ -82,8 +82,9 @@ export const getLabel = <T = ConfigSpec['type']>(
     type === 'v' ? getVertexLabel : getEdgeLabel
 
 /**
- * reduces a Promise.allSettled response to {success[], failure[]} object
- * @param result PromiseSettledResult
+ *
+ * reduces a Promise.allSettled response to \{success[], failure[]\} object
+ * @param result - PromiseSettledResult
  * @returns
  */
 export const recordsCreatedHandler = (

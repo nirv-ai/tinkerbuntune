@@ -42,6 +42,7 @@ export class GroovyTraversal extends GraphTraversal {
  * similar to gremlin.process.statics
  */
 function anonymous() {
+  /* eslint-disable-next-line unicorn/no-null */
   return new GroovyTraversal(null, null, new gremlin.process.Bytecode())
 }
 export const keys = () => anonymous().keys()

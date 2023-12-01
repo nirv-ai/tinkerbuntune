@@ -1,5 +1,5 @@
 /**
- * migrating CSV -> tinkergraph or tinkergraph -> neptune CSV
+ * migrating CSV to tinkergraph or tinkergraph tp neptune CSV
  *
  */
 
@@ -32,10 +32,10 @@ export const getStore = (overrides = {}) => ({
 
 /**
  * transforms a CSV file to TinkerData and saves it as dataKey || bname
- * @param bname filename of the CSV file without extension
- * @param spec associated {@link ConfigSpec}
- * @param dataKey generally only used when spec.recursive = actualBname
- * @param store
+ * @param bname - filename of the CSV file without extension
+ * @param spec - associated {@link ConfigSpec}
+ * @param dataKey - generally only used when spec.recursive = actualBname
+ * @param store -
  */
 export const transformAndSaveTinkerData = async (
   bname: string,
@@ -57,9 +57,9 @@ export const transformAndSaveTinkerData = async (
 
 /**
  * parses and saves a file
- * @param bname
- * @param filepath
- * @param store
+ * @param bname -
+ * @param filepath -
+ * @param store -
  */
 export const parseFile = async (
   bname: string,
@@ -81,8 +81,8 @@ export const parseFile = async (
 
 /**
  * retrieves all filenames with .csv extension at path
- * @param csvDir
- * @param store
+ * @param csvDir -
+ * @param store -
  */
 export const readCsvDir = async (csvDir: string, store = getStore()) => {
   for (const fname of (await fs.readdir(csvDir))) fname.endsWith('.csv') && store.files.add(fname)
@@ -92,8 +92,8 @@ export const readCsvDir = async (csvDir: string, store = getStore()) => {
 
 /**
  * transforms all {@link ConfigSpec}s in {@link Config}.files and saves each as {@link TinkerData}
- * @param config
- * @param store
+ * @param config -
+ * @param store -
  */
 export const transformConfigFiles = async (
   config: Config,
@@ -134,8 +134,8 @@ export const transformConfigFiles = async (
 
 /**
  * transforms unmapped csv files and saves each as {@link TinkerData}
- * @param config
- * @param store
+ * @param config -
+ * @param store -
  */
 export const transformUnmappedFiles = async (
   config: Config,
@@ -176,8 +176,8 @@ export const transformUnmappedFiles = async (
 
 /**
  * loads all {@link TinkerData} into tinkergraph
- * @param config
- * @param store
+ * @param config -
+ * @param store -
  */
 export const loadTinkerData = async (config: Config, store = getStore()) => {
   if (store.transformed.size === 0) {
@@ -211,8 +211,8 @@ export const loadTinkerData = async (config: Config, store = getStore()) => {
 
 /**
  * extracts CSV data, transforms to Tinkerdata and loads into Tinkergraph
- * @param config {@link Config}
- * @param store
+ * @param config - {@link Config}
+ * @param store -
  */
 export const csvToTinkergraph = async (config: Config, store = getStore()) => {
   await readCsvDir(config.csvDir, store)
@@ -225,4 +225,4 @@ export const csvToTinkergraph = async (config: Config, store = getStore()) => {
 // ^ v3 will give you the datatypes required for neptune loader
 // FYI: @see https://github.com/awslabs/amazon-neptune-tools/blob/master/csv-gremlin/README.md
 // TODO (noah): make sure you review the above links before continuing
-export const tinkergraphToNeptuneCsv = () => null
+export const tinkergraphToNeptuneCsv = () => 'not implemented'
