@@ -1,5 +1,5 @@
 import { common } from '#utils'
-import type { GroovyTraversal, type EnumValue } from '#utils'
+import type { GroovyTraversal, EnumValue } from '#utils'
 
 const { t } = common
 const { keys, values } = common.column
@@ -9,9 +9,9 @@ const { flatMap, identity, project, select, unfold, union, valueMap }
 
 /**
  * base opts for a gremlin traversal
- * @property end if false returns a GroovyTraveral for chaining
- * @property limitX e.g. traversal.range(limitX, limitY)
- * @property limitY e.g. traversal.range(limitX, limitY)
+ * @param end - if false returns a GroovyTraveral for chaining
+ * @param limitX - e.g. traversal.range(limitX, limitY)
+ * @param limitY - e.g. traversal.range(limitX, limitY)
  */
 export interface BaseOptions {
   limitX?: number // TODO (noah): this should be an array of limits
@@ -21,7 +21,7 @@ export interface BaseOptions {
 
 /**
  * helper fn for supplying options to a {@link GroovyTraversal}
- * @param overrides
+ * @param overrides - ...
  * @returns
  */
 export const getBaseOpts = (overrides: BaseOptions) => ({

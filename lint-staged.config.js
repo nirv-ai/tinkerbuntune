@@ -1,4 +1,3 @@
-// @ts-check
 import micromatch from 'micromatch'
 
 export default (stagedFiles) => {
@@ -27,5 +26,5 @@ export default (stagedFiles) => {
 
   const runBuild = buildFiles ? ['bun run build'] : []
 
-  return lintAndTests.concat(runBuild)
+  return [...lintAndTests, ...runBuild]
 }

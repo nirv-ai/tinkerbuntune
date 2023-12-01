@@ -6,23 +6,23 @@
 
 const { scope, column, order, __, t, p } = common
 
+const upsert = async () =>
+  g
+    .V()
+    .has('airport', 'code', 'XYZ')
+    .fold()
+    .coalesce(
+      __.unfold(),
+      __.addV('airport')
+        .property('code', 'XYZ')
+        .property('icao', 'KXYZ')
+        .property('desc', 'This is not a real airport'),
+    )
+    .toList()
+
 describe('practical gremlin examples', () => {
   describe('conditional create', () => {
     test('airport with a code of XYZ', async () => {
-      const upsert = async () =>
-        g
-          .V()
-          .has('airport', 'code', 'XYZ')
-          .fold()
-          .coalesce(
-            __.unfold(),
-            __.addV('airport')
-              .property('code', 'XYZ')
-              .property('icao', 'KXYZ')
-              .property('desc', 'This is not a real airport'),
-          )
-          .toList()
-
       const first = await upsert()
       const second = await upsert()
 

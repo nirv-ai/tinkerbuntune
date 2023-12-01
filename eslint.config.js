@@ -1,5 +1,3 @@
-// @ts-check
-
 // @see https://github.com/nivalis-studio/eslint-config/blob/main/src/configs/imports.ts
 // @see https://github.com/antfu/eslint-config
 
@@ -12,7 +10,7 @@ import eslintImport from 'eslint-plugin-import'
 import jsoncPlugin from 'eslint-plugin-jsonc'
 import typescriptPlugin from '@typescript-eslint/eslint-plugin'
 import promisePlugin from 'eslint-plugin-promise'
-import stylistic from '@stylistic/eslint-plugin'
+import * as stylistic from '@stylistic/eslint-plugin'
 import commentsPlugin from 'eslint-plugin-eslint-comments'
 import tsdocPlugin from 'eslint-plugin-tsdoc'
 import unicornPlugin from 'eslint-plugin-unicorn'
@@ -77,7 +75,7 @@ const tsOptions = eslintOptions(
         alwaysTryTypes: true,
         extensions: allExtensions,
         extensionAlias: importResolverTypescript.defaultExtensionAlias,
-        conditionNames: ['bun'].concat(importResolverTypescript.defaultConditionNames),
+        conditionNames: ['bun', ...importResolverTypescript.defaultConditionNames],
       },
     },
     'import/parsers': {
@@ -121,7 +119,7 @@ export default [
       ...stylistic.configs['recommended-flat'].rules,
       'tsdoc/syntax': 'error',
       'func-style': ['error', 'declaration', { allowArrowFunctions: true }],
-      'import/no-unresolved': 'error',
+      'import/no-unresolved': ['error', { ignore: ['^bun:*'] }],
       'new-cap': 'off',
       'no-shadow': 'off',
       'no-undef': 'off',
@@ -173,6 +171,10 @@ export default [
       ],
       'n/no-missing-import': 'off', // hella buggy
       'n/no-extraneous-import': 'off', // hella buggy
+      'unicorn/prevent-abbreviations': 'off',
+      'unicorn/consistent-destructuring': 'off',
+      'unicorn/no-array-reduce': 'off',
+      'unicorn/filename-case': 'off',
     },
   },
   {

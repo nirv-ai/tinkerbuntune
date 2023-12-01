@@ -42,7 +42,7 @@
   },
   "scripts": {
     "lint:types": "bun --bun x typescript-coverage-report",
-    "lint:src": "bun --bun x eslint --fix --fix-type suggestion,layout,problem,directive -f stylish './**'",
+    "lint:src": "bun --bun x eslint --cache --fix --fix-type suggestion,layout,problem,directive -f stylish './**'",
     "lint": "bun lint:types ; bun lint:src",
     "build": "bun build:src && bun build:types",
     "build:src": "rm -rf build && for runtime in bun browser node; do bun build --entrypoints ./src/${runtime}.ts --outdir ./build --target ${runtime} --external bun:jsc --external gremlin --external type-fest --entry-naming $runtime.index.[ext] --minify --sourcemap=external --root .; done;",
