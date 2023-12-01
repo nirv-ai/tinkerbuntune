@@ -1,7 +1,8 @@
 import { encode, decode, decodeAsync, ExtensionCodec } from '@msgpack/msgpack'
 
-// @eslint-disable-line "bun:jsc" n/no-missing import
+// eslint-disable dunno keeps changing bun:jsc > node:bun:jsc
 const jsc = import.meta.resolveSync('bun:jsc') && (await import('node:bun:jsc'))
+// eslint-enable
 const x = 'blah'
 /**
  *

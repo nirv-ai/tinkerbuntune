@@ -17,7 +17,7 @@ import unicornPlugin from 'eslint-plugin-unicorn'
 import jsPlugin from '@eslint/js'
 
 const typeScriptExtensions = ['.ts', '.cts', '.mts', '.tsx', '.d.ts']
-const javaScriptExtensions = ['.js', '.jsx', '.mjs', '.cjs', '.json', 'node']
+const javaScriptExtensions = ['.js', '.jsx', '.mjs', '.cjs', '.json', '.node']
 const allExtensions = [...typeScriptExtensions, ...javaScriptExtensions]
 
 const tsFiles = ['**/*.?(*)ts?(x)']
@@ -70,6 +70,8 @@ const tsOptions = eslintOptions(
     'import/cache': {
       lifetime: Number.POSITIVE_INFINITY,
     },
+    'import/core-modules': ['bun:jsc', 'bun:test', 'bun'],
+    'import/ignore': ['bun', 'bun:jsc', 'bun:test'],
     'import/resolver': {
       typescript: {
         alwaysTryTypes: true,
@@ -119,7 +121,7 @@ export default [
       ...stylistic.configs['recommended-flat'].rules,
       'tsdoc/syntax': 'error',
       'func-style': ['error', 'declaration', { allowArrowFunctions: true }],
-      'import/no-unresolved': ['error', { ignore: ['^bun:*'] }],
+      'import/no-unresolved': ['error', { ignore: ['^bun:'] }],
       'new-cap': 'off',
       'no-shadow': 'off',
       'no-undef': 'off',
