@@ -1,5 +1,7 @@
 import { encode, decode, decodeAsync, ExtensionCodec } from '@msgpack/msgpack'
 
+// likley this: https://github.com/sindresorhus/eslint-plugin-unicorn/issues/1931
+// might be this: https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/prefer-node-protocol.md
 // eslint-disable dunno keeps changing bun:jsc to node:bun:js
 const eslintIsDumb = import.meta.resolveSync('bun:jsc')
 const jsc = eslintIsDumb && (await import(eslintIsDumb))
