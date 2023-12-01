@@ -1,31 +1,44 @@
-import micromatch from 'micromatch';
+// @ts-check
+
+import micromatch from 'micromatch'
 
 export default async (stagedFiles) => {
-  const codeFiles = micromatch(stagedFiles, ['**/src/**/*.*{js,ts}?(x)']).join(
-    ' '
-  );
-  const bulidFiles = micromatch(stagedFiles, [
-    '**/tsconfig*.json',
-    '**/package.json',
-  ]).join(' ');
+  const codeFiles = micromatch(stagedFiles, '*.?(*){j,t}s?(x|on*)', {
+    matchBase: true,
+  }).join(' ')
 
-  // console.info('\n\n utils/codeFiles', codeFiles);
-  const tsOnly = micromatch(stagedFiles, ['**/**.*ts?(x)']).join(' ');
+  const tsOnly = micromatch(stagedFiles, '*.?(*)ts?(x)', {
+    matchBase: true,
+  }).join(' ')
 
-  const tsLinters = tsOnly.length
+  const buildFiles = micromatch.some(
+    stagedFiles,
+    ['tsconfig*.json$', 'package.json$'],
+    {
+      matchBase: true,
+    },
+  )
+
+  // console.info('\n\n codefiles', codeFiles, tsOnly, buildFiles);
+
+  const lintAndTests = codeFiles.length
     ? [
-        `bunx typescript-coverage-report -o './coverage-ts' -p './tsconfig.build.json' --cache=false -s=true -t=99`,
+        `bun --bun x eslint --max-warnings=0 --no-warn-ignored --fix --fix-type suggestion,layout,problem,directive -f unix ${codeFiles}`,
+        `bun test --bail ${codeFiles}`,
       ]
-    : [];
+    : []
 
-  const linters = codeFiles.length
-    ? [
-        `bunx --bun eslint --max-warnings=0 --no-warn-ignored --fix --fix-type suggestion,layout,problem,directive -f unix ${codeFiles}`,
-        `bun run test:ci ${codeFiles}`,
-      ]
-    : [];
+  const typeCoverage = lintAndTests.concat(
+    tsOnly.length
+      ? [
+          `bun --bun -x typescript-coverage-report -o './coverage-ts' -p './tsconfig.build.json' --cache=false -s=true -t=99`,
+        ]
+      : [],
+  )
 
-  return tsLinters.concat(
-    linters.length || bulidFiles.length ? linters.concat('bun run build') : []
-  );
-};
+  const matches = typeCoverage.concat(
+    typeCoverage.length || buildFiles ? 'bun run build' : [],
+  )
+
+  return matches
+}

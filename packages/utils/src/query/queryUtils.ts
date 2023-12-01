@@ -1,5 +1,5 @@
-import type { GroovyTraversal } from '#utils'
-import { common, type EnumValue } from '#utils'
+import { common } from '#utils'
+import type { GroovyTraversal, type EnumValue } from '#utils'
 
 const { t } = common
 const { keys, values } = common.column
