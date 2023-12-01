@@ -1,7 +1,8 @@
 import { encode, decode, decodeAsync, ExtensionCodec } from '@msgpack/msgpack'
 
-// eslint-disable dunno keeps changing bun:jsc > node:bun:jsc
-const jsc = import.meta.resolveSync('bun:jsc') && (await import('node:bun:jsc'))
+// eslint-disable dunno keeps changing bun:jsc to node:bun:js
+const eslintIsDumb = import.meta.resolveSync('bun:jsc')
+const jsc = eslintIsDumb && (await import(eslintIsDumb))
 // eslint-enable
 const x = 'blah'
 /**
