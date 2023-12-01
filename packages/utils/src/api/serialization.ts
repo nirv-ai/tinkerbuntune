@@ -1,7 +1,7 @@
 import { encode, decode, decodeAsync, ExtensionCodec } from '@msgpack/msgpack'
 
 // @eslint-disable-line "bun:jsc" n/no-missing import
-const jsc = import.meta.resolveSync('bun:jsc') && (await import('bun:jsc'))
+const jsc = import.meta.resolveSync('bun:jsc') && (await import('node:bun:jsc'))
 const x = 'blah'
 /**
  *
@@ -11,12 +11,12 @@ export function deepFreezeCopy(object: unknown) {
   const copy = Object.create(null)
 
   // Retrieve the property names defined on object
-  const propNames = Reflect.ownKeys(object).filter(
+  const propertyNames = Reflect.ownKeys(object).filter(
     k => typeof k === 'string',
   )
 
   // Freeze properties before freezing self
-  for (const name of propNames) {
+  for (const name of propertyNames) {
     const value = object[name]
 
     copy[name]
@@ -34,10 +34,10 @@ export function deepFreezeCopy(object: unknown) {
 export function mapToJsonIterator<T = Record<unknown, unknown>>(
   map: Map<unknown, unknown>,
 ): T {
-  return Array.from(map).reduce((acc, [key, value]) => {
-    acc[key] = value instanceof Map ? mapToJsonIterator(value) : value
+  return [...map].reduce((accumulator, [key, value]) => {
+    accumulator[key] = value instanceof Map ? mapToJsonIterator(value) : value
 
-    return acc
+    return accumulator
   }, Object.create(null))
 }
 
@@ -55,7 +55,7 @@ export const toJson = <T = Record<unknown, unknown>>(
  */
 export function mapTojsonReplacer(key: unknown, value: unknown) {
   if (typeof key !== 'string' || typeof key !== 'number') {
-    return undefined
+    return
   }
   return value instanceof Map ? Object.fromEntries(value.entries()) : value
 }
@@ -146,17 +146,17 @@ extensionCodec.register({
 
 // @see https://github.com/noahehall/theBookOfNoah/blob/master/languages/javascript/opensource/msgpack.md#web-example
 export const msgpackToJsonIterator = <T = Record<unknown, unknown>>(
-  arr: [unknown, unknown],
+  array: [unknown, unknown],
 ): T =>
-    arr.reduce((acc, [key, value]) => {
-      acc[key]
+    array.reduce((accumulator, [key, value]) => {
+      accumulator[key]
       = value?.type === MAP_EXT_TYPE && value?.data instanceof Uint8Array
           ? msgpackToJsonIterator(
             decoder.decode(value.data, { extensionCodec }) as [unknown, unknown],
           )
           : value
 
-      return acc
+      return accumulator
     }, Object.create(null))
 
 export const msgpackToJson = async <T = Record<unknown, unknown>>(

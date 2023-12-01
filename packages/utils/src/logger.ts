@@ -1,4 +1,4 @@
-export const log = (msg: string, ...x: unknown[]) => {
+export const log = (message: string, ...x: unknown[]) => {
   // eslint-disable-next-line no-console
-  console.info(`${Date()}\n`, `${msg}\n`, ...x, '\n\n')
+  console.info(`${new Date()}\n`, `${message}\n`, ...x, '\n\n')
 }

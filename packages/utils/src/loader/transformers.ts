@@ -12,7 +12,7 @@ import type {
 
 export const validateNumStr = (value: NeptuneValue): NumStr => {
   if (typeof value !== 'string' || typeof value !== 'number') {
-    throw new Error(
+    throw new TypeError(
       `invalid type, expected number|string, received: ${typeof value}`,
     )
   }
@@ -31,27 +31,27 @@ export const transformPropsAndLabels = (
   headers: string[],
   record: NeptuneValue[],
 ): PropsAndLabels => {
-  const p = { ...(spec.inject?.p ?? {}) },
+  const p = { ...(spec.inject?.p) },
     l = spec.inject?.l?.slice() ?? []
 
-  record.forEach((col, i2) => {
-    if (spec.colMap?.ignoreCols?.includes(i2)) {
-      return
+  for (const [index2, col] of record.entries()) {
+    if (spec.colMap?.ignoreCols?.includes(index2)) {
+      continue
     }
     if (spec.colMap?.ignoreEmptyCol && String(col).length === 0) {
-      return
+      continue
     }
 
-    const header = headers[i2]
-    const value = spec.colMap?.transform?.(i2, col) ?? col
+    const header = headers[index2]
+    const value = spec.colMap?.transform?.(index2, col) ?? col
 
     // TODO (noah): tinkergraph only allows 1 label per element
     // so we set all other labels to be properties
-    if (spec.colMap?.p?.includes(i2)) {
+    if (spec.colMap?.p?.includes(index2)) {
       p[header] = value
     }
-    else if (spec.colMap?.l?.includes(i2)) {
-      if (l.length) {
+    else if (spec.colMap?.l?.includes(index2)) {
+      if (l.length > 0) {
         p[header] = value
       }
       else {
@@ -60,19 +60,21 @@ export const transformPropsAndLabels = (
     }
     else if (spec.colMap?.default) {
       switch (spec.colMap.default) {
-        case 'p':
+        case 'p': {
           p[header] = value
           break
-        default:
-          if (l.length) {
+        }
+        default: {
+          if (l.length > 0) {
             p[header] = value
           }
           else {
             l.push(validateNumStr(value))
           }
+        }
       }
     }
-  })
+  }
 
   return { p, l }
 }
@@ -135,12 +137,15 @@ export const csvToTinkerData = (
   const headers = spec.transformHeaders?.(dataParsed[0]) ?? dataParsed[0]
 
   switch (spec.type) {
-    case 'v':
+    case 'v': {
       return csvToTinkerDataVertex(spec, dataParsed.slice(1), headers)
-    case 'e':
+    }
+    case 'e': {
       return csvToTinkerDataEdge(spec, dataParsed.slice(1), headers)
-    default:
+    }
+    default: {
       // @ts-expect-error spec is anow a never
       throw new Error(`invalid spec type: ${spec.type}`)
+    }
   }
 }

@@ -7,12 +7,12 @@ export type NeptuneValueSingle = NumStr | boolean | Date
 export type NeptuneValueArray = NeptuneValueSingle[]
 export type NeptuneValue = NeptuneValueSingle | NeptuneValueArray
 
-export interface PropsAndLabels {
+export interface PropertiesAndLabels {
   p?: Record<string, NeptuneValue>
   l?: NumStr[]
 }
 export type PropLabelNumStr = (
-  pl: PropsAndLabels,
+  pl: PropertiesAndLabels,
   record: NeptuneValue[]
 ) => NumStr
 export interface EdgeConfig {
@@ -20,7 +20,7 @@ export interface EdgeConfig {
   t: PropLabelNumStr
   l: PropLabelNumStr
   recordId: PropLabelNumStr
-  p?: (pl: PropsAndLabels) => PropsAndLabels['p']
+  p?: (pl: PropertiesAndLabels) => PropertiesAndLabels['p']
 }
 
 // TODO(noah) we shoudnt need this: typescript should automatically figure this out
@@ -28,7 +28,7 @@ export interface EdgeData {
   f: ReturnType<EdgeConfig['f']>
   t: ReturnType<EdgeConfig['t']>
   l: ReturnType<EdgeConfig['l']>
-  p?: Pick<PropsAndLabels, 'p'>
+  p?: Pick<PropertiesAndLabels, 'p'>
   recordId: ReturnType<EdgeConfig['recordId']>
 }
 
@@ -49,7 +49,7 @@ export interface ConfigSpecColMap {
   ignoreEmptyCol?: boolean
   l?: number[]
   p?: number[]
-  transform?: (i: number, col: NeptuneValue) => NeptuneValue
+  transform?: (index: number, col: NeptuneValue) => NeptuneValue
 }
 
 /**
@@ -137,7 +137,7 @@ export type Config = RequireAtLeastOne<
 /**
  * base TinkerData for vertices and edges
  */
-export interface TinkerDataBase extends PropsAndLabels {
+export interface TinkerDataBase extends PropertiesAndLabels {
   recordId?: NumStr
   edges?: EdgeData[]
 }

@@ -113,9 +113,9 @@ const badConfigTests = (configMap: typeof configs.bad) => {
               // and preferablly an error should be thrown
               expect(false).toBeTrue()
             }
-            catch (e: unknown) {
-              expect(e).toBeInstanceOf(Error)
-              expect(e.message.length).toBeGreaterThan(5)
+            catch (error: unknown) {
+              expect(error).toBeInstanceOf(Error)
+              expect(error.message.length).toBeGreaterThan(5)
             }
           })
         })
@@ -145,8 +145,9 @@ describe('etl', () => {
         badConfigTests(configMap)
         break
       }
-      default:
+      default: {
         throw new Error(`${testType} not setup for etl.test.ts`)
+      }
     }
   }
 })

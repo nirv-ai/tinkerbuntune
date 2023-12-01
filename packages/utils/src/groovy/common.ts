@@ -34,7 +34,7 @@ export const go = (dir: EDir) => {
   }
 
   switch (dir) {
-    case EDir.in:
+    case EDir.in: {
       return {
         ...base,
         to: {
@@ -42,7 +42,8 @@ export const go = (dir: EDir) => {
           v: __.in_,
         },
       }
-    case EDir.out:
+    }
+    case EDir.out: {
       return {
         ...base,
         to: {
@@ -50,8 +51,10 @@ export const go = (dir: EDir) => {
           v: __.out,
         },
       }
-    default:
+    }
+    default: {
       throw new Error(`invalid: ${dir as string}\nexpected an EDir}`)
+    }
   }
 }
 
@@ -77,10 +80,10 @@ export const common = {
     to: gremlin.process.direction.out,
   },
   go,
-};
+}
 
 // remove these duplicates since we destuctured them under different names
-[
+for (const property of [
   'P',
   'AnonymousTraversalSource',
   'statics',
@@ -90,4 +93,4 @@ export const common = {
 
   // @ts-expect-error implicit any
   // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-].forEach(prop => delete common[prop])
+]) delete common[property]

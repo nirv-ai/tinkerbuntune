@@ -44,14 +44,14 @@ export const transformAndSaveTinkerData = async (
   store = getStore(),
 ) => {
   const csvParsed = store.parsed.get(bname)
-  if (!csvParsed) {
-    throw new Error(`csv not parsed: ${bname}`)
-  }
-  else {
+  if (csvParsed) {
     store.transformed.set(dataKey || bname, {
       spec,
       data: await transform.csvToTinkerData(spec, csvParsed),
     })
+  }
+  else {
+    throw new Error(`csv not parsed: ${bname}`)
   }
 }
 
@@ -73,9 +73,9 @@ export const parseFile = async (
       parse(await Bun.file(filepath).text()) as CsvParsed,
     )
   }
-  catch (e) {
-    const msg = e instanceof Error ? e.message : 'unknown error'
-    throw new Error(`invalid csv ${bname}: ${filepath}\n${msg}`)
+  catch (error) {
+    const message = error instanceof Error ? error.message : 'unknown error'
+    throw new Error(`invalid csv ${bname}: ${filepath}\n${message}`)
   }
 }
 
@@ -85,9 +85,8 @@ export const parseFile = async (
  * @param store
  */
 export const readCsvDir = async (csvDir: string, store = getStore()) => {
-  (await fs.readdir(csvDir)).forEach(
-    fname => fname.endsWith('.csv') && store.files.add(fname),
-  )
+  for (const fname of (await fs.readdir(csvDir))) fname.endsWith('.csv') && store.files.add(fname)
+
   log('total csv files found', store.files.size)
 }
 
@@ -181,7 +180,7 @@ export const transformUnmappedFiles = async (
  * @param store
  */
 export const loadTinkerData = async (config: Config, store = getStore()) => {
-  if (!store.transformed.size) {
+  if (store.transformed.size === 0) {
     throw new Error(
       `
       no CSV files transformed. Did you correctly map CSV filenames to config specs?

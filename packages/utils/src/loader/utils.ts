@@ -15,7 +15,7 @@ export const fnameToBname = (fname: string) => path.parse(fname).name
  * @param ext to add to filename e.g. `csv`
  * @returns string with extension added
  */
-export const bnameTofname = (bname: string, ext = 'csv') => `${bname}.${ext}`
+export const bnameTofname = (bname: string, extension = 'csv') => `${bname}.${extension}`
 
 /**
  * converts a postgres date string to a javascript date object
@@ -24,7 +24,7 @@ export const bnameTofname = (bname: string, ext = 'csv') => `${bname}.${ext}`
  * @returns javascript Date
  */
 export const pgDateToJs = (date: string) =>
-  new Date(date.replace(/['"]+/gu, ''))
+  new Date(date.replaceAll(/['"]+/gu, ''))
 
 const hashIdCache = Object.create(null) as Record<string, unknown>
 
@@ -47,7 +47,7 @@ export const hashId = (id: string): string => {
  * @returns {@link NumStr}
  */
 export const getEdgeLabel = (data: NumStr) => {
-  if (!String(data).length) {
+  if (String(data).length === 0) {
     throw new Error(
       `neptune requires edges to have exactly 1 label: ${data} received`,
     )
@@ -65,7 +65,7 @@ export const getEdgeLabel = (data: NumStr) => {
  * @returns
  */
 export const getVertexLabel = (data: NumStr[]): NumStr => {
-  if (!data.length) {
+  if (data.length === 0) {
     throw new Error('neptune requires at least 1 label for vertices')
   }
   return data[0]

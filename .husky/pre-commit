@@ -3,6 +3,4 @@
 
 [ -n "$CI" ] && exit 0
 
-# to force use of bun requires bun to implement more node APIs
-# bunx --bun lint-staged --concurrent false
-bun x lint-staged --concurrent true
+bun --bun x lint-staged --concurrent true --no-stash

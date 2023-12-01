@@ -1,5 +1,3 @@
-// @ts-check
-
 import micromatch from 'micromatch'
 
 export default async (stagedFiles) => {
@@ -21,7 +19,7 @@ export default async (stagedFiles) => {
 
   // console.info('\n\n codefiles', codeFiles, tsOnly, buildFiles);
 
-  const lintAndTests = codeFiles.length
+  const lintAndTests = codeFiles.length > 0
     ? [
         `bun --bun x eslint --max-warnings=0 --no-warn-ignored --fix --fix-type suggestion,layout,problem,directive -f unix ${codeFiles}`,
         `bun test --bail ${codeFiles}`,
@@ -29,7 +27,7 @@ export default async (stagedFiles) => {
     : []
 
   const typeCoverage = lintAndTests.concat(
-    tsOnly.length
+    tsOnly.length > 0
       ? [
           `bun --bun -x typescript-coverage-report -o './coverage-ts' -p './tsconfig.build.json' --cache=false -s=true -t=99`,
         ]
@@ -37,7 +35,7 @@ export default async (stagedFiles) => {
   )
 
   const matches = typeCoverage.concat(
-    typeCoverage.length || buildFiles ? 'bun run build' : [],
+    typeCoverage.length > 0 || buildFiles ? 'bun run build' : [],
   )
 
   return matches

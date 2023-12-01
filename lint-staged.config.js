@@ -1,7 +1,17 @@
 // @ts-check
-import micromatch from 'micromatch';
+import micromatch from 'micromatch'
 
 export default (stagedFiles) => {
+  const codeFiles = micromatch(stagedFiles, '*.?(*){j,t}s?(x|on*)', {
+    matchBase: true,
+  }).join(' ')
+
+  const lintAndTests = codeFiles.length > 0
+    ? [
+        `bun --bun x eslint --max-warnings=0 --no-warn-ignored --fix --fix-type suggestion,layout,problem,directive -f unix ${codeFiles}`,
+      ]
+    : []
+
   const buildFiles = micromatch.some(
     stagedFiles,
     [
@@ -12,10 +22,10 @@ export default (stagedFiles) => {
     ],
     {
       matchBase: true,
-    }
-  );
+    },
+  )
 
-  // console.info('\n\n root/files', buildFiles);
+  const runBuild = buildFiles ? ['bun run build'] : []
 
-  return buildFiles ? ['bun run build'] : [];
-};
+  return lintAndTests.concat(runBuild)
+}

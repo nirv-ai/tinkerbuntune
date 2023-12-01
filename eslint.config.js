@@ -1,61 +1,53 @@
 // @ts-check
 
 // @see https://github.com/nivalis-studio/eslint-config/blob/main/src/configs/imports.ts
+// @see https://github.com/antfu/eslint-config
 
-import { fileURLToPath } from 'node:url';
-import { FlatCompat } from '@eslint/eslintrc';
-import * as tsImport from 'eslint-import-resolver-typescript';
-import eslintConfigESLint from 'eslint-config-eslint';
-import eslintImport from 'eslint-plugin-import';
-import globals from 'globals';
-import jsoncParser from 'jsonc-eslint-parser';
-import jsoncPlugin from 'eslint-plugin-jsonc';
-import typescriptParser from '@typescript-eslint/parser';
-import typescriptPlugin from '@typescript-eslint/eslint-plugin';
-import path from 'node:path';
-import promisePlugin from 'eslint-plugin-promise';
-import stylistic from '@stylistic/eslint-plugin';
+import * as importResolverTypescript from 'eslint-import-resolver-typescript'
+import globals from 'globals'
+import jsoncParser from 'jsonc-eslint-parser'
+import typescriptParser from '@typescript-eslint/parser'
 
-const typeScriptExtensions = ['.ts', '.cts', '.mts', '.tsx', '.d.ts'];
-const javaScriptExtensions = ['.js', '.jsx', '.mjs', '.cjs'];
-const allExtensions = [...typeScriptExtensions, ...javaScriptExtensions];
+import eslintImport from 'eslint-plugin-import'
+import jsoncPlugin from 'eslint-plugin-jsonc'
+import typescriptPlugin from '@typescript-eslint/eslint-plugin'
+import promisePlugin from 'eslint-plugin-promise'
+import stylistic from '@stylistic/eslint-plugin'
+import commentsPlugin from 'eslint-plugin-eslint-comments'
+import tsdocPlugin from 'eslint-plugin-tsdoc'
+import unicornPlugin from 'eslint-plugin-unicorn'
+import jsPlugin from '@eslint/js'
 
-// mimic CommonJS variables -- not needed if using CommonJS
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const typeScriptExtensions = ['.ts', '.cts', '.mts', '.tsx', '.d.ts']
+const javaScriptExtensions = ['.js', '.jsx', '.mjs', '.cjs', '.json', 'node']
+const allExtensions = [...typeScriptExtensions, ...javaScriptExtensions]
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  resolvePluginsRelativeTo: __dirname,
-});
-// ?([cm])[jt]s?(x)
-const tsFiles = ['**/*.?(*)ts?(x)'];
-const jsFiles = ['**/*.?(*)js?(x)'];
-const dtsFiles = ['**/*.d.?(*)ts?(x)'];
-const testFiles = ['**/test/**/*.?(*){t,j}s?(x)', '**/*.test.?(*){t,j}s?(x)'];
+const tsFiles = ['**/*.?(*)ts?(x)']
+const jsFiles = ['**/*.?(*)js?(x)']
+const dtsFiles = ['**/*.d.?(*)ts?(x)']
+const testFiles = ['**/test/**/*.?(*){t,j}s?(x)', '**/*.test.?(*){t,j}s?(x)']
+const jsonFiles = ['**/*.json?(*)']
+const cjsFiles = ['**/*.cjs']
 
-const files = tsFiles.concat(jsFiles);
-
-const eslintOptions = {
+const eslintOptions = (language = {}, settings = {}) => ({
   linterOptions: {
     noInlineConfig: true,
     reportUnusedDisableDirectives: true,
   },
   languageOptions: {
     ecmaVersion: 'latest',
-    sourceType: 'module',
     globals: {
       ...globals.browser,
       ...globals.node,
       ...globals['shared-node-browser'],
     },
+    sourceType: 'module',
     parser: typescriptParser,
     parserOptions: {
       cacheLifetime: {
         glob: 'Infinity',
       },
-      tsconfigRootDir: __dirname,
-      extraFileExtensions: allExtensions,
+      tsconfigRootDir: import.meta.dir,
       sourceType: 'module',
       EXPERIMENTAL_useProjectService: true,
       ecmaVersion: 'latest',
@@ -67,44 +59,34 @@ const eslintOptions = {
         impliedStrict: true,
       },
     },
+    ...language,
   },
-  settings: {
+  settings,
+})
+
+const tsOptions = eslintOptions(
+  {},
+  {
     'import/extensions': allExtensions,
     'import/external-module-folders': ['node_modules', 'node_modules/@types'],
     'import/cache': {
-      lifetime: Infinity,
+      lifetime: Number.POSITIVE_INFINITY,
     },
     'import/resolver': {
-      node: {
-        extensions: javaScriptExtensions,
-      },
       typescript: {
-        ...tsImport,
-        defaultExtensionAlias: {},
-        extensions: allExtensions,
         alwaysTryTypes: true,
-        conditionNames: ['bun'].concat(tsImport.conditionNames),
+        extensions: allExtensions,
+        extensionAlias: importResolverTypescript.defaultExtensionAlias,
+        conditionNames: ['bun'].concat(importResolverTypescript.defaultConditionNames),
       },
     },
     'import/parsers': {
-      // TODO: remove this line once eslint-plugin-import #2556 is fixed
-      // espree: javaScriptExtensions,
       '@typescript-eslint/parser': typeScriptExtensions,
     },
   },
-};
+)
 
 export default [
-  ...eslintConfigESLint
-    .map(({ files, ...rest }) =>
-      rest.plugins?.jsdoc || rest.settings?.jsdoc
-        ? false
-        : !files || files.includes('**/*.js')
-        ? rest
-        : { files, ...rest }
-    )
-    .filter(Boolean),
-  ...compat.plugins('@typescript-eslint', 'tsdoc', 'jsonc', 'promise'),
   {
     ignores: [
       '**/build/**',
@@ -116,26 +98,37 @@ export default [
   {
     plugins: {
       '@stylistic': stylistic,
-      import: eslintImport,
+      'import': eslintImport,
+      '@typescript-eslint': typescriptPlugin,
+      'promise': promisePlugin,
+      'jsonc': jsoncPlugin,
+      'tsdoc': tsdocPlugin,
+      'eslint-comments': commentsPlugin,
+      'unicorn': unicornPlugin,
     },
   },
   {
-    files,
-    ...eslintOptions,
+    files: [...tsFiles, ...jsFiles],
+    ...tsOptions,
     rules: {
       ...eslintImport.configs.recommended.rules,
       ...eslintImport.configs.typescript.rules,
       ...promisePlugin.configs.recommended.rules,
+      ...unicornPlugin.configs.recommended.rules,
       ...typescriptPlugin.configs['strict-type-checked'].rules,
       ...typescriptPlugin.configs['stylistic-type-checked'].rules,
       ...stylistic.configs['disable-legacy'].rules,
       ...stylistic.configs['recommended-flat'].rules,
+      'tsdoc/syntax': 'error',
+      'func-style': ['error', 'declaration', { allowArrowFunctions: true }],
       'import/no-unresolved': 'error',
+      'new-cap': 'off',
       'no-shadow': 'off',
-      '@typescript-eslint/no-shadow': 'error',
-      '@typescript-eslint/unbound-method': ['error', { ignoreStatic: true }],
+      'no-undef': 'off',
+      'no-underscore-dangle': 'off',
+      'no-unused-vars': 'off',
       'no-useless-constructor': 'off',
-      '@typescript-eslint/no-useless-constructor': ['error'],
+      'eslint-comments/no-unused-disable': 'error',
       'eslint-comments/require-description': [
         'error',
         {
@@ -148,17 +141,14 @@ export default [
           ],
         },
       ],
+      '@typescript-eslint/no-shadow': 'error',
+      '@typescript-eslint/unbound-method': ['error', { ignoreStatic: true }],
+      '@typescript-eslint/no-useless-constructor': ['error'],
       '@typescript-eslint/no-explicit-any': [
         'error',
         { fixToUnknown: true, ignoreRestArgs: true },
       ],
-      'func-style': ['error', 'declaration', { allowArrowFunctions: true }],
-      'new-cap': 'off',
-      'no-underscore-dangle': 'off',
-      'no-undef': 'off',
-      'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': 'error',
-      'eslint-comments/no-unused-disable': 'error',
       '@typescript-eslint/consistent-type-imports': [
         'error',
         {
@@ -178,7 +168,7 @@ export default [
           'ts-ignore': true,
           'ts-nocheck': true,
           'ts-check': false,
-          minimumDescriptionLength: 5,
+          'minimumDescriptionLength': 5,
         },
       ],
       'n/no-missing-import': 'off', // hella buggy
@@ -192,6 +182,7 @@ export default [
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
+      ...jsPlugin.configs.recommended.rules,
     },
   },
   {
@@ -218,14 +209,14 @@ export default [
     },
   },
   {
-    files: ['**/*.cjs'],
+    files: cjsFiles,
     rules: {
       '@typescript-eslint/no-require-imports': 'off',
       '@typescript-eslint/no-var-requires': 'off',
     },
   },
   {
-    files: ['**/*.json?(*)'],
+    files: jsonFiles,
     languageOptions: {
       parser: jsoncParser,
     },
@@ -245,4 +236,4 @@ export default [
     files: ['**/*.json5$'],
     rules: jsoncPlugin.configs['recommended-with-json5'].rules,
   },
-];
+]
