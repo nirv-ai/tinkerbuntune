@@ -76,8 +76,5 @@
     "noDetailWhenFailed": true,
     "reportSemanticError": true,
     "jsonOutput": false
-  },
-  "devDependencies": {
-    "eslint-import-resolver-typescript": "^3.6.1"
   }
 }
