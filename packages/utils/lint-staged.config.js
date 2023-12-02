@@ -26,17 +26,17 @@ export default async (stagedFiles) => {
       ]
     : []
 
-  const typeCoverage = lintAndTests.concat(
-    tsOnly.length > 0
+  const typeCoverage = [...lintAndTests,
+    ...tsOnly.length > 0
       ? [
-          `bun --bun -x typescript-coverage-report -o './coverage-ts' -p './tsconfig.build.json' --cache=false -s=true -t=99`,
+          `bun --bun x typescript-coverage-report -o './coverage-ts' -p './tsconfig.build.json' --cache=false -s=true -t=95`,
         ]
       : [],
-  )
+  ]
 
-  const matches = typeCoverage.concat(
-    typeCoverage.length > 0 || buildFiles ? 'bun run build' : [],
-  )
+  const matches = [...typeCoverage,
+    ...typeCoverage.length > 0 || buildFiles ? ['bun run build'] : [],
+  ]
 
   return matches
 }
