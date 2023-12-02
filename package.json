@@ -12,7 +12,7 @@
     "lint": "bun run lint:src",
     "lint:src": "bun --bun x eslint --cache --fix --fix-type suggestion,layout,problem,directive -f stylish './**'",
     "build": "bun run build:docs",
-    "build:docs": "bun --bun x typedoc",
+    "build:docs": "bun x typedoc",
     "prepare": "husky install"
   },
   "devDependencies": {
