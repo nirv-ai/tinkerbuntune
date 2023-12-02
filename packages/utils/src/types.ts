@@ -7,12 +7,12 @@ export type NeptuneValueSingle = NumStr | boolean | Date
 export type NeptuneValueArray = NeptuneValueSingle[]
 export type NeptuneValue = NeptuneValueSingle | NeptuneValueArray
 
-export interface PropsAndLabels {
+export interface PropertiesAndLabels {
   p?: Record<string, NeptuneValue>
   l?: NumStr[]
 }
 export type PropLabelNumStr = (
-  pl: PropsAndLabels,
+  pl: PropertiesAndLabels,
   record: NeptuneValue[]
 ) => NumStr
 export interface EdgeConfig {
@@ -20,7 +20,7 @@ export interface EdgeConfig {
   t: PropLabelNumStr
   l: PropLabelNumStr
   recordId: PropLabelNumStr
-  p?: (pl: PropsAndLabels) => PropsAndLabels['p']
+  p?: (pl: PropertiesAndLabels) => PropertiesAndLabels['p']
 }
 
 // TODO(noah) we shoudnt need this: typescript should automatically figure this out
@@ -28,20 +28,20 @@ export interface EdgeData {
   f: ReturnType<EdgeConfig['f']>
   t: ReturnType<EdgeConfig['t']>
   l: ReturnType<EdgeConfig['l']>
-  p?: Pick<PropsAndLabels, 'p'>
+  p?: Pick<PropertiesAndLabels, 'p'>
   recordId: ReturnType<EdgeConfig['recordId']>
 }
 
 /**
  * specifies how to transform a CSV into a {@link TinkerData} configuration
- * @property default p: property | l: label
+ * @param default - p: property | l: label
  *    default col assignment for unassigned columns
  *    will ignore unknown columns if not set
- * @property ignoreCols always ignore these columns
- * @property ignoreEmptyCol whether to ignore empty columns
- * @property l map specific col indexes to labels
- * @property p map specific col indexes to properties
- * @property transform mutate the column's value
+ * @param ignoreCols - always ignore these columns
+ * @param ignoreEmptyCol - whether to ignore empty columns
+ * @param l - map specific col indexes to labels
+ * @param p - map specific col indexes to properties
+ * @param transform - mutate the column's value
  */
 export interface ConfigSpecColMap {
   default?: 'p' | 'l'
@@ -49,13 +49,13 @@ export interface ConfigSpecColMap {
   ignoreEmptyCol?: boolean
   l?: number[]
   p?: number[]
-  transform?: (i: number, col: NeptuneValue) => NeptuneValue
+  transform?: (index: number, col: NeptuneValue) => NeptuneValue
 }
 
 /**
  * inject new labels / properties before any other transformations take place
- * @property l labels
- * @property p properties
+ * @param l - labels
+ * @param p - properties
  */
 export type ConfigSpecInject = RequireAtLeastOne<
   {
@@ -67,13 +67,13 @@ export type ConfigSpecInject = RequireAtLeastOne<
 
 /**
  * Base type for configs
- * @property colMap {@link ConfigSpecColMap}
- * @property edges {@link EdgeConfig}
- * @property inject {@link ConfigSpecInject}
- * @property recursive basename of a previously parsed csv file to reuse a {@link TinkerData} for a new ETL job
- * @property transformHeaders process the header array
- * @property transformRecord process the record as a whole
- * @property type the CSV contains v (vertices) or e (edges)
+ * @param colMap - {@link ConfigSpecColMap}
+ * @param edges - {@link EdgeConfig}
+ * @param inject - {@link ConfigSpecInject}
+ * @param recursive - basename of a previously parsed csv file to reuse a {@link TinkerData} for a new ETL job
+ * @param transformHeaders - process the header array
+ * @param transformRecord - process the record as a whole
+ * @param type - the CSV contains v (vertices) or e (edges)
  */
 interface ConfigSpecBase {
   colMap?: ConfigSpecColMap
@@ -106,7 +106,7 @@ export type ConfigSpec = ConfigSpecVertex | ConfigSpecEdge
 
 /**
  * @returns specification {@link ConfigSpec} or undefined to ignore this file
- * @param basename the filename with no extension
+ * @param basename - the filename with no extension
  */
 export type ConfigSpecGetter = (basename: string) => ConfigSpec | undefined
 
@@ -117,11 +117,11 @@ export type ConfigFilesMapValue = ConfigSpec | ((fname: string) => ConfigSpec)
 
 /**
  * Loader Configuration
- * @property csvDir absolute path to directory containing csv files
- * @property files map of filenames to explicit {@link ConfigSpec}s definitions
- * @property getSpec {@link ConfigSpecGetter} called for each load file
- * @property includeUnmappeDfiles if true, will process any csv if getSpec returns a valid {@link ConfigSpec}
- * @property persistResultLog will save whatever is returned from tinkergraph to file
+ * @param csvDir - absolute path to directory containing csv files
+ * @param files - map of filenames to explicit {@link ConfigSpec}s definitions
+ * @param getSpec - {@link ConfigSpecGetter} called for each load file
+ * @param includeUnmappeDfiles - if true, will process any csv if getSpec returns a valid {@link ConfigSpec}
+ * @param persistResultLog - will save whatever is returned from tinkergraph to file
  */
 export type Config = RequireAtLeastOne<
   {
@@ -137,7 +137,7 @@ export type Config = RequireAtLeastOne<
 /**
  * base TinkerData for vertices and edges
  */
-export interface TinkerDataBase extends PropsAndLabels {
+export interface TinkerDataBase extends PropertiesAndLabels {
   recordId?: NumStr
   edges?: EdgeData[]
 }

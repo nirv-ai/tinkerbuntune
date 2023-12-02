@@ -1,13 +1,30 @@
-import micromatch from 'micromatch';
+import micromatch from 'micromatch'
 
 export default (stagedFiles) => {
-  const buildFiles = micromatch(stagedFiles, [
-    '**/packages/**/{build,types}',
-    '**/tsconfig*.json',
-    '**/typedoc.json',
-  ]).join(' ');
+  const codeFiles = micromatch(stagedFiles, '*.?(*){j,t}s?(x|on*)', {
+    matchBase: true,
+  }).join(' ')
 
-  // console.info('\n\n root/files', buildFiles);
+  const lintAndTests = codeFiles.length > 0
+    ? [
+        `bun --bun x eslint --max-warnings=0 --no-warn-ignored --fix --fix-type suggestion,layout,problem,directive -f unix ${codeFiles}`,
+      ]
+    : []
 
-  return buildFiles.length ? ['bun run build'] : [];
-};
+  const buildFiles = micromatch.some(
+    stagedFiles,
+    [
+      './packages/*/(build,types)/**',
+      'package.json$',
+      'tsconfig*.json$',
+      'typedoc.json$',
+    ],
+    {
+      matchBase: true,
+    },
+  )
+
+  const runBuild = buildFiles ? ['bun run build'] : []
+
+  return [...lintAndTests, ...runBuild]
+}

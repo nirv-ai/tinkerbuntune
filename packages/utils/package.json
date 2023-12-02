@@ -41,32 +41,14 @@
     "#utils/*.json": "./src/*.json"
   },
   "scripts": {
-    "lint": "eslint --fix src",
+    "lint:types": "bun --bun x typescript-coverage-report",
+    "lint:src": "bun --bun x eslint --cache --fix --fix-type suggestion,layout,problem,directive -f stylish './**'",
+    "lint": "bun lint:types ; bun lint:src",
     "build": "bun build:src && bun build:types",
     "build:src": "rm -rf build && for runtime in bun browser node; do bun build --entrypoints ./src/${runtime}.ts --outdir ./build --target ${runtime} --external bun:jsc --external gremlin --external type-fest --entry-naming $runtime.index.[ext] --minify --sourcemap=external --root .; done;",
-    "build:types": "bunx tsc -b tsconfig.build.json --force",
-    "test:ci": "bun test --bail",
+    "build:types": "bun --bun x tsc -b tsconfig.build.json --force",
     "test:watch": "bun test --watch",
-    "types:explain": "bunx tsc -b tsconfig.build.json --explainFiles"
-  },
-  "devDependencies": {
-    "@eslint/eslintrc": "2.1.3",
-    "@stylistic/eslint-plugin": "1.4.1",
-    "@types/eslint": "8.44.7",
-    "@types/eslint__eslintrc": "2.1.1",
-    "@types/eslint__js": "8.42.3",
-    "@types/gremlin": "3.6",
-    "@typescript-eslint/eslint-plugin": "6.12.0",
-    "@typescript-eslint/parser": "6.12.0",
-    "bun-types": "1.0.14",
-    "eslint": "8.54.0",
-    "eslint-config-eslint": "9.0.0",
-    "eslint-plugin-tsdoc": "0.2.17",
-    "globals": "13.23.0",
-    "typescript": "5.3.2",
-    "gremlin": "3.6.2",
-    "hono": "3.10.2",
-    "type-fest": "4.8"
+    "types:explain": "bun --bun x tsc -b tsconfig.build.json --explainFiles"
   },
   "peerDependencies": {
     "gremlin": "3.6.2",
@@ -76,5 +58,26 @@
   "dependencies": {
     "csv": "6.3.5",
     "@msgpack/msgpack": "3.0.0-beta2"
+  },
+  "typeCoverage": {
+    "atLeast": 99,
+    "cache": true,
+    "project": "./tsconfig.json",
+    "strict": true,
+    "ignoreUnread": true,
+    "ignoreNested": true,
+    "ignoreAsAssertion": true,
+    "ignoreTypeAssertion": true,
+    "ignoreNonNullAssertion": true,
+    "ignoreObject": true,
+    "ignoreEmptyType": true,
+    "showRelativePath": true,
+    "historyFile": "typecoverage.json",
+    "noDetailWhenFailed": true,
+    "reportSemanticError": true,
+    "jsonOutput": false
+  },
+  "devDependencies": {
+    "eslint-import-resolver-typescript": "^3.6.1"
   }
 }

@@ -1,25 +1,24 @@
+// TODO (noah): bunches of eslint disables in this file
 import { encode, decode, decodeAsync, ExtensionCodec } from '@msgpack/msgpack'
-
-const jsc = import.meta.resolveSync('bun:jsc') && (await import('bun:jsc'))
 
 /**
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze#examples
  */
-export function deepFreezeCopy(object: any) {
-  const copy = Object.create(null)
+export function deepFreezeCopy<T extends Record<string, unknown>>(object: T): T {
+  const copy = Object.create(null) as T
 
   // Retrieve the property names defined on object
-  const propNames = Reflect.ownKeys(object).filter(
+  const propertyNames = Reflect.ownKeys(object).filter(
     k => typeof k === 'string',
-  )
+  ) as string[]
 
   // Freeze properties before freezing self
-  for (const name of propNames) {
+  for (const name of propertyNames) {
     const value = object[name]
 
     copy[name]
-      = value && value instanceof Object ? deepFreezeCopy(value) : value
+      = value && value instanceof Object ? deepFreezeCopy((value as Record<string, unknown>)) : value
   }
 
   return Object.freeze(copy)
@@ -28,52 +27,40 @@ export function deepFreezeCopy(object: any) {
 // @see https://stackoverflow.com/questions/29085197/how-do-you-json-stringify-an-es6-map
 /**
  *
- * @param map
+ * @param map -
  */
-export function mapToJsonIterator<T = Record<any, any>>(map: Map<any, any>): T {
-  return Array.from(map).reduce((acc, [key, value]) => {
-    acc[key] = value instanceof Map ? mapToJsonIterator(value) : value
+export function mapToJsonIterator<T extends Record<string, unknown>>(
+  map: Map<unknown, unknown>,
+): T {
+  return [...map].reduce((accumulator, [key, value]) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    (accumulator)[(key as string)] = value instanceof Map ? mapToJsonIterator(value) : value
 
-    return acc
-  }, Object.create(null))
+    return accumulator as T
+  }, Object.create(null)) as T
 }
 
 // FYI: ~183k nanoseconds
-export const toJson = <T = Record<any, any>>(data: Map<any, any>): T =>
-  deepFreezeCopy(mapToJsonIterator<T>(data))
+export const toJson = <T extends Record<string, unknown>>(
+  data: Map<unknown, unknown>,
+): T => deepFreezeCopy(mapToJsonIterator<T>(data))
 
 // @see https://stackoverflow.com/questions/29085197/how-do-you-json-stringify-an-es6-map
 // FYI: ~155k nanoseconds
 /**
  *
- * @param key
- * @param value
+ * @param key -
+ * @param value -
  */
 export function mapTojsonReplacer(key: unknown, value: unknown) {
   if (typeof key !== 'string' || typeof key !== 'number') {
-    return undefined
+    return
   }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return value instanceof Map ? Object.fromEntries(value.entries()) : value
 }
-export const toJsonStringified = (data: Map<any, any>): string =>
+export const toJsonStringified = (data: Map<unknown, unknown>): string =>
   JSON.stringify(data, mapTojsonReplacer)
-
-// @see https://bun.sh/docs/api/utils#serialize-deserialize-in-bun-jsc
-// FYI: ~28k nanoseconds to deserialize(serialize(data))
-export const toBunBuffer = (data: unknown) => {
-  if (!jsc) {
-    throw new Error('toBunBuffer requires the bun runtime')
-  }
-  return jsc.serialize(data)
-}
-export const fromBunBuffer = <T = unknown>(
-  data: ArrayBufferLike | TypedArray | Buffer,
-): T => {
-  if (!jsc) {
-    throw new Error('fromBunBuffer requires the bun runtime')
-  }
-  return jsc.deserialize(data)
-}
 
 // MSG pack
 // @see https://github.com/msgpack/msgpack-javascript/issues/236
@@ -91,6 +78,7 @@ extensionCodec.register({
     if (object instanceof Set) {
       return encoder.encode([...object], { extensionCodec })
     }
+    // eslint-disable-next-line unicorn/no-null
     return null
   },
   decode(data: Uint8Array) {
@@ -119,7 +107,7 @@ extensionCodec.register({
     }
 
     // @ts-expect-error copypasta from docs
-    return null
+    return undefined
   },
   decode(data: Uint8Array) {
     const array = decoder.decode(data, { extensionCodec }) as [
@@ -141,37 +129,39 @@ extensionCodec.register({
 })
 
 // @see https://github.com/noahehall/theBookOfNoah/blob/master/languages/javascript/opensource/msgpack.md#web-example
-export const msgpackToJsonIterator = <T = Record<any, any>>(
-  arr: [any, any],
+export const msgpackToJsonIterator = <T extends Record<string, unknown>>(
+  array: [unknown, unknown],
 ): T =>
-    arr.reduce((acc, [key, value]) => {
-      acc[key]
+    (array.reduce((accumulator, [key, value]) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      accumulator[key]
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       = value?.type === MAP_EXT_TYPE && value?.data instanceof Uint8Array
           ? msgpackToJsonIterator(
-            decoder.decode(value.data, { extensionCodec }) as [any, any],
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+            (decoder.decode(value.data, { extensionCodec }) as [unknown, unknown]),
           )
           : value
 
-      return acc
-    }, Object.create(null))
+      return accumulator as T
+    }, Object.create(null)) as T)
 
-export const msgpackToJson = async <T = Record<any, any>>(
+export const msgpackToJson = async <T extends Record<string, unknown>>(
   resp: Response,
-): Promise<T | null> => {
+): Promise<T | undefined> => {
   if (
     resp.headers.get('Content-Type') !== MSGPACK_HEADERS['Content-Type']
     || !resp.body
   ) {
-    return null
+    return undefined
   }
 
   return deepFreezeCopy(
-    msgpackToJsonIterator<T>(
+    msgpackToJsonIterator(
       decoder.decode(
-        // @ts-expect-error object is unknown
-        (await decoder.decodeAsync(resp.body, { extensionCodec })).data,
+        (await decoder.decodeAsync(resp.body, { extensionCodec }))?.data as ArrayLike<number>,
         { extensionCodec },
-      ) as [any, any],
+      ) as [unknown, unknown],
     ),
   )
 }

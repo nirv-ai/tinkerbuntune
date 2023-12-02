@@ -8,28 +8,28 @@
 describe('dsl', () => {
   describe('GroovyTraversal', () => {
     describe('keys', () => {
-      test.skip('is chainable', async () => {
-        expect(false).toBeTrue();
-      });
-    });
+      test.skip('is chainable', () => {
+        expect(false).toBeTrue()
+      })
+    })
 
     describe('next<T>', () => {
       test.skip('typescript returns as T', () => {
-        expect(false).toBeTrue();
-      });
-    });
+        expect(false).toBeTrue()
+      })
+    })
     describe('nextMap<T>', () => {
       test.skip('typescript returns as TraverserMap<T>', () => {
-        expect(false).toBeTrue();
-      });
-    });
-  });
+        expect(false).toBeTrue()
+      })
+    })
+  })
 
   describe('anonymous', () => {
     describe('keys', () => {
       test.skip('is chainable', () => {
-        expect(false).toBeTrue();
-      });
-    });
-  });
-});
+        expect(false).toBeTrue()
+      })
+    })
+  })
+})

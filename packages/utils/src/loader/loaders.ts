@@ -16,15 +16,15 @@ export const tinkerDataEdge = (tdata: TinkerDataEdge) =>
       )
     }
 
-    const recordProps = new Map<string | EnumValue, any>(
-      Object.entries(edgeData.p || {}),
+    const recordProperties = new Map<string | EnumValue, unknown>(
+      Object.entries(edgeData.p ?? {}),
     )
 
-    recordProps.set(t.label, edgeData.l)
-    recordProps.set(Direction.OUT, edgeData.f)
-    recordProps.set(Direction.IN, edgeData.t)
+    recordProperties.set(t.label, edgeData.l)
+    recordProperties.set(Direction.OUT, edgeData.f)
+    recordProperties.set(Direction.IN, edgeData.t)
 
-    return [new Map([[t.id, edgeData.recordId]]), recordProps]
+    return [new Map([[t.id, edgeData.recordId]]), recordProperties]
   })
 
 export const tinkerDataVertex = (tdata: TinkerDataVertex) => {
@@ -32,19 +32,23 @@ export const tinkerDataVertex = (tdata: TinkerDataVertex) => {
     throw new Error('all vertices require a user supplied recordId')
   }
 
-  const recordProps = new Map<string | EnumValue, any>(
-    Object.entries(tdata.p!),
-  )
+  const recordProperties = tdata.p
+    ? new Map<string | EnumValue, unknown>(Object.entries(tdata.p))
+    : new Map()
 
-  recordProps.set(t.label, utils.getVertexLabel(tdata.l!))
+  if (!tdata.l) {
+    throw new Error(`all vertex require a label: ${tdata.l}`)
+  }
 
-  return [new Map([[t.id, tdata.recordId]]), recordProps]
+  recordProperties.set(t.label, utils.getVertexLabel(tdata.l))
+
+  return [new Map([[t.id, tdata.recordId]]), recordProperties]
 }
 
 /**
  * merges vertices and edges into a tinkergraph based on a specification
- * @param data
- * @param spec
+ * @param data -
+ * @param spec -
  */
 export const tinkerData = async (
   data: TinkerDataEdge[] | TinkerDataVertex[],
@@ -54,22 +58,22 @@ export const tinkerData = async (
     data
       .flatMap((tdata) => {
         if (spec.type === 'v') {
-          const [idMap, recordProps] = tinkerDataVertex(
+          const [idMap, recordProperties] = tinkerDataVertex(
             tdata as TinkerDataVertex,
           )
 
           return g
             .mergeV(idMap)
-            .option(merge.onCreate, recordProps)
-            .option(merge.onMatch, recordProps)
+            .option(merge.onCreate, recordProperties)
+            .option(merge.onMatch, recordProperties)
             .toList()
         }
         return tinkerDataEdge(tdata as TinkerDataEdge).map(
-          ([idMap, recordProps]) =>
+          ([idMap, recordProperties]) =>
             g
               .mergeE(idMap)
-              .option(merge.onCreate, recordProps)
-              .option(merge.onMatch, recordProps)
+              .option(merge.onCreate, recordProperties)
+              .option(merge.onMatch, recordProperties)
               .toList(),
         )
       })

@@ -1,5 +1,5 @@
-import type { GroovyTraversal } from '#utils'
-import { common, type EnumValue } from '#utils'
+import { common } from '#utils'
+import type { GroovyTraversal, EnumValue } from '#utils'
 
 const { t } = common
 const { keys, values } = common.column
@@ -9,11 +9,11 @@ const { flatMap, identity, project, select, unfold, union, valueMap }
 
 /**
  * base opts for a gremlin traversal
- * @property end if false returns a GroovyTraveral for chaining
- * @property limitX e.g. traversal.range(limitX, limitY)
- * @property limitY e.g. traversal.range(limitX, limitY)
+ * @param end - if false returns a GroovyTraveral for chaining
+ * @param limitX - e.g. traversal.range(limitX, limitY)
+ * @param limitY - e.g. traversal.range(limitX, limitY)
  */
-export interface BaseOpts {
+export interface BaseOptions {
   limitX?: number // TODO (noah): this should be an array of limits
   limitY?: number
   [x: string]: unknown
@@ -21,10 +21,10 @@ export interface BaseOpts {
 
 /**
  * helper fn for supplying options to a {@link GroovyTraversal}
- * @param overrides
+ * @param overrides - ...
  * @returns
  */
-export const getBaseOpts = (overrides: BaseOpts) => ({
+export const getBaseOpts = (overrides: BaseOptions) => ({
   ...overrides,
   limitX: overrides.limitX ?? 0,
   limitY: overrides.limitY ?? (overrides.limitX ?? 0) + 10,
@@ -34,9 +34,9 @@ export const throwIfEmpty = (
   thing: string,
   received?: unknown,
 ): false | undefined => {
-  if (!Array.isArray(received) || !received.length) {
+  if (!Array.isArray(received) || received.length === 0) {
     throw new Error(
-            `${thing} must be a non empty array\nreceived: ${received}`,
+      `${thing} must be a non empty array\nreceived: ${received?.toString?.()}`,
     )
   }
 
@@ -50,7 +50,7 @@ export const throwInvalidQuery = (reason: string, ...extra: any[]) => {
 /*
   uses sack to create an updatable object over the lifetime of a traversal
 */
-export interface ElementProps {
+export interface ElementProperties {
   elements?: GroovyTraversal
   elKeys?: (string | EnumValue)[]
   as?: string[]
@@ -58,48 +58,50 @@ export interface ElementProps {
 export const elementProps = ({
   as = [],
   elements = identity(),
-  elKeys = [],
-}: ElementProps): GroovyTraversal => elements
-  .as(...as.concat('base'))
-  .valueMap(...elKeys)
-  .by(unfold())
-  .sack(addAll)
-  .select('base')
-  .project('id', 'label')
-  .by(t.id)
-  .by(t.label)
-  .sack(addAll)
+  elKeys: elementKeys = [],
+}: ElementProperties): GroovyTraversal =>
+  elements
+    .as(...as, 'base')
+    .valueMap(...elementKeys)
+    .by(unfold())
+    .sack(addAll)
+    .select('base')
+    .project('id', 'label')
+    .by(t.id)
+    .by(t.label)
+    .sack(addAll)
 
 /*
   a simpler version of elementProps that adds id & label
 */
-export interface CombineProps extends Exclude<ElementProps, 'as'> {
+export interface CombineProperties extends Exclude<ElementProperties, 'as'> {
   traversals?: GroovyTraversal[]
 }
 export const combineProps = ({
   elements = identity(),
-  elKeys = [],
+  elKeys: elementKeys = [],
   traversals = [],
-}: CombineProps): GroovyTraversal => elements.local(
-  union(
-    project('id', 'label').by(t.id).by(t.label),
-    valueMap(...elKeys).by(unfold()),
-    ...traversals,
+}: CombineProperties): GroovyTraversal =>
+  elements.local(
+    union(
+      project('id', 'label').by(t.id).by(t.label),
+      valueMap(...elementKeys).by(unfold()),
+      ...traversals,
+    )
+      .unfold()
+      .group()
+      .by(keys)
+      .by(select(values)),
   )
-    .unfold()
-    .group()
-    .by(keys)
-    .by(select(values)),
-)
 
 /*
   groups an element by some key
 */
 export const groupByIdentity = ({
   elements = identity(),
-  elKeys = [],
-}: Exclude<ElementProps, 'as'>): GroovyTraversal =>
+  elKeys: elementKeys = [],
+}: Exclude<ElementProperties, 'as'>): GroovyTraversal =>
   elements
     .group()
-    .by(elKeys[0] ?? t.id)
+    .by(elementKeys[0] ?? t.id)
     .by(flatMap(identity()))

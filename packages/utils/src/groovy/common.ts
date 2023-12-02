@@ -1,5 +1,5 @@
 import gremlin from 'gremlin'
-import { type GroovyTraversal } from './dsl'
+import type { GroovyTraversal } from '#utils/groovy/dsl'
 
 const __ = gremlin.process.statics as gremlin.process.Statics<GroovyTraversal>
 
@@ -14,9 +14,9 @@ export enum EDir {
 
 /**
  * aids in reusing traversal patterns
- * e.g. a bunch of common queries from V > E > V can be specified in a json config
- * { x: [vID, eID, vID], y: [vID, eID, vID]} you can use {@link go} to automatically traverse this graph
- * @param dir {@link EDir}
+ * e.g. a bunch of common queries from V \> E \> V can be specified in a json config
+ * \{ x: [vID, eID, vID], y: [vID, eID, vID]\} you can use {@link go} to automatically traverse this graph
+ * @param dir - {@link EDir}
  * @returns
  */
 export const go = (dir: EDir) => {
@@ -34,7 +34,7 @@ export const go = (dir: EDir) => {
   }
 
   switch (dir) {
-    case EDir.in:
+    case EDir.in: {
       return {
         ...base,
         to: {
@@ -42,7 +42,8 @@ export const go = (dir: EDir) => {
           v: __.in_,
         },
       }
-    case EDir.out:
+    }
+    case EDir.out: {
       return {
         ...base,
         to: {
@@ -50,8 +51,10 @@ export const go = (dir: EDir) => {
           v: __.out,
         },
       }
-    default:
-      throw new Error(`invalid: ${dir}\nexpected an EDir}`)
+    }
+    default: {
+      throw new Error(`invalid: ${dir as string}\nexpected an EDir}`)
+    }
   }
 }
 
@@ -77,10 +80,10 @@ export const common = {
     to: gremlin.process.direction.out,
   },
   go,
-};
+}
 
 // remove these duplicates since we destuctured them under different names
-[
+for (const property of [
   'P',
   'AnonymousTraversalSource',
   'statics',
@@ -89,4 +92,5 @@ export const common = {
   'direction',
 
   // @ts-expect-error implicit any
-].forEach(prop => delete common[prop])
+  // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+]) delete common[property]

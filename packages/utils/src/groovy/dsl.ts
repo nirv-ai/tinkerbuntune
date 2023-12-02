@@ -23,14 +23,6 @@ export type TraversalStrategies = gremlin.process.TraversalStrategies
  * steps that are made available on this class are also available as spawns for anonymous traversals
  */
 export class GroovyTraversal extends GraphTraversal {
-  constructor(
-    graph: Nullable<Graph>,
-    traversalStrategies: Nullable<TraversalStrategies>,
-    bytecode: Bytecode,
-  ) {
-    super(graph, traversalStrategies, bytecode)
-  }
-
   keys() {
     return this.valueMap().select(gremlin.process.column.keys)
   }
@@ -50,6 +42,7 @@ export class GroovyTraversal extends GraphTraversal {
  * similar to gremlin.process.statics
  */
 function anonymous() {
+  /* eslint-disable-next-line unicorn/no-null */
   return new GroovyTraversal(null, null, new gremlin.process.Bytecode())
 }
 export const keys = () => anonymous().keys()
