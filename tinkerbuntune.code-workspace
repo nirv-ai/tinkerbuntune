@@ -1,0 +1,46 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll": true
+    },
+    "bun.debugTerminal.enabled": true,
+    "bun.debugTerminal.stopOnEntry": false,
+    "eslint.codeAction.showDocumentation": {
+      "enable": true
+    },
+    "eslint.options": {
+      "overrideConfigFile": "./eslint.config.js",
+      "eslint.useESLintCLass": true
+    },
+    "eslint.workingDirectories": ["."],
+    "eslint.run": "onSave",
+    "eslint.format.enable": true,
+    "eslint.lintTask.enable": true,
+    "eslint.codeActionsOnSave.mode": "all",
+    "eslint.experimental.useFlatConfig": true,
+    "eslint.probe": [
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact",
+      "json",
+      "jsonc"
+    ]
+    // "eslint.rules.customizations": [
+    //   { "rule": "style/*", "severity": "off" },
+    //   { "rule": "*-indent", "severity": "off" },
+    //   { "rule": "*-spacing", "severity": "off" },
+    //   { "rule": "*-spaces", "severity": "off" },
+    //   { "rule": "*-order", "severity": "off" },
+    //   { "rule": "*-dangle", "severity": "off" },
+    //   { "rule": "*-newline", "severity": "off" },
+    //   { "rule": "*quotes", "severity": "off" },
+    //   { "rule": "*semi", "severity": "off" }
+    // ],
+  }
+}

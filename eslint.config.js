@@ -178,6 +178,7 @@ export default [
       'unicorn/consistent-destructuring': 'off',
       'unicorn/no-array-reduce': 'off',
       'unicorn/filename-case': 'off',
+      'unicorn/no-await-expression-member': 'off',
     },
   },
   {

@@ -1,30 +1,23 @@
 import { encode, decode, decodeAsync, ExtensionCodec } from '@msgpack/msgpack'
 
-// likley this: https://github.com/sindresorhus/eslint-plugin-unicorn/issues/1931
-// might be this: https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/prefer-node-protocol.md
-// eslint-disable dunno keeps changing bun:jsc to node:bun:js
-const eslintIsDumb = import.meta.resolveSync('bun:jsc')
-const jsc = eslintIsDumb && (await import(eslintIsDumb))
-// eslint-enable
-const x = 'blah'
 /**
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze#examples
  */
-export function deepFreezeCopy(object: unknown) {
+export function deepFreezeCopy<T extends Record<string, unknown>>(object: T): T {
   const copy = Object.create(null)
 
   // Retrieve the property names defined on object
   const propertyNames = Reflect.ownKeys(object).filter(
     k => typeof k === 'string',
-  )
+  ) as string[]
 
   // Freeze properties before freezing self
   for (const name of propertyNames) {
     const value = object[name]
 
     copy[name]
-      = value && value instanceof Object ? deepFreezeCopy(value) : value
+      = value && value instanceof Object ? deepFreezeCopy((value as Record<string, unknown>)) : value
   }
 
   return Object.freeze(copy)
@@ -35,18 +28,18 @@ export function deepFreezeCopy(object: unknown) {
  *
  * @param map
  */
-export function mapToJsonIterator<T = Record<unknown, unknown>>(
+export function mapToJsonIterator<T extends Record<string, unknown>>(
   map: Map<unknown, unknown>,
 ): T {
   return [...map].reduce((accumulator, [key, value]) => {
-    accumulator[key] = value instanceof Map ? mapToJsonIterator(value) : value
+    accumulator[(key as string)] = value instanceof Map ? mapToJsonIterator(value) : value
 
     return accumulator
   }, Object.create(null))
 }
 
 // FYI: ~183k nanoseconds
-export const toJson = <T = Record<unknown, unknown>>(
+export const toJson = <T extends Record<string, unknown>>(
   data: Map<unknown, unknown>,
 ): T => deepFreezeCopy(mapToJsonIterator<T>(data))
 
@@ -65,23 +58,6 @@ export function mapTojsonReplacer(key: unknown, value: unknown) {
 }
 export const toJsonStringified = (data: Map<unknown, unknown>): string =>
   JSON.stringify(data, mapTojsonReplacer)
-
-// @see https://bun.sh/docs/api/utils#serialize-deserialize-in-bun-jsc
-// FYI: ~28k nanoseconds to deserialize(serialize(data))
-export const toBunBuffer = (data: unknown) => {
-  if (!jsc) {
-    throw new Error('toBunBuffer requires the bun runtime')
-  }
-  return jsc.serialize(data)
-}
-export const fromBunBuffer = <T = unknown>(
-  data: ArrayBufferLike | TypedArray | Buffer,
-): T => {
-  if (!jsc) {
-    throw new Error('fromBunBuffer requires the bun runtime')
-  }
-  return jsc.deserialize(data)
-}
 
 // MSG pack
 // @see https://github.com/msgpack/msgpack-javascript/issues/236
@@ -149,34 +125,34 @@ extensionCodec.register({
 })
 
 // @see https://github.com/noahehall/theBookOfNoah/blob/master/languages/javascript/opensource/msgpack.md#web-example
-export const msgpackToJsonIterator = <T = Record<unknown, unknown>>(
+export const msgpackToJsonIterator = <T extends Record<string, unknown>>(
   array: [unknown, unknown],
 ): T =>
     array.reduce((accumulator, [key, value]) => {
       accumulator[key]
       = value?.type === MAP_EXT_TYPE && value?.data instanceof Uint8Array
           ? msgpackToJsonIterator(
-            decoder.decode(value.data, { extensionCodec }) as [unknown, unknown],
+            (decoder.decode(value.data, { extensionCodec }) as [unknown, unknown]),
           )
           : value
 
       return accumulator
     }, Object.create(null))
 
-export const msgpackToJson = async <T = Record<unknown, unknown>>(
+export const msgpackToJson = async <T extends Record<string, unknown>>(
   resp: Response,
-): Promise<T | null> => {
+): Promise<T | undefined> => {
   if (
     resp.headers.get('Content-Type') !== MSGPACK_HEADERS['Content-Type']
     || !resp.body
   ) {
-    return null
+    return undefined
   }
 
   return deepFreezeCopy(
-    msgpackToJsonIterator<T>(
+    msgpackToJsonIterator(
       decoder.decode(
-        (await decoder.decodeAsync(resp.body, { extensionCodec }))?.data,
+        (await decoder.decodeAsync(resp.body, { extensionCodec }))?.data as ArrayLike<number>,
         { extensionCodec },
       ) as [unknown, unknown],
     ),
