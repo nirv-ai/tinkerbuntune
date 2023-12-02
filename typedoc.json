@@ -3,13 +3,14 @@
   "entryPoints": [
     "packages/utils/src/browser.ts",
     "packages/utils/src/node.ts",
-    "packages/utils/src/index.ts"
+    "packages/utils/src/index.ts",
+    // "packages/utils/types/index.d.ts",
   ],
   "cleanOutputDir": true,
   "emit": "docs",
   "entryPointStrategy": "expand",
   "gitRevision": "develop",
-  "excludeExternals": false,
+  "excludeExternals": true,
   "excludeNotDocumented": false,
   "excludeReferences": false,
   "externalPattern": ["**/node_modules/**"],
@@ -26,6 +27,6 @@
   },
   "plugin": ["typedoc-plugin-merge-modules", "typedoc-plugin-coverage"],
   "coverageLabel": "coverage",
-  "mergeModulesRenameDefaults": true, // NEW option of TypeDoc added by this plugin
+  "mergeModulesRenameDefaults": false, // NEW option of TypeDoc added by this plugin
   "mergeModulesMergeMode": "module" // NEW option of TypeDoc added by this plugin
 }
